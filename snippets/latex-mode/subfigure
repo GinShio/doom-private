@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: subfigure
+# key: subfig
+# --
+\begin{figure}[htb]
+  \centering
+  \subfigure[${1:name}]{
+    \label{fig:${2:sublabel}}
+    \includegraphics[width=${3:0.45}\textwidth]{${4:path.img}}
+  }
+  \caption{${5:caption}}
+  \label{fig:${6:label}}
+\end{figure}

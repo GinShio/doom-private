@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: add_group
+# key: add_group
+# expand-env: ((yas-indent-line nil) (yas-after-exit-snippet-hook #'whitespace-cleanup))
+# --
+/**
+ * @ingroup ${1:tag}
+ * ${2:brief}
+ */

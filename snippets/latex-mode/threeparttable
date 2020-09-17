@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: threeparttable
+# key: threetable
+# --
+\begin{table}[htb]
+  \centering
+  \caption{${1:caption}}
+  \label{tab:${2:label}}
+  \begin{tabular}{$3}
+    \toprule
+    $0
+    \bottomrule
+  \end{tabular}
+\end{table}

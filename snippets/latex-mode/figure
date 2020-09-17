@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: figure
+# key: fig
+# --
+\begin{figure}[htb]
+  \centering
+  \includegraphics[${1:options}]{${2:path.img}}
+  \caption{${3:caption}}
+  \label{fig:${4:label}}
+\end{figure}

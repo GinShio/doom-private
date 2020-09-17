@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: source
+# key: source
+# expand-env: ((yas-indent-line nil) (yas-after-exit-snippet-hook #'whitespace-cleanup))
+# --
+/**
+ * @file    ${1:`(ginshio/get-file-in-project)`}
+ *
+ * @brief   $2
+ *
+ * @author  `ginshio/user-name` <`ginshio/user-email`>
+ *
+ * @date    ${3:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
+ *
+ * @version $4
+ *
+ * @details $5
+ */
+
+#include "${6:`(ginshio/get-c-cxx-include-header)`}"
+
+$0

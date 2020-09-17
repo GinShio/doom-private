@@ -1,0 +1,26 @@
+# -*- mode: snippet -*-
+# name: longtable
+# key: longtable
+# --
+\begin{center}
+\begin{longtable}{$1}
+  \caption{${2:caption}}
+  \label{tab:${3:label}}
+  % table header at the first page
+  $4
+  \hline
+	\endfirsthead
+  % table header at the top of every page
+  $5
+  \hline
+  \endhead
+  % at the bottom of every page
+  \hline
+  \endfoot
+  % at the bottom of last page
+  \hline
+  \endfoot
+  % table data
+  $0
+\end{longtable}
+\end{center}

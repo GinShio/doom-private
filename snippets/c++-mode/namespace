@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: namespace
+# key: namespace
+# expand-env: ((yas-indent-line nil) (yas-after-exit-snippet-hook #'whitespace-cleanup))
+# --
+namespace $1 {
+
+$0
+
+} // namespace $1

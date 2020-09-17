@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: hugo
+# key: hugo
+# --
+#+HUGO_BASE_DIR: `ginshio/org-hugo-dir`
+#+HUGO_SECTION: ${1:posts}
+#+TITLE: ${2:`(mapconcat #'capitalize (split-string (file-name-base (buffer-file-name)) "-") " ")`}
+#+AUTHOR: `ginshio/user-name`
+#+EMAIL: `ginshio/user-email`
+#+DATE: ${3:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
+#+OPTIONS: toc:nil author:nil
+#+HUGO_AUTO_SET_LASTMOD: t
+#+HUGO_DRAFT: false
+#+HUGO_CATEGORIES: $4
+#+HUGO_TAGS: $5
+#+EXPORT_FILE_NAME: ${6:`(concat (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) ".zh-cn.md")`}
+#+DESCRIPTION: $7
+#+KEYWORDS: $4 $5
+
+$0

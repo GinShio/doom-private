@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: function
+# key: function
+# expand-env: ((yas-indent-line nil) (yas-after-exit-snippet-hook #'whitespace-cleanup))
+# --
+/**
+ * @brief   $1
+ * @param   $2
+ * @return  $3
+ * @details $4
+ */

@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: article
+# key: article
+# --
+% ${1:`(ginshio/get-file-in-project)`}
+% Author: `ginshio/user-name` <`ginshio/user-email`>
+% CreatedAt: ${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
+% Description: $3
+
+\documentclass[utf8,a4paper,11pt]{article}
+
+$0
+
+\begin{document}
+
+\end{document}

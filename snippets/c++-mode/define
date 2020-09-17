@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: macro
+# key: macro
+# --
+//! $0

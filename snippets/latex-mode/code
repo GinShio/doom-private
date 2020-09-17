@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: code
+# key: code
+# --
+\begin{longlisting}
+\caption{$1}
+\label{lst:$2}
+\begin{sourcecode}{$3}[tomorrow]
+$0
+\end{sourcecode}
+\end{longlisting}
