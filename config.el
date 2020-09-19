@@ -386,9 +386,13 @@ CONTENTS holds the contents of the item.  INFO is a plist holding contextual inf
     "hg" '(easy-hugo-github-deploy :which-key "github-deploy"))
   )
 (after! org
+  ;; insert-structure-template, keybinding "C-c C-,", like "<s tab"
+  (require 'org-tempo)
+  ;; toc-org
   (toc-org-mode t)
   (add-hook! 'org-mode-hook #'toc-org-mode)
   (define-key! org-mode-map "C-c C-i" #'toc-org-insert-toc)
+  ;; keybinding
   (ginshio/leader
     :keymaps 'org-mode-map
     "m" '(nil :which-key "meta-functions")
