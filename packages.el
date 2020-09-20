@@ -60,6 +60,13 @@
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;; programming ;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TODO: google-c-style
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;; writer ;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! easy-hugo :recipe (:host github :repo "masasam/emacs-easy-hugo"))
 

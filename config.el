@@ -66,6 +66,7 @@
   (exec-path-from-shell-initialize)
   )
 (when IS-WINDOWS (setq default-process-coding-system '(utf-8-unix . utf-8-unix))) ;; coding system
+(global-unset-key (kbd "C-z"))
 (use-package! hungry-delete
   :config
   (setq-default hungry-delete-chars-to-skip " \t\v")
@@ -106,6 +107,7 @@
     :keymaps 'global-map
     "y" '(ivy-yasnippet :which-key "yasnippet"))
   )
+(setq! delete-by-moving-to-trash t)
 (custom-set-variables '(delete-selection-mode t) ;; delete when you select region and modify
                       )
 (map! (:leader (:desc "Load a saved workspace" :g "wR" #'+workspace/load))) ;; workspace
@@ -114,8 +116,9 @@
 (define-key! global-map "M-s e" #'iedit-mode)
 (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
 (add-hook 'doc-view-mode-hook 'auto-revert-mode) ;; auto revert file, if it has modified
+(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
 
-;; dired
+;;;;; dired ;;;;;
 ;; mark files and ediff in dired mode <https://oremacs.com/2017/03/18/dired-ediff/>
 ;;;###autoload
 (defun ginshio/dired-ediff-files ()
@@ -155,7 +158,7 @@
     (setq-local dired-dotfiles-show-p t)))
 )
 
-;; google translate <https://github.com/lorniu/go-translate>
+;;;;; google translate ;;;;;
 (use-package! go-translate
   :init
   (setq! go-translate-base-url "https://translate.google.cn"
@@ -411,7 +414,7 @@ CONTENTS holds the contents of the item.  INFO is a plist holding contextual inf
     "gk" '(org-shiftmetaup :which-key "shiftmetaup")
     "gj" '(org-shiftmetadown :which-key "shiftmetadown"))
   )
-;; LaTeX
+;;;;; \LaTeX ;;;;;
 (setq +latex-viewers '(okular))
 ;;;###autoload
 (defun ginshio/latex-export-pdf ()
@@ -444,6 +447,13 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
      (format "convert -density 1024 %s %s;\nrm -rf %s" svgname pngname svgname)
      nil nil)))
 (after! latex
+  (custom-set-variables
+   '(LaTeX-section-label '(("part" . "part:")
+                           ("chapter" . "chap:")
+                           ("section" . "sec:")
+                           ("subsection" . "subsec:")
+                           ("subsubsection" . "subsubsec:")))
+   )
   (ginshio/leader
     :keymaps 'LaTeX-mode-map
     "e" '(nil :which-key "export")
@@ -452,7 +462,7 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
     "ep" '(ginshio/latex-export-png :which-key "to-png")
     )
   )
-;;;;; Markdown
+;;;;; Markdown ;;;;;
 (after! markdown
   (toc-org-mode t)
   (add-hook! 'markdown-mode-hook #'toc-org-mode)
@@ -465,7 +475,7 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; programming ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TODO: parentheses <https://www.gtrun.org/post/init/#parentheses>
-
+;;;;; CC ;;;;;
 
 
 
@@ -476,7 +486,10 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 (defun ginshio/init--farme()
   (when (display-graphic-p)
     (progn (menu-bar-mode t)
-           (toggle-frame-maximized)
+           (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+           ;; cursor
+           (setq-default cursor-type 'box)
+           (blink-cursor-mode -1)
            ;; set font
            (set-face-attribute 'default nil :font "Source Code Pro:pixelsize=15")
            (dolist (charset '(kana han symbol cjk-misc bopomofo))
@@ -494,7 +507,7 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 (if (and (fboundp 'daemonp) (daemonp))
     (add-hook 'after-make-frame-functions #'ginshio|init--farme)
   (ginshio/init--farme))
-;; modeline
+;;;;; modeline ;;;;;
 (after! doom-modeline
   (custom-set-variables '(doom-modeline-buffer-file-name-style 'relative-to-project)
                         '(doom-modeline-major-mode-icon t)
