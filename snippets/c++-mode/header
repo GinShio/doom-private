@@ -6,7 +6,7 @@
 /*
  * ${1:`(ginshio/get-file-in-project)`}
  *
- * author:  `ginshio/user-name` <`ginshio/user-email`>
+ * author:  `user-full-name` <`user-mail-address`>
  *
  * date:    ${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
  *
@@ -14,8 +14,8 @@
  */
 
 #ifndef ${4:`(ginshio/get-header-define-guard)`}
-#define $4
+#define $4 1
 
 $0
 
-#endif // $4
+#endif  // $4

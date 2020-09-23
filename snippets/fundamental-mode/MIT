@@ -5,7 +5,7 @@
 # --
 MIT License
 
-Copyright (c) ${1:`(substring (current-time-string) -4)`} ${2:`ginshio/user-name`}
+Copyright (c) ${1:`(substring (current-time-string) -4)`} ${2:`user-full-name`}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -181,6 +181,39 @@
     )
   )
 
+;;;;; yasnippt ;;;;;
+;;;###autoload
+(defun ginshio/get-file-name ()
+  (file-name-nondirectory (buffer-file-name)))
+;;;###autoload
+(defun ginshio/get-file-in-project ()
+  (substring (buffer-file-name)
+             (length (projectile-project-root))))
+;;;###autoload
+(defun ginshio/get-header-define-guard ()
+  (replace-regexp-in-string
+   "[^a-z0-9A-Z_]" "_"
+   (replace-regexp-in-string "C\\+\\+" "CXX"
+                             (upcase (concat (let ((tmp_root (projectile-project-name)))
+                                               (if (equal "-" tmp_root)
+                                                   "" (concat tmp_root "_")))
+                                             (ginshio/get-file-in-project) "_")))))
+;;;###autoload
+(defun ginshio/get-c-cxx-include-header ()
+  (let (source source_exten header header_exten)
+    (setq source (ginshio/get-file-in-project)
+          source_exten (file-name-extension source))
+    (cond ((equal source_exten "cpp") (setq header_exten "hpp"))
+          ((equal source_exten "tcc") (setq header_exten "hh"))
+          ((equal source_exten "cc") (setq header_exten "hh"))
+          ((equal source_exten "cxx") (setq header_exten "hxx"))
+          (t (setq header_exten "h")))
+    (let ((s (replace-regexp-in-string (concat source_exten "$") header_exten source)))
+      (if (equal (projectile-project-name) "-") s
+        (let ((l (cdr (split-string s "/"))))
+          (if l (string-join (add-to-list 'l "include") "/") s))))
+    ))
+
 
 
 
@@ -453,6 +486,7 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
                            ("section" . "sec:")
                            ("subsection" . "subsec:")
                            ("subsubsection" . "subsubsec:")))
+   '(TeX-auto-local "auto")
    )
   (ginshio/leader
     :keymaps 'LaTeX-mode-map

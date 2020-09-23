@@ -5,7 +5,7 @@
 # --
 BSD 2-Clause License
 
-Copyright (c) ${1:`(substring (current-time-string) -4)`}, ${2:`ginshio/user-name`}
+Copyright (c) ${1:`(substring (current-time-string) -4)`}, ${2:`user-full-name`}
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

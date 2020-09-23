@@ -3,11 +3,13 @@
 # key: create
 # --
 #+TITLE: ${1:`(mapconcat #'capitalize (split-string (file-name-base (buffer-file-name)) "-") " ")`}
-#+AUTHOR: `ginshio/user-name`
-#+EMAIL: ginshio/user-email`
+#+AUTHOR: `user-full-name`
+#+EMAIL: `user-mail-address`
 #+DATE: ${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
 #+KEYWORDS: $3
 #+DESCRIPTION: $4
-#+OPTIONS: toc:2 tasks:nil
+#+OPTIONS: toc:2 tasks:nil H:8
+
+* 目录 :TOC:noexport:
 
 $0

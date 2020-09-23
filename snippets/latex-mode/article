@@ -3,7 +3,7 @@
 # key: article
 # --
 % ${1:`(ginshio/get-file-in-project)`}
-% Author: `ginshio/user-name` <`ginshio/user-email`>
+% Author: `user-full-name` <`user-mail-address`>
 % CreatedAt: ${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
 % Description: $3
 

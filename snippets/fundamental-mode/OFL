@@ -3,7 +3,7 @@
 # key: OFL1_1
 # expand-env: ((yas-indent-line nil))
 # --
-Copyright (c) ${1:`(substring (current-time-string) -4)`}, ${2:`ginshio/user-name`} ${3:`ginshio/user-email`}
+Copyright (c) ${1:`(substring (current-time-string) -4)`}, ${2:`user-full-name`} ${3:`user-mail-address`}
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 

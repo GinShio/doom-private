@@ -2,11 +2,11 @@
 # name: hugo
 # key: hugo
 # --
-#+HUGO_BASE_DIR: `ginshio/org-hugo-dir`
+#+HUGO_BASE_DIR: `(concat org-directory "hugo/")`
 #+HUGO_SECTION: ${1:posts}
 #+TITLE: ${2:`(mapconcat #'capitalize (split-string (file-name-base (buffer-file-name)) "-") " ")`}
-#+AUTHOR: `ginshio/user-name`
-#+EMAIL: `ginshio/user-email`
+#+AUTHOR: `user-full-name`
+#+EMAIL: `user-mail-address`
 #+DATE: ${3:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
 #+OPTIONS: toc:nil author:nil
 #+HUGO_AUTO_SET_LASTMOD: t
