@@ -2,7 +2,7 @@
 # name: tikz
 # key: tikz
 # --
-\documentclass[border=10pt,margin=5pt,tikz,dvisvgm,rgb]{standalone}
+\documentclass[border=10pt,margin=5pt,tikz,dvisvgm,rgb,utf8]{standalone}
 \usepackage{ctex,xeCJK}  % 中文环境
 \setCJKmainfont[BoldFont=Source Han Sans SC]{Source Han Serif SC}
 \usepackage{calc,fontawesome,forest,smartdiagram,xcolor}
