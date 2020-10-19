@@ -10,7 +10,7 @@
 #+DATE: ${3:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
 #+OPTIONS: toc:nil author:nil
 #+HUGO_AUTO_SET_LASTMOD: t
-#+HUGO_DRAFT: false
+#+HUGO_DRAFT: true
 #+HUGO_CATEGORIES: $4
 #+HUGO_TAGS: $5
 #+EXPORT_FILE_NAME: ${6:`(concat (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) ".zh-cn.md")`}
