@@ -65,7 +65,11 @@
   (setq exec-path-from-shell-arguments '("-l"))
   (exec-path-from-shell-initialize)
   )
-(when IS-WINDOWS (setq default-process-coding-system '(utf-8-unix . utf-8-unix))) ;; coding system
+(when IS-WINDOWS
+  (setq-default buffer-file-coding-system 'utf-8-unix)
+  (setq-default default-buffer-file-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
+  (prefer-coding-system 'utf-8-unix)) ;; coding system
 (global-unset-key (kbd "C-z"))
 (use-package! hungry-delete
   :config
