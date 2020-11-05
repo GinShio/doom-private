@@ -10,8 +10,8 @@
       user-mail-address "ginshio78@gmail.com"
       user-gpg-key "71748C49449BB823"
       user-hugo-domain "https://blog.ginshio.org"
-      user-hugo-ssh "ginshio_ssh"
       org-export-html-highlight-style "atom-one-dark"
+      wakatime-api-key "cb5cccd0-e5a0-4922-abfd-748a42a96cae"
       )
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -111,6 +111,7 @@
     :keymaps 'global-map
     "y" '(ivy-yasnippet :which-key "yasnippet"))
   )
+(global-wakatime-mode)  ;; wakatime, dep wakatime
 (setq! delete-by-moving-to-trash t)
 (custom-set-variables '(delete-selection-mode t) ;; delete when you select region and modify
                       )
@@ -162,26 +163,17 @@
     (setq-local dired-dotfiles-show-p t)))
 )
 
-;;;;; google translate ;;;;;
-(use-package! go-translate
-  :init
-  (setq! go-translate-base-url "https://translate.google.cn"
-         go-translate-local-language "zh-CN"
-         go-translate-extra-directions '(("zh-CN" . "en")
-                                         ("zh-CN" . "de")
-                                         ("zh-CN" . "ja")
-                                         ("zh-CN" . "ru")
-                                         ("en" . "de")
-                                         ("en" . "ru")
-                                         ))
+;;;;; youdao dictionary ;;;;;
+(use-package! youdao-dictionary
   :config
   (ginshio/leader
     :keymaps 'global-map
     "t" '(nil :which-key "translate")
-    "tt" '(go-translate :which-key "translate")
-    "tp" '(go-translate-popup :which-key "translate-popup")
-    "tc" '(go-translate-popup-current :which-key "translate-current")
-    "tk" '(go-translate-kill-ring-save :which-key "translate-kill-ring")
+    "ti" '(youdao-dictionary-search-from-input :which-key "translate (input)")
+    "tt" '(youdao-dictionary-search-at-point-posframe :which-key "translate (point+)")
+    "tT" '(youdao-dictionary-search-at-point :which-key "translate (point)")
+    "tv" '(youdao-dictionary-play-voice-at-point :which-key "play voice (point)")
+    "tV" '(youdao-dictionary-play-voice-from-input :which-key "play voice (input)")
     )
   )
 
@@ -406,7 +398,6 @@ CONTENTS holds the contents of the item.  INFO is a plist holding contextual inf
   (setq! easy-hugo-root (concat org-directory "hugo/")
          easy-hugo-basedir (concat org-directory "hugo/")
          easy-hugo-url user-hugo-domain
-         easy-hugo-sshdomain user-hugo-ssh
          easy-hugo-previewtime "300"
          easy-hugo-default-ext ".org"
          easy-hugo-server-flags "-D"
