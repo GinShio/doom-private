@@ -423,6 +423,8 @@ CONTENTS holds the contents of the item.  INFO is a plist holding contextual inf
   (toc-org-mode t)
   (add-hook! 'org-mode-hook #'toc-org-mode)
   (define-key! org-mode-map "C-c C-i" #'toc-org-insert-toc)
+  ;; org src block
+  (define-key! org-mode-map "C-c c I" #'org-edit-src-code)
   ;; keybinding
   (ginshio/leader
     :keymaps 'org-mode-map
