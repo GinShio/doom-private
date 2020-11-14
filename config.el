@@ -8,7 +8,7 @@
 ;; clients, file templates and snippets.
 (setq user-full-name "GinShio"
       user-mail-address "ginshio78@gmail.com"
-      user-gpg-key "71748C49449BB823"
+      user-gpg-key "52558B082D1A7C5FE62F7778F152EB9432ABA0F8"
       user-hugo-domain "https://blog.ginshio.org"
       org-export-html-highlight-style "atom-one-dark"
       wakatime-api-key "cb5cccd0-e5a0-4922-abfd-748a42a96cae"
