@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "GinShio"
-      user-mail-address "ginshio78@gmail.com"
+      user-mail-address "iris@ginshio.org"
       user-gpg-key "52558B082D1A7C5FE62F7778F152EB9432ABA0F8"
       user-hugo-domain "https://blog.ginshio.org"
       org-export-html-highlight-style "atom-one-dark"
