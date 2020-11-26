@@ -194,6 +194,23 @@
 ;;     "tT" '(go-translate :which-key "translate (point)")
 ;;     )
 ;;   ) ;; google translate
+(use-package! shengci
+  :config
+  (defun shengci-input-word-and-save ()
+    (interactive)
+    (let ((word (youdao-dictionary--region-or-word)))
+      (shengci-capture-word-and-save (read-string (format "Word (%s): " word) nil 'history word))
+      ))
+  (ginshio/leader
+    :keymaps 'global-map
+    "ta" '(shengci-input-word-and-save :which-key "save word (input)")
+    "tA" '(shengci-capture-word-and-save :which-key "save word (point)")
+    "tl" '(shengci-show-recorded-word :which-key "list recorded word")
+    "tL" '(shengci-show-memorized-word :which-key "list memorized word")
+    "tg" '(shengci-practice-guess-recorded-word :which-key "guess recorded word")
+    "tG" '(shengci-practice-guess-memorized-word :which-key "guess memorized word")
+    )
+  )
 
 ;;;;; yasnippt ;;;;;
 ;;;###autoload
