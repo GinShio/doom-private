@@ -53,6 +53,7 @@
 (package! exec-path-from-shell :recipe (:host github :repo "purcell/exec-path-from-shell"))
 (package! hungry-delete :recipe (:host github :repo "nflath/hungry-delete"))
 (package! youdao-dictionary :recipe (:host github :repo "xuchunyang/youdao-dictionary.el"))
+;; (package! go-translate :recipe (:host github :repo "lorniu/go-translate"))
 (package! ivy-yasnippet :recipe (:host github :repo "mkcms/ivy-yasnippet"))
 (package! iedit :recipe (:host github :repo "victorhge/iedit"))
 (package! wakatime-mode :recipe (:host github :repo "wakatime/wakatime-mode"))

@@ -59,18 +59,17 @@
 ;; they are implemented.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; default ;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package exec-path-from-shell
+(use-package! exec-path-from-shell
   :if (memq window-system '(ns mac x))
   :config
   (setq exec-path-from-shell-arguments '("-l"))
   (exec-path-from-shell-initialize)
-  )
+  ) ;; shell env
 (when IS-WINDOWS
   (setq-default buffer-file-coding-system 'utf-8-unix)
   (setq-default default-buffer-file-coding-system 'utf-8-unix)
   (set-default-coding-systems 'utf-8-unix)
-  (prefer-coding-system 'utf-8-unix)) ;; coding system
-(global-unset-key (kbd "C-z"))
+  (prefer-coding-system 'utf-8-unix)) ;; WindowsNT coding system
 (use-package! hungry-delete
   :config
   (setq-default hungry-delete-chars-to-skip " \t\v")
@@ -112,10 +111,14 @@
     "y" '(ivy-yasnippet :which-key "yasnippet"))
   )
 (global-wakatime-mode)  ;; wakatime, dep wakatime
-(setq! delete-by-moving-to-trash t)
 (custom-set-variables '(delete-selection-mode t) ;; delete when you select region and modify
+                      '(delete-by-moving-to-trash t) ;; delete && move to transh
+                      '(inhibit-compacting-font-caches t) ;; don’t compact font caches during GC.
+                      '(gc-cons-percentage 1)
                       )
-(map! (:leader (:desc "Load a saved workspace" :g "wR" #'+workspace/load))) ;; workspace
+(run-with-idle-timer 16 t (lambda () (garbage-collect)))
+(global-unset-key (kbd "C-z"))
+(map! (:leader (:desc "Load a saved workspace" :g "wR" #'+workspace/load))) ;; workspace load keybind
 (define-key! global-map "C-s" #'counsel-grep-or-swiper)
 (define-key! global-map "M-s o" #'occur)
 (define-key! global-map "M-s e" #'iedit-mode)
@@ -163,7 +166,8 @@
     (setq-local dired-dotfiles-show-p t)))
 )
 
-;;;;; youdao dictionary ;;;;;
+
+;;;;; translate ;;;;;
 (use-package! youdao-dictionary
   :config
   (ginshio/leader
@@ -175,7 +179,21 @@
     "tv" '(youdao-dictionary-play-voice-at-point :which-key "play voice (point)")
     "tV" '(youdao-dictionary-play-voice-from-input :which-key "play voice (input)")
     )
-  )
+  ) ;; youdao translate
+;; (use-package! go-translate
+;;   :config
+;;   (setq! go-translate-base-url "https://translate.google.cn"
+;;          go-translate-local-language "zh-CN"
+;;          go-translate-extra-directions '(("zh-CN" . "en") ("zh-CN". "ja") ("zh-CN" . "de") ("zh-CN" . "ru"))
+;;          )
+;;   (ginshio/leader
+;;     :keymaps 'global-map
+;;     "t" '(nil :which-key "translate")
+;;     "ti" '(go-translate-popup :which-key "translate (input)")
+;;     "tt" '(go-translate-popup-current :which-key "translate (point+)")
+;;     "tT" '(go-translate :which-key "translate (point)")
+;;     )
+;;   ) ;; google translate
 
 ;;;;; yasnippt ;;;;;
 ;;;###autoload
@@ -477,14 +495,13 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
      (format "convert -density 1024 %s %s;\nrm -rf %s" svgname pngname svgname)
      nil nil)))
 (after! latex
-  (custom-set-variables
-   '(LaTeX-section-label '(("part" . "part:")
-                           ("chapter" . "chap:")
-                           ("section" . "sec:")
-                           ("subsection" . "subsec:")
-                           ("subsubsection" . "subsubsec:")))
-   '(TeX-auto-local "auto")
-   )
+  (custom-set-variables '(LaTeX-section-label '(("part" . "part:")
+                                                ("chapter" . "chap:")
+                                                ("section" . "sec:")
+                                                ("subsection" . "subsec:")
+                                                ("subsubsection" . "subsubsec:")))
+                        '(TeX-auto-local "auto")
+                        )
   (ginshio/leader
     :keymaps 'LaTeX-mode-map
     "e" '(nil :which-key "export")
@@ -526,11 +543,12 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
            (dolist (charset '(kana han symbol cjk-misc bopomofo))
              (set-fontset-font (frame-parameter nil 'font) charset
                                (font-spec :family "Source Han Sans HW SC" :size 18)))
-           ;; random banner image
+           ;; random banner image from `~/.doom.d/banners'
            (setq! fancy-splash-image
                   (let ((banners (directory-files (concat (getenv "HOME") "/" ".doom.d" "/" "banners")
                                                   'full (rx ".png" eos))))
                     (elt banners (random (length banners)))))
+           ;; random banner image from bing.com, NOTE: https://emacs-china.org/t/topic/264/33
            )))
 (defun ginshio|init--farme(farme)
   (with-selected-frame farme
