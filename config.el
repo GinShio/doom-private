@@ -154,17 +154,22 @@
   (define-key! dired-mode-map "n" #'dired-next-marked-file)
   (define-key! dired-mode-map "p" #'dired-prev-marked-file)
   (define-key! dired-mode-map "=" #'ginshio/dired-ediff-files)
+  (define-key! dired-mode-map "<mouse-2>" #'dired-mouse-find-file)
   ;; show/hide dotfiles in current dired <https://www.emacswiki.org/emacs/DiredOmitMode>
-(define-advice dired-do-print (:override (&optional _))
-  "show/hide dotfiles in current dired"
-  (interactive)
-  (if (or (not (boundp 'dired-dotfiles-show-p)) dired-dotfiles-show-p)
-      (progn (setq-local dired-dotfiles-show-p nil)
-             (dired-mark-files-regexp "^\\.")
-             (dired-do-kill-lines))
-    (revert-buffer)
-    (setq-local dired-dotfiles-show-p t)))
-)
+  (define-advice dired-do-print (:override (&optional _))
+    "show/hide dotfiles in current dired"
+    (interactive)
+    (if (or (not (boundp 'dired-dotfiles-show-p)) dired-dotfiles-show-p)
+        (progn (setq-local dired-dotfiles-show-p nil)
+               (dired-mark-files-regexp "^\\.")
+               (dired-do-kill-lines))
+      (revert-buffer)
+      (setq-local dired-dotfiles-show-p t)))
+  (define-advice dired-up-directory (:override (&optional _))
+    "goto up directory in this buffer"
+    (interactive)
+    (find-alternate-file ".."))
+  )
 
 
 ;;;;; translate ;;;;;
@@ -346,19 +351,19 @@ CONTENTS holds the contents of the item.  INFO is a plist holding contextual inf
   ;; \LaTeX
   (setq! org-latex-compiler "xelatex")
   (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((sql . t)
-         (shell . t)
-         (perl . t)
-         (ruby . t)
-         (dot . t)
-         (js . t)
-         (latex .t)
-         (python . t)
-         (emacs-lisp . t)
-         (C . t)
-         (plantuml . t)
-         (ditaa . t)))
+   'org-babel-load-languages
+   '((sql . t)
+     (shell . t)
+     (perl . t)
+     (ruby . t)
+     (dot . t)
+     (js . t)
+     (latex .t)
+     (python . t)
+     (emacs-lisp . t)
+     (C . t)
+     (plantuml . t)
+     (ditaa . t)))
   ;; HTML
   (setq org-html-html5-fancy t
         org-html-head-include-default-style nil
