@@ -12,6 +12,7 @@
       user-hugo-domain "https://blog.ginshio.org"
       org-export-html-highlight-style "atom-one-dark"
       wakatime-api-key "cb5cccd0-e5a0-4922-abfd-748a42a96cae"
+      doom-config-dir (concat (getenv "HOME") "/" ".doom.d")
       )
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -125,6 +126,10 @@
 (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
 (add-hook 'doc-view-mode-hook 'auto-revert-mode) ;; auto revert file, if it has modified
 (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
+(setq! auto-mode-alist
+       (append '(("\\.tcc\\'" . c++-mode)
+		 )
+               auto-mode-alist))
 
 ;;;;; dired ;;;;;
 ;; mark files and ediff in dired mode <https://oremacs.com/2017/03/18/dired-ediff/>
@@ -199,23 +204,6 @@
 ;;     "tT" '(go-translate :which-key "translate (point)")
 ;;     )
 ;;   ) ;; google translate
-(use-package! shengci
-  :config
-  (defun shengci-input-word-and-save ()
-    (interactive)
-    (let ((word (youdao-dictionary--region-or-word)))
-      (shengci-capture-word-and-save (read-string (format "Word (%s): " word) nil 'history word))
-      ))
-  (ginshio/leader
-    :keymaps 'global-map
-    "ta" '(shengci-input-word-and-save :which-key "save word (input)")
-    "tA" '(shengci-capture-word-and-save :which-key "save word (point)")
-    "tl" '(shengci-show-recorded-word :which-key "list recorded word")
-    "tL" '(shengci-show-memorized-word :which-key "list memorized word")
-    "tg" '(shengci-practice-guess-recorded-word :which-key "guess recorded word")
-    "tG" '(shengci-practice-guess-memorized-word :which-key "guess memorized word")
-    )
-  )
 
 ;;;;; yasnippt ;;;;;
 ;;;###autoload
@@ -546,6 +534,38 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 ;;;;;;;;;;;;;;;;;;;;;;;;; programming ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TODO: parentheses <https://www.gtrun.org/post/init/#parentheses>
 ;;;;; CC ;;;;;
+(setq! ginshio-c-style-list '(gnu
+                              bsd
+                              linux
+                              google
+                              llvm
+                              ))
+(defcustom ginshio-c-style 'google
+  "GinShio C/C++ style"
+  :type '(choice
+          (const 'gnu)
+          (const 'bsd)
+          (const 'linux)
+          (const 'google)
+          (const 'llvm)
+          )
+  :group 'cc-mode)
+(defun ginshio-hook-gnu-c-style ()
+  )
+(defun ginshio-hook-bsd-c-style ()
+  (setq! tab-width 4)
+  )
+(defun ginshio-hook-google-c-style ()
+  (setq-default tab-width 2
+                fill-column 80
+                indent-tabs-mode nil)
+  (add-hook! 'c-mode-common-hook #'google-set-c-style)
+  (add-hook! 'c-mode-common-hook #'google-make-newline-indent)
+  )
+(use-package! google-c-style
+  :config
+  (ginshio-hook-google-c-style)
+  )
 
 
 
@@ -567,7 +587,7 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
                                (font-spec :family "Source Han Sans HW SC" :size 18)))
            ;; random banner image from `~/.doom.d/banners'
            (setq! fancy-splash-image
-                  (let ((banners (directory-files (concat (getenv "HOME") "/" ".doom.d" "/" "banners")
+                  (let ((banners (directory-files (concat doom-config-dir "/" "banners")
                                                   'full (rx ".png" eos))))
                     (elt banners (random (length banners)))))
            ;; random banner image from bing.com, NOTE: https://emacs-china.org/t/topic/264/33
