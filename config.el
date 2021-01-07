@@ -126,10 +126,7 @@
 (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
 (add-hook 'doc-view-mode-hook 'auto-revert-mode) ;; auto revert file, if it has modified
 (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
-(setq! auto-mode-alist
-       (append '(("\\.tcc\\'" . c++-mode)
-		 )
-               auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.tcc\\'" . c++-mode))
 
 ;;;;; dired ;;;;;
 ;; mark files and ediff in dired mode <https://oremacs.com/2017/03/18/dired-ediff/>
@@ -217,26 +214,11 @@
 (defun ginshio/get-header-define-guard ()
   (replace-regexp-in-string
    "[^a-z0-9A-Z_]" "_"
-   (replace-regexp-in-string "C\\+\\+" "CXX"
-                             (upcase (concat (let ((tmp_root (projectile-project-name)))
-                                               (if (equal "-" tmp_root)
-                                                   "" (concat tmp_root "_")))
-                                             (ginshio/get-file-in-project) "_")))))
-;;;###autoload
-(defun ginshio/get-c-cxx-include-header ()
-  (let (source source_exten header header_exten)
-    (setq source (ginshio/get-file-in-project)
-          source_exten (file-name-extension source))
-    (cond ((equal source_exten "cpp") (setq header_exten "hpp"))
-          ((equal source_exten "tcc") (setq header_exten "hh"))
-          ((equal source_exten "cc") (setq header_exten "hh"))
-          ((equal source_exten "cxx") (setq header_exten "hxx"))
-          (t (setq header_exten "h")))
-    (let ((s (replace-regexp-in-string (concat source_exten "$") header_exten source)))
-      (if (equal (projectile-project-name) "-") s
-        (let ((l (cdr (split-string s "/"))))
-          (if l (string-join (add-to-list 'l "include") "/") s))))
-    ))
+   (replace-regexp-in-string
+    "C\\+\\+" "CXX"
+    (upcase (concat (if (projectile-project-p) (concat (projectile-project-name) "_") "")
+                    (ginshio/get-file-in-project) "_"))
+    )))
 
 
 
@@ -534,38 +516,17 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 ;;;;;;;;;;;;;;;;;;;;;;;;; programming ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TODO: parentheses <https://www.gtrun.org/post/init/#parentheses>
 ;;;;; CC ;;;;;
-(setq! ginshio-c-style-list '(gnu
-                              bsd
-                              linux
-                              google
-                              llvm
-                              ))
-(defcustom ginshio-c-style 'google
-  "GinShio C/C++ style"
-  :type '(choice
-          (const 'gnu)
-          (const 'bsd)
-          (const 'linux)
-          (const 'google)
-          (const 'llvm)
-          )
-  :group 'cc-mode)
-(defun ginshio-hook-gnu-c-style ()
-  )
-(defun ginshio-hook-bsd-c-style ()
-  (setq! tab-width 4)
-  )
-(defun ginshio-hook-google-c-style ()
+(use-package! google-c-style
+  :config
   (setq-default tab-width 2
                 fill-column 80
                 indent-tabs-mode nil)
   (add-hook! 'c-mode-common-hook #'google-set-c-style)
   (add-hook! 'c-mode-common-hook #'google-make-newline-indent)
   )
-(use-package! google-c-style
-  :config
-  (ginshio-hook-google-c-style)
-  )
+
+;;;;; Thrift ;;;;;
+(use-package! thrift)
 
 
 
@@ -575,8 +536,8 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 ;; TODO: golden-ratio
 (defun ginshio/init--farme()
   (when (display-graphic-p)
-    (progn (menu-bar-mode t)
-           (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+    (progn (menu-bar-mode -1)
+           (add-to-list 'default-frame-alist '(fullscreen . maximized))
            ;; cursor
            (setq-default cursor-type 'box)
            (blink-cursor-mode -1)

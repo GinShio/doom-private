@@ -65,6 +65,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;; programming ;;;;;;;;;;;;;;;;;;;;;;;;;
 (package! google-c-style
   :recipe (:host github :repo "google/styleguide" :files ("google-c-style.el")))
+(package! thrift
+  :recipe (:host github :repo "facebook/fbthrift" :files ("thrift/contrib/thrift.el")))
 
 
 

@@ -17,6 +17,4 @@
  * @details $5
  */
 
-#include "${6:`(ginshio/get-c-cxx-include-header)`}"
-
 $0

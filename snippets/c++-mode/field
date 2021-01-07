@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: field
+# key: field
+# expand-env: ((yas-indent-line nil) (yas-after-exit-snippet-hook #'whitespace-cleanup))
+# --
+ public:
+  void set_${1:name}(const decltype($1)& _) {
+    this->$1 = _;
+  }
+  decltype($1) get_$1() {
+    return this->$1;
+  }
+  constexpr decltype($1) get_$1() const {
+    return this->$1;
+  }
