@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: backup
+# key: backup
+# expand-env: ((yas-indent-line nil))
+# --
+######################### Backup #########################
+# repo: github/gitignore; pin: 218a941be9; file: Global/Backup.gitignore
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp

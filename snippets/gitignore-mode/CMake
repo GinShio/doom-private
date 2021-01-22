@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: cmake
+# key: cmake
+# expand-env: ((yas-indent-line nil))
+# --
+######################### CMake #########################
+# repo: github/gitignore; pin: 218a941be9; file: CMake.gitignore
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps

@@ -1,0 +1,30 @@
+# -*- mode: snippet -*-
+# name: haskell
+# key: haskell
+# expand-env: ((yas-indent-line nil))
+# --
+######################### Haskell #########################
+# repo: github/gitignore; pin: 218a941be9; file: Haskell.gitignore
+dist
+dist-*
+cabal-dev
+*.o
+*.hi
+*.hie
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+.stack-work/
+cabal.project.local
+cabal.project.local~
+.HTF/
+.ghc.environment.*

@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: cuda
+# key: cuda
+# expand-env: ((yas-indent-line nil))
+# --
+######################### CUDA #########################
+# repo: github/gitignore; pin: 218a941be9; file: CUDA.gitignore
+*.i
+*.ii
+*.gpu
+*.ptx
+*.cubin
+*.fatbin

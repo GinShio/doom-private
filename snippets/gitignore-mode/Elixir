@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: elixir
+# key: elixir
+# expand-env: ((yas-indent-line nil))
+# --
+######################### Elixir #########################
+# repo: github/gitignore; pin: 218a941be9; file: Elixir.gitignore
+/_build
+/cover
+/deps
+/doc
+/.fetch
+erl_crash.dump
+*.ez
+*.beam
+/config/*.secret.exs
+.elixir_ls/

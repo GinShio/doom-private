@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: go
+# key: go
+# expand-env: ((yas-indent-line nil))
+# --
+######################### Golang #########################
+# repo: github/gitignore; pin: 218a941be9; file: Go.gitignore
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
