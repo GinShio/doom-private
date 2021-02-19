@@ -528,6 +528,10 @@ latexmk -C; rm -rf *.xdv _minted-*/ .auctex-auto/ *.listing *.synctex.gz"
 ;;;;; Thrift ;;;;;
 (use-package! thrift)
 
+;;;;; lsp-mode ;;;;;
+(after! lsp-mode
+  (add-to-list 'exec-path (concat (getenv "HOME") "/" ".local/share/elixir-ls")))
+
 
 
 

@@ -3,16 +3,17 @@
 # key: header
 # expand-env: ((yas-indent-line nil) (yas-after-exit-snippet-hook #'whitespace-cleanup))
 # --
-/*
- * ${1:`(ginshio/get-file-in-project)`}
+/**
+ * @file: ${1:`(ginshio/get-file-in-project)`}
  *
- * author:  `user-full-name` <`user-mail-address`>
+ * @author:  `user-full-name` <`user-mail-address`>
  *
- * date:    ${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
+ * @date:    ${2:`(format-time-string "%Y-%m-%d %H:%M:%S" (current-time))`}
  *
- * details: $3
+ * @details: $3
  */
 
+#pragma once
 #ifndef ${4:`(ginshio/get-header-define-guard)`}
 #define $4 1
 
