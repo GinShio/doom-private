@@ -5,6 +5,7 @@
 # --
 ######################### Qt #########################
 # repo: github/gitignore; pin: 218a941be9; file: Qt.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # C++ objects and libs
 *.slo
 *.lo

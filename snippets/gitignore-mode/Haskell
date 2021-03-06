@@ -5,6 +5,7 @@
 # --
 ######################### Haskell #########################
 # repo: github/gitignore; pin: 218a941be9; file: Haskell.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 dist
 dist-*
 cabal-dev

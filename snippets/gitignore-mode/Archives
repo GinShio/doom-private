@@ -5,6 +5,7 @@
 # --
 ######################### Archives #########################
 # repo: github/gitignore; pin: 218a941be9; file: Global/Archives.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # It's better to unpack these files and commit the raw source because
 # git has its own built in compression methods.
 *.7z

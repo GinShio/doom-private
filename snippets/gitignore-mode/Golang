@@ -5,6 +5,7 @@
 # --
 ######################### Golang #########################
 # repo: github/gitignore; pin: 218a941be9; file: Go.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # Binaries for programs and plugins
 *.exe
 *.exe~

@@ -5,6 +5,7 @@
 # --
 ######################### Vim #########################
 # repo: github/gitignore; pin: 218a941be9; file: Global/Vim.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # Swap
 [._]*.s[a-v][a-z]
 !*.svg  # comment out if you don't need vector files

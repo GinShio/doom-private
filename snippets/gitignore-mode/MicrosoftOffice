@@ -5,6 +5,7 @@
 # --
 ######################### MicrosoftOffice #########################
 # repo: github/gitignore; pin: 218a941be9; file: Global/MicrosoftOffice.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 *.tmp
 
 # Word temporary

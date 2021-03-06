@@ -5,6 +5,7 @@
 # --
 ######################### macOS #########################
 # repo: github/gitignore; pin: 218a941be9; file: Global/macOS.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # General
 .DS_Store
 .AppleDouble

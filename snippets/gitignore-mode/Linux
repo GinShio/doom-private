@@ -5,6 +5,7 @@
 # --
 ######################### Linux #########################
 # repo: github/gitignore; pin: 218a941be9; file: Global/Linux.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file

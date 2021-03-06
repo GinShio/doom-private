@@ -5,6 +5,7 @@
 # --
 ######################### Android #########################
 # repo: github/gitignore; pin: 218a941be9; file: Android.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # Built application files
 *.apk
 *.aar

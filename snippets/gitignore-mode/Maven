@@ -5,6 +5,7 @@
 # --
 ######################### Maven #########################
 # repo: github/gitignore; pin: 218a941be9; file: Maven.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 target/
 pom.xml.tag
 pom.xml.releaseBackup

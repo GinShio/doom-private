@@ -5,6 +5,7 @@
 # --
 ######################### TeX #########################
 # repo: github/gitignore; pin: 218a941be9; file: TeX.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

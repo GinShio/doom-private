@@ -5,6 +5,7 @@
 # --
 ######################### Python #########################
 # repo: github/gitignore; pin: 218a941be9; file: Python.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

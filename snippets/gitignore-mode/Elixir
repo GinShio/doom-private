@@ -5,6 +5,7 @@
 # --
 ######################### Elixir #########################
 # repo: github/gitignore; pin: 218a941be9; file: Elixir.gitignore
+# LICENSE: Creative Commons Zero v1.0 Universal
 /_build
 /cover
 /deps
