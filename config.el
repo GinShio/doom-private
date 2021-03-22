@@ -249,13 +249,8 @@
 ;; org-agenda files
 (let ((org-agenda (concat org-directory "agenda/")))
   (setq! org-agenda-file-inbox (expand-file-name "inboxes.org" org-agenda)
-         org-agenda-file-journal-crypt (expand-file-name "journals_crypt.org" org-agenda)
-         org-agenda-file-journal-normal (expand-file-name "journals_normal.org" org-agenda)
-         org-agenda-file-note-book (expand-file-name "notes_book.org" org-agenda)
-         org-agenda-file-note-computer (expand-file-name "notes_computer.org" org-agenda)
-         org-agenda-file-note-game (expand-file-name "notes_game.org" org-agenda)
-         org-agenda-file-note-emacs (expand-file-name "notes_emacs.org" org-agenda)
-         org-agenda-file-note-life (expand-file-name "notes_life.org" org-agenda)
+         org-agenda-file-journal (expand-file-name "journals.org" org-agenda)
+         org-agenda-file-note (expand-file-name "notes.org" org-agenda)
          org-agenda-file-snippet (expand-file-name "snippets.org" org-agenda)
          org-agenda-file-task (expand-file-name "tasks.org" org-agenda))
   (setq! org-agenda-files `(,org-agenda-file-task))
@@ -264,35 +259,36 @@
   ;; http://www.howardism.org/Technical/Emacs/journaling-org.html
   ;; https://www.zmonster.me/2018/02/28/org-mode-capture.html
   (setq org-capture-templates
-        `(("i" "Inbox" entry (file ,org-agenda-file-inbox)
+        `(("b" "Book" entry (file+weektree ,org-agenda-file-journal)
+           "* %^{heading} :book:%^g\n%?" :empty-lines 1)
+          ("i" "Inbox" entry (file ,org-agenda-file-inbox)
            "* %^{heading} %^g\n%?" :empty-lines 1)
-          ("j" "Journal")
-          ("jc" "Crypt" entry (file+datetree ,org-agenda-file-journal-crypt)
-           "* %<%H:%M> - %^{heading} :crypt:%^g\n%?" :empty-lines 1)
-          ("jn" "Normal" entry (file+datetree ,org-agenda-file-journal-normal)
-           "* %<%H:%M> - %^{heading} %^g\n%?" :empty-lines 1)
-          ("n" "Note")
-          ("nb" "Book" entry (file+weektree ,org-agenda-file-note-book)
-           "* %^{heading} %^g\n%?\n" :empty-lines 1)
-          ("nc" "Computer" entry (file ,org-agenda-file-note-computer)
-           "* %^{heading} %^g\n%?\n" :empty-lines 1)
-          ("ne" "Emacs" entry (file ,org-agenda-file-note-emacs)
-           "* %^{heading} %^g\n%?\n" :empty-lines 1)
-          ("ng" "Game" entry (file ,org-agenda-file-note-game)
-           "* %^{heading} %^g\n%?\n" :empty-lines 1)
-          ("nl" "Life" entry (file+datetree ,org-agenda-file-note-life)
-           "* %^{heading} %^g\n%?\n" :empty-lines 1)
+          ("j" "Journal" entry (file+datetree ,org-agenda-file-journal)
+           "* %[%H:%M] - %^{heading} :journal:%^g\n%?" :empty-lines 1)
           ("s" "Code Snippet" entry (file ,org-agenda-file-snippet)
            "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC" :empty-lines 1)
-          ("t" "Tasks")
-          ("te" "Emergency" entry (file+headline ,org-agenda-file-task "Emergency")
-           "* TODO [#A] %^{heading}\n  SCHEDULED: %^T DEADLINE: %^T\n  :PROPERTIES:\n  :END:\n%?"
+          ("n" "Note")
+          ("nc" "Computer" entry (file+headline ,org-agenda-file-note "Computer")
+           "* %^{heading} %^g\n%?\n" :empty-lines 1)
+          ("ne" "Emacs" entry (file+headline ,org-agenda-file-note "Emacs")
+           "* %^{heading} %^g\n%?\n" :empty-lines 1)
+          ("ng" "Game" entry (file+headline ,org-agenda-file-note "Game")
+           "* %^{heading} %^g\n%?\n" :empty-lines 1)
+          ("g" "GTD")
+          ("gt" "Tasks" entry (file+headline ,org-agenda-file-task "Tasks")
+           "* TODO %^{heading}\n  SCHEDULED: %^T DEADLINE: %^T\n  :PROPERTIES:\n  :END:\n%?"
            :empty-lines 1)
-          ("ti" "Important" entry (file+headline ,org-agenda-file-task "Important")
-           "* TODO [#B] %^{heading}\n  SCHEDULED: %^T DEADLINE: %^T\n  :PROPERTIES:\n  :END:\n%?"
+          ("gi" "Interview" entry (file+headline ,org-agenda-file-task "Interview")
+           "* WAIT [#B] %^{heading} %^g\n  SCHEDULED: %^T DEADLINE: %^T\n  :PROPERTIES:\n    :URL: %^{link}\n    :END:\n%?"
            :empty-lines 1)
-          ("tt" "Task" entry (file+headline ,org-agenda-file-task "Task")
-           "* TODO [#C] %^{heading}\n  SCHEDULED: %T DEADLINE: %^T\n  :PROPERTIES:\n  :END:\n%?"
+          ("gd" "Daily" entry (file+haedline ,org-agenda-file-task "Daily")
+           "* TODO [#B] %^{heading}\n SCHEDULED: %^T\n    :PROPERTIES:\n    :CATEGORY: daily\n    :END:\n%?"
+           :empty-lines 1)
+          ("gw" "Weekly" entry (file+haedline ,org-agenda-file-task "Weekly")
+           "* TODO [#B] %^{heading}\n SCHEDULED: %^T\n    :PROPERTIES:\n    :END:\n%?"
+           :empty-lines 1)
+          ("gm" "Monthly" entry (file+haedline ,org-agenda-file-task "Monthly")
+           "* TODO [#C] %^{heading}\n SCHEDULED: %^T\n    :PROPERTIES:\n    :END:\n%?"
            :empty-lines 1)
           )))
 (use-package! ox-publish
