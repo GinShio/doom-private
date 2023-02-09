@@ -5,6 +5,25 @@ mkdir -p $BEAUTIFY_DIR/theme $BEAUTIFY_DIR/icon $BEAUTIFY_DIR/font $BEAUTIFY_DIR
 # Basic
 sudo zypper in -y kvantum-manager kvantum-manager-lang latte-dock
 
+# Fish
+curl -o fisher.fish -SL https://github.com/jorgebucaran/fisher/raw/main/functions/fisher.fish
+fish -C 'source fisher.fish' -c 'fisher install jorgebucaran/fisher IlanCosman/tide@v5 PatrickF1/fzf.fish'
+cat <<-EOF |fish -c 'tide configure'
+3
+1
+2
+1
+1
+2
+2
+1
+3
+1
+2
+2
+y
+EOF
+
 # Themes
 cd $BEAUTIFY_DIR/theme
 function install_theme {

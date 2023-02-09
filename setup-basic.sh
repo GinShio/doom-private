@@ -47,7 +47,9 @@ sudo zypper rr --all
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss TUNA:oss
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss TUNA:non-oss
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
+sudo zypper ar -fcg obs://Base:System openSUSE:System
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
+sudo zypper ar -fcg obs://utilities openSUSE:Utilities
 sudo zypper ar -fcg obs://home:Ximi1970:Mozilla:Add-ons openSUSE:systray-x
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -66,11 +68,11 @@ session  optional       pam_kwallet5.so auto_start
 EOF
 
 # Common environment
-sudo -E zypper in -y dash fish ripgrep wget curl emacs git git-lfs git-doc \
-    neofetch figlet fcitx5 fcitx5-rime aspell sqlite3 zstd zip unzip 7zip \
-    inkscape ImageMagick graphviz calibre kdeconnect-kde partitionmanager \
-    partitionmanager-lang proxychains-ng privoxy sshpass \
-    mpv amarok obs-studio telegram-desktop spotify-easyrpm osdlyrics osdlyrics-lang
+sudo -E zypper in -y dash fish ripgrep wget curl fd bat fzf emacs sshpass \
+    git git-lfs screen neofetch figlet fcitx5 fcitx5-rime aspell sqlite3 \
+    zstd zip unzip 7zip inkscape ImageMagick graphviz calibre kdeconnect-kde \
+    partitionmanager proxychains-ng privoxy git-doc partitionmanager-lang osdlyrics-lang \
+    mpv amarok obs-studio telegram-desktop spotify-easyrpm osdlyrics
 chsh -s /bin/dash
 
 # C++ environment
@@ -122,6 +124,7 @@ Host gitlab gitlab.com
     PreferredAuthentications publickey
     IdentityFile $HOME/.ssh/amd-pub-git
 
+# https://garbers.co.za/2014/03/03/connecting-to-bitbucket-on-https-port
 Host bitbucket bitbucket.org
     Hostname altssh.bitbucket.org
     User git
@@ -131,7 +134,7 @@ Host bitbucket bitbucket.org
 EOF
 #ssh-keygen -C "ED25519 Comment" -t ed25519     -f "$HOME/.ssh/amd-pub-git" -N ""
 #ssh-keygen -C "RSA Comment"     -t rsa -b 4096 -f "$HOME/.ssh/amd-pub-git" -N ""
-sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bkp
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bkp >/dev/null 2>&1
 cat <<-EOF |sudo tee /etc/ssh/sshd_config
 Port 22
 Protocol 2
