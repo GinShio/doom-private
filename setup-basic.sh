@@ -47,11 +47,11 @@ sudo zypper rr --all
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/oss TUNA:oss
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/repo/non-oss TUNA:non-oss
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
-sudo zypper ar -fcg obs://Base:System openSUSE:System
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
-sudo zypper ar -fcg obs://utilities openSUSE:Utilities
 sudo zypper ar -fcg obs://home:Ximi1970:Mozilla:Add-ons openSUSE:systray-x
+sudo zypper ar -fcg https://download.opensuse.org/repositories/Base:/System/openSUSE_Factory openSUSE:BaseSys
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
+sudo zypper ar -fcg https://download.opensuse.org/repositories/utilities/openSUSE_Factory openSUSE:Utilities
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 sudo zypper ar -fcg https://packages.microsoft.com/yumrepos/ms-teams teams
 #sudo zypper ar -fcg https://packages.microsoft.com/yumrepos/edge microsoft-edge
