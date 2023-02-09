@@ -49,7 +49,6 @@ sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/opensuse/tumbleweed/rep
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
 sudo zypper ar -fcg obs://home:Ximi1970:Mozilla:Add-ons openSUSE:systray-x
-sudo zypper ar -fcg https://download.opensuse.org/repositories/Base:/System/openSUSE_Factory openSUSE:BaseSys
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
 sudo zypper ar -fcg https://download.opensuse.org/repositories/utilities/openSUSE_Factory openSUSE:Utilities
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -69,7 +68,7 @@ EOF
 
 # Common environment
 sudo -E zypper in -y dash fish ripgrep wget curl fd bat fzf emacs sshpass \
-    git git-lfs screen neofetch figlet fcitx5 fcitx5-rime aspell sqlite3 \
+    git git-lfs neofetch figlet fcitx5 fcitx5-rime aspell sqlite3 \
     zstd zip unzip 7zip inkscape ImageMagick graphviz calibre kdeconnect-kde \
     partitionmanager proxychains-ng privoxy git-doc partitionmanager-lang osdlyrics-lang \
     mpv amarok obs-studio telegram-desktop spotify-easyrpm osdlyrics
