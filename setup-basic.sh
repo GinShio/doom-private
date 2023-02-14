@@ -42,7 +42,10 @@ sudo cp /etc/hosts /etc/hosts.bkp
 curl https://raw.githubusercontent.com/ineo6/hosts/master/hosts |sed '1,4d' - |sudo tee -a /etc/hosts
 
 # sudo
-echo "Defaults        lecture = always" |sudo tee -a /etc/sudoers.d/privacy # prompt: always / never / once
+cat <<-EOF |sudo tee -a /etc/sudoers.d/privacy
+Defaults        rootpw
+Defaults        lecture = always # always / never / once
+EOF
 
 # update source
 ### zypper
