@@ -41,6 +41,9 @@ sudo sysctl -p
 sudo cp /etc/hosts /etc/hosts.bkp
 curl https://raw.githubusercontent.com/ineo6/hosts/master/hosts |sed '1,4d' - |sudo tee -a /etc/hosts
 
+# sudo
+echo "Defaults        lecture = always" |sudo tee -a /etc/sudoers.d/privacy # prompt: always / never / once
+
 # update source
 ### zypper
 sudo zypper rr --all
