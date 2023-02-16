@@ -73,6 +73,7 @@ session  optional       pam_kwallet5.so auto_start
 EOF
 
 # Common environment
+sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
 sudo -E zypper in -y dash fish ripgrep wget curl fd bat fzf emacs sshpass \
     git git-lfs neofetch figlet fcitx5 fcitx5-rime aspell sqlite3 \
     zstd zip unzip 7zip inkscape ImageMagick graphviz calibre kdeconnect-kde \
