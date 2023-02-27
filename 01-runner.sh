@@ -6,7 +6,7 @@ export DISTRO_NAME=$(source /etc/os-release; echo "${NAME:-${DISTRIB_ID}} ${VERS
 TEMP=`getopt -o h --long help,swapsize:,hostname:,desktop:,tidever:,no-emacs -- "$@"`
 eval set -- "$TEMP"
 
-SETUP_EMACS=true
+export SETUP_EMACS=true
 
 while true; do
     case "$1" in
