@@ -1,28 +1,8 @@
+#!/usr/bin/env bash
+
 BEAUTIFY_DIR=$(mktemp -d)
 cd $BEAUTIFY_DIR
 mkdir -p $BEAUTIFY_DIR/theme $BEAUTIFY_DIR/icon $BEAUTIFY_DIR/font $BEAUTIFY_DIR/plugin $BEAUTIFY_DIR/sddm $BEAUTIFY_DIR/grub
-
-# Basic
-sudo zypper in -y kvantum-manager kvantum-manager-lang latte-dock
-
-# Fish
-curl -o fisher.fish -SL https://github.com/jorgebucaran/fisher/raw/main/functions/fisher.fish
-fish -C 'source fisher.fish' -c 'fisher install jorgebucaran/fisher IlanCosman/tide@v5 PatrickF1/fzf.fish'
-cat <<-EOF |fish -c 'tide configure'
-3
-1
-2
-1
-1
-2
-2
-1
-3
-1
-2
-2
-y
-EOF
 
 # Themes
 cd $BEAUTIFY_DIR/theme
@@ -135,13 +115,6 @@ cp -R $BEAUTIFY_DIR/icon/Bibata/Bibata-Modern-* $ICON_PREFIX
 
 # Fonts
 cd $BEAUTIFY_DIR/font
-### Basic Fonts
-sudo zypper in -y \
-    adobe-{sourceserif4,sourcesans3,sourcecodepro}-fonts \
-    adobe-sourcehanserif-{cn,hk,jp,kr,tw}-fonts \
-    adobe-sourcehansans-{cn,hk,jp,kr,tw}-fonts \
-    wqy-{bitmap,microhei,zenhei}-fonts \
-    fontawesome-fonts
 ### opensource Fonts
 curl -o $HOME/.local/share/fonts/SourceHanMono.ttc -sSL https://github.com/adobe-fonts/source-han-mono/releases/download/1.002/SourceHanMono.ttc
 curl -o JuliaMono.tar.gz -sSL https://github.com/cormullion/juliamono/releases/download/v0.047/JuliaMono.tar.gz
@@ -168,8 +141,6 @@ done
 
 # Plugins
 cd $BEAUTIFY_DIR/plugin
-sudo zypper in -y applet-window-appmenu applet-window-buttons libQt5WebSockets5 \
-    python3-docopt python3-numpy python3-PyAudio python3-cffi python3-websockets
 function install_plugin {
     local PLUGIN_NAME=$1
     local PLUGIN_PLATFORM=$2
