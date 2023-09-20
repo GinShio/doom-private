@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 BEAUTIFY_DIR=$(mktemp -d)
-cd $BEAUTIFY_DIR
-mkdir -p $BEAUTIFY_DIR/theme $BEAUTIFY_DIR/icon $BEAUTIFY_DIR/font $BEAUTIFY_DIR/plugin $BEAUTIFY_DIR/sddm $BEAUTIFY_DIR/grub
+mkdir -p $BEAUTIFY_DIR/{theme,icon,plugin,sddm,grup}
 
 # Themes
 cd $BEAUTIFY_DIR/theme
@@ -112,32 +111,6 @@ curl -o Bibata.tar.gz -SL https://github.com/ful1e5/Bibata_Cursor/releases/lates
 mkdir -p $BEAUTIFY_DIR/icon/Bibata
 tar -xzf Bibata.tar.gz -C $BEAUTIFY_DIR/icon/Bibata
 cp -R $BEAUTIFY_DIR/icon/Bibata/Bibata-Modern-* $ICON_PREFIX
-
-# Fonts
-cd $BEAUTIFY_DIR/font
-### opensource Fonts
-curl -o $HOME/.local/share/fonts/SourceHanMono.ttc -sSL https://github.com/adobe-fonts/source-han-mono/releases/download/1.002/SourceHanMono.ttc
-curl -o JuliaMono.tar.gz -sSL https://github.com/cormullion/juliamono/releases/download/v0.047/JuliaMono.tar.gz
-mkdir -p $HOME/.local/share/fonts/Julia-Mono && tar -xzf JuliaMono.tar.gz -C $HOME/.local/share/fonts/Julia-Mono
-curl -o Hasklig.zip -sSL https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Hasklig.zip
-unzip Hasklig -d $HOME/.local/share/fonts/Hasklig-Nerd
-curl -o SourceCodeVar.zip -sSL https://github.com/adobe-fonts/source-code-pro/releases/download/2.038R-ro%2F1.058R-it%2F1.018R-VAR/VAR-source-code-var-1.018R.zip
-unzip SourceCodeVar -d $HOME/.local/share/fonts/Source-Code-Variable
-### Microsoft Fonts from github:fphoenix88888/ttf-mswin10-arch
-win10_fonts_langs=("japanese" "korean" "zh_cn" "zh_tw" "sea" "thai" "other")
-curl -o win10-fonts.tar.gz -sSL https://github.com/fphoenix88888/ttf-mswin10-arch/archive/master.tar.gz
-mkdir -p win10-fonts
-tar -xzf win10-fonts.tar.gz -C win10-fonts
-mkdir -p $HOME/.local/share/fonts/win10-english $HOME/.local/share/licenses/win10-fonts
-tar --zstd -xf win10-fonts/ttf-mswin10-arch-master/ttf-ms-win10-10.0.19043.1055-1-any.pkg.tar.zst -C win10-fonts
-mv win10-fonts/usr/share/fonts/TTF/* $HOME/.local/share/fonts/win10-english
-mv win10-fonts/usr/share/licenses/ttf-ms-win10/license.rtf $HOME/.local/share/licenses/win10-fonts/english-fonts-license.rtf
-for lang in ${win10_fonts_langs[@]}; do
-    mkdir -p $HOME/.local/share/fonts/win10-$lang
-    tar --zstd -xf win10-fonts/ttf-mswin10-arch-master/ttf-ms-win10-$lang-10.0.19043.1055-1-any.pkg.tar.zst -C win10-fonts
-    mv win10-fonts/usr/share/fonts/TTF/* $HOME/.local/share/fonts/win10-$lang
-    mv win10-fonts/usr/share/licenses/ttf-ms-win10-$lang/license.rtf $HOME/.local/share/licenses/win10-fonts/$lang-fonts-license.rtf
-done
 
 # Plugins
 cd $BEAUTIFY_DIR/plugin

@@ -54,7 +54,6 @@ EOF
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # KDE wallet
-
 sudo -E zypper in -y pam_kwallet
 cat <<-EOF |sudo tee -a /etc/pam.d/sddm
 auth     optional       pam_kwallet5.so
@@ -126,11 +125,11 @@ sudo systemctl enable --now sshd.service
 # [Install]
 # WantedBy=graphical.target
 # EOF
-cat <<-EOF |tee $HOME/.xsession
-\$(dbus-launch --sh-syntax)
-exec /usr/bin/startplasma-x11
-EOF
-sudo systemctl enable --now xrdp.service
+# cat <<-EOF |tee $HOME/.xsession
+# \$(dbus-launch --sh-syntax)
+# exec /usr/bin/startplasma-x11
+# EOF
+# sudo systemctl enable --now xrdp.service
 
 # Fish
 curl -o fisher.fish -SL https://github.com/jorgebucaran/fisher/raw/main/functions/fisher.fish
@@ -151,10 +150,36 @@ cat <<-EOF |fish -c 'tide configure'
 y
 EOF
 
+# Fonts
+cd $(mktemp -d)
+### opensource Fonts
+curl -o $HOME/.local/share/fonts/SourceHanMono.ttc -sSL https://github.com/adobe-fonts/source-han-mono/releases/download/1.002/SourceHanMono.ttc
+curl -o JuliaMono.tar.gz -sSL https://github.com/cormullion/juliamono/releases/download/v0.047/JuliaMono.tar.gz
+mkdir -p $HOME/.local/share/fonts/Julia-Mono && tar -xzf JuliaMono.tar.gz -C $HOME/.local/share/fonts/Julia-Mono
+curl -o Hasklig.zip -sSL https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Hasklig.zip
+unzip Hasklig -d $HOME/.local/share/fonts/Hasklig-Nerd
+curl -o SourceCodeVar.zip -sSL https://github.com/adobe-fonts/source-code-pro/releases/download/2.038R-ro%2F1.058R-it%2F1.018R-VAR/VAR-source-code-var-1.018R.zip
+unzip SourceCodeVar -d $HOME/.local/share/fonts/Source-Code-Variable
+### Microsoft Fonts from github:fphoenix88888/ttf-mswin10-arch
+win10_fonts_langs=("japanese" "korean" "zh_cn" "zh_tw" "sea" "thai" "other")
+curl -o win10-fonts.tar.gz -sSL https://github.com/fphoenix88888/ttf-mswin10-arch/archive/master.tar.gz
+mkdir -p win10-fonts
+tar -xzf win10-fonts.tar.gz -C win10-fonts
+mkdir -p $HOME/.local/share/fonts/win10-english $HOME/.local/share/licenses/win10-fonts
+tar --zstd -xf win10-fonts/ttf-mswin10-arch-master/ttf-ms-win10-10.0.19043.1055-1-any.pkg.tar.zst -C win10-fonts
+mv win10-fonts/usr/share/fonts/TTF/* $HOME/.local/share/fonts/win10-english
+mv win10-fonts/usr/share/licenses/ttf-ms-win10/license.rtf $HOME/.local/share/licenses/win10-fonts/english-fonts-license.rtf
+for lang in ${win10_fonts_langs[@]}; do
+    mkdir -p $HOME/.local/share/fonts/win10-$lang
+    tar --zstd -xf win10-fonts/ttf-mswin10-arch-master/ttf-ms-win10-$lang-10.0.19043.1055-1-any.pkg.tar.zst -C win10-fonts
+    mv win10-fonts/usr/share/fonts/TTF/* $HOME/.local/share/fonts/win10-$lang
+    mv win10-fonts/usr/share/licenses/ttf-ms-win10-$lang/license.rtf $HOME/.local/share/licenses/win10-fonts/$lang-fonts-license.rtf
+done
+
 # Others
 cd $(mktemp -d)
 ### Hugo
-curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.109.0/hugo_extended_0.109.0_Linux-64bit.tar.gz
+curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.115.4/hugo_extended_0.115.4_Linux-64bit.tar.gz
 tar -C $HOME/.local/bin -zxvf hugo.tar.gz hugo
 ### Perforce
 curl -o p4v.tgz -sSL https://cdist2.perforce.com/perforce/r18.2/bin.linux26x86_64/p4v.tgz

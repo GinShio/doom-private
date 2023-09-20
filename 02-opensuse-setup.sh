@@ -9,30 +9,26 @@ sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
 sudo zypper ar -fcg obs://home:Ximi1970:Mozilla:Add-ons openSUSE:systray-x
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
 sudo zypper ar -fcg https://download.opensuse.org/repositories/utilities/openSUSE_Factory openSUSE:Utilities
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-sudo zypper ar -fcg https://packages.microsoft.com/yumrepos/ms-teams teams
-#sudo zypper ar -fcg https://packages.microsoft.com/yumrepos/edge microsoft-edge
-sudo zypper ar -fcg https://packages.microsoft.com/yumrepos/vscode vscode
 sudo -E zypper ref && sudo zypper dup -y --from TUNA:packman --allow-vendor-change && sudo -E zypper dup -y
 
 # Common environment
-sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
-sudo -E zypper in -y dash fish ripgrep wget curl fd bat fzf emacs sshpass git git-lfs git-doc \
-    neofetch figlet aspell sqlite3 xrdp proxychains-ng privoxy zstd zip unzip 7zip \
-    inkscape ImageMagick graphviz calibre mpv obs-studio telegram-desktop spotify-easyrpm \
-    osdlyrics osdlyrics-lang
+sudo -E zypper in -y dash dash-sh fish ripgrep wget curl fd bat fzf sshpass xdg-utils neofetch \
+    figlet aspell sqlite3 proxychains-ng privoxy zstd zip unzip 7zip git git-lfs git-doc \
+    emacs inkscape ImageMagick graphviz mpv MozillaThunderbird systray-x telegram-desktop \
+    obs-studio amarok 'osdlyrics*' steam flatpak v2ray
 chsh -s /bin/dash
 
 # kDE environment
 if [ $SETUP_DESKTOP = "kde" ]; then
-    sudo -E zypper in -y pam_kwallet fcitx5 fcitx5-rime krdc kdeconnect-kde \
-        partitionmanager partitionmanager-lang amarok
+    sudo -E zypper in -y pam_kwallet fcitx5 fcitx5-rime \
+        krdc kdeconnect-kde 'partitionmanager*' amarok tlp tlp-rdw
 fi
 
 # C++ environment
+sudo -E zypper in -y -t pattern devel_C_C++ devel_basis
 sudo -E zypper in -y gcc gcc-c++ gcc-info gdb binutils-gold gcc7 gcc7-c++ \
     clang clang-tools lldb lld \
-    cmake extra-cmake-modules ninja ccache \
+    cmake extra-cmake-modules meson ninja ccache \
     'libboost_*-devel' poco-devel
 
 # Java environment
@@ -50,6 +46,7 @@ sudo -E zypper in -y nodejs-common yarn
 sudo -E zypper in -y erlang erlang-doc elixir elixir-doc
 
 # Working dependence
+sudo -E zypper in -y -t pattern devel_vulkan
 sudo -E zypper in -y glslang-devel Mesa-libGL-devel wayland-protocols-devel \
     shaderc vulkan-tools spirv-tools spirv-cross bison flex re2c
 sudo -E zypper in -y xorg-x11-server-sdk xorg-x11-devel libX11-devel libxcb-devel \
@@ -57,16 +54,16 @@ sudo -E zypper in -y xorg-x11-server-sdk xorg-x11-devel libX11-devel libxcb-deve
     libXfont-devel libXfont2-devel libXrandr-devel libxshmfence-devel libXxf86vm-devel \
     libdrm-devel libopenssl-devel wayland-devel waylandpp-devel libelf-devel ncurses5-devel \
     python3-ruamel.yaml python3-u-msgpack-python python3-pyelftools python3-condor python3-future
-sudo -E zypper in -y code MozillaThunderbird systray-x steam
+sudo -E zypper in -y MozillaThunderbird systray-x steam
 
 # TeX environment
-sudo -E zypper in -y 'texlive-*'
+sudo -E zypper in -y 'texlive-*' python3-Pygments
 
 # Emacs
 sudo -E zypper in -y libvterm-{tools,devel} libtool
 
 # Spotify
-spotify-easyrpm --quiet --set-channel stable --create-schedule
+#spotify-easyrpm --quiet --set-channel stable --create-schedule
 
 # Font
 sudo zypper in -y \
@@ -77,6 +74,6 @@ sudo zypper in -y \
     fontawesome-fonts
 
 # Beautify
-sudo zypper in -y kvantum-manager kvantum-manager-lang latte-dock \
+sudo zypper in -y 'kvantum-manager*' latte-dock \
     applet-window-appmenu applet-window-buttons libQt5WebSockets5 \
     python3-docopt python3-numpy python3-PyAudio python3-cffi python3-websockets

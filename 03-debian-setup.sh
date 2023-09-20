@@ -46,3 +46,11 @@ sudo -E apt install -y libx11-dev libxcb-dri3-dev libx11-xcb-dev libxcb-dri2-0-d
     libxcb-dri2-0-dev:i386 libxcb-present-dev:i386 libxshmfence-dev:i386 libxrandr-dev:i386
 sudo -E apt install -y libudev-dev python3-distutils libwayland-dev libxext-dev pkg-config python3-ruamel.yaml
 sudo -E apt install -y xserver-xorg-dev libxfixes-dev  libxdamage-dev  libxcb-glx0-dev libxxf86vm-dev
+
+# Font
+sudo zypper in -y \
+    adobe-{sourceserif4,sourcesans3,sourcecodepro}-fonts \
+    adobe-sourcehanserif-{cn,hk,jp,kr,tw}-fonts \
+    adobe-sourcehansans-{cn,hk,jp,kr,tw}-fonts \
+    wqy-{bitmap,microhei,zenhei}-fonts \
+    fontawesome-fonts
