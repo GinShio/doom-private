@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# user group
+sudo usermod -a -G libvirt,render,video $USER
+
 # Directories
 mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.temp}
 mkdir -p $HOME/.local/{bin,share,lib}
@@ -16,12 +19,12 @@ XDG_VIDEOS_DIR="$HOME/Videos"
 EOF
 
 # swap file
-sudo dd if=/dev/zero of=/swapfile bs=4MiB count=$SETUP_SWAPSIZE status=progress
+sudo dd if=/dev/zero of=/swapfile bs=4MiB count=$(( 256*SETUP_SWAPSIZE )) status=progress
 sudo chmod 0600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 cat <<-EOF |sudo tee -a /etc/fstab
-/swapfile                                  none       swap  defaults,pri=20  0  0
+/swapfile                                  none       swap  defaults,pri=10  0  0
 EOF
 # sudo sysctl -w vm.swappiness=16
 cat <<-EOF |sudo tee -a /etc/sysctl.conf
@@ -39,7 +42,7 @@ sudo sysctl -p
 
 # Hosts
 sudo cp /etc/hosts /etc/hosts.bkp
-curl https://raw.githubusercontent.com/ineo6/hosts/master/hosts |sed '1,4d' - |sudo tee -a /etc/hosts
+curl https://gitlab.com/ineo6/hosts/-/raw/master/next-hosts |sed '1,2d' - |sudo tee -a /etc/hosts
 if ! [ -z $SETUP_HOSTNAME ]; then
     sudo hostnamectl set-hostname $SETUP_HOSTNAME
 fi
@@ -51,13 +54,25 @@ Defaults        lecture = always # always / never / once
 EOF
 
 # flatpak
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+sudo flatpak remote-modify flathub --url=https://mirror.sjtu.edu.cn/flathub
 
 # KDE wallet
 sudo -E zypper in -y pam_kwallet
 cat <<-EOF |sudo tee -a /etc/pam.d/sddm
 auth     optional       pam_kwallet5.so
 session  optional       pam_kwallet5.so auto_start
+EOF
+
+# Containerization
+lxc remote add nju-images https://mirror.nju.edu.cn/lxc-images/ --protocol=simplestreams --public
+cat <<-EOF |sudo tee -a /etc/containers/registries.conf
+[[registry]]
+prefix = "docker.io"
+location = "docker.io"
+
+[[registry.mirror]]
+location = "docker.nju.edu.cn/"
 EOF
 
 # SSH
@@ -105,6 +120,32 @@ KbdInteractiveAuthentication no
 EOF
 sudo systemctl enable --now sshd.service
 
+# bluetooth
+sudo mkdir -p /etc/bluetooth
+sudo cp /etc/bluetooth/main.conf /etc/bluetooth/main.conf.bkp >/dev/null 2>&1
+cat <<-EOF |sudo tee /etc/bluetooth/main.conf
+[Policy]
+AutoEnable=true
+EOF
+
+# screen
+cat <<-EOF |tee $HOME/.screenrc
+escape ^Tt
+autodetach on
+defshell /bin/fish
+EOF
+
+# tmux
+cat <<-EOF |tee $HOME/.tmux.conf
+unbind C-b
+set -g prefix C-t
+set -g default-terminal 'screen-256color'
+set -g history-limit 65535
+set -g mouse on
+set-option -g status off
+set-option -g default-shell "/bin/fish"
+EOF
+
 # Remote Desktop (not work)
 # x11vnc -storepasswd $HOME/.vnc/passwd
 # cat <<-EOF |sudo tee /etc/systemd/system/x11vnc.service
@@ -132,8 +173,9 @@ sudo systemctl enable --now sshd.service
 # sudo systemctl enable --now xrdp.service
 
 # Fish
+cd $(mktemp -d)
 curl -o fisher.fish -SL https://github.com/jorgebucaran/fisher/raw/main/functions/fisher.fish
-fish -C 'source fisher.fish' -c "fisher install jorgebucaran/fisher IlanCosman/tide@$SETUP_TIDE_VER PatrickF1/fzf.fish"
+fish -C 'source fisher.fish' -c "fisher install jorgebucaran/fisher IlanCosman/tide PatrickF1/fzf.fish"
 cat <<-EOF |fish -c 'tide configure'
 3
 1
@@ -141,50 +183,31 @@ cat <<-EOF |fish -c 'tide configure'
 1
 1
 2
+4
+1
+1
+4
+2
 2
 1
-3
-1
-2
-2
 y
 EOF
 
-# Fonts
-cd $(mktemp -d)
-### opensource Fonts
-curl -o $HOME/.local/share/fonts/SourceHanMono.ttc -sSL https://github.com/adobe-fonts/source-han-mono/releases/download/1.002/SourceHanMono.ttc
-curl -o JuliaMono.tar.gz -sSL https://github.com/cormullion/juliamono/releases/download/v0.047/JuliaMono.tar.gz
-mkdir -p $HOME/.local/share/fonts/Julia-Mono && tar -xzf JuliaMono.tar.gz -C $HOME/.local/share/fonts/Julia-Mono
-curl -o Hasklig.zip -sSL https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/Hasklig.zip
-unzip Hasklig -d $HOME/.local/share/fonts/Hasklig-Nerd
-curl -o SourceCodeVar.zip -sSL https://github.com/adobe-fonts/source-code-pro/releases/download/2.038R-ro%2F1.058R-it%2F1.018R-VAR/VAR-source-code-var-1.018R.zip
-unzip SourceCodeVar -d $HOME/.local/share/fonts/Source-Code-Variable
-### Microsoft Fonts from github:fphoenix88888/ttf-mswin10-arch
-win10_fonts_langs=("japanese" "korean" "zh_cn" "zh_tw" "sea" "thai" "other")
-curl -o win10-fonts.tar.gz -sSL https://github.com/fphoenix88888/ttf-mswin10-arch/archive/master.tar.gz
-mkdir -p win10-fonts
-tar -xzf win10-fonts.tar.gz -C win10-fonts
-mkdir -p $HOME/.local/share/fonts/win10-english $HOME/.local/share/licenses/win10-fonts
-tar --zstd -xf win10-fonts/ttf-mswin10-arch-master/ttf-ms-win10-10.0.19043.1055-1-any.pkg.tar.zst -C win10-fonts
-mv win10-fonts/usr/share/fonts/TTF/* $HOME/.local/share/fonts/win10-english
-mv win10-fonts/usr/share/licenses/ttf-ms-win10/license.rtf $HOME/.local/share/licenses/win10-fonts/english-fonts-license.rtf
-for lang in ${win10_fonts_langs[@]}; do
-    mkdir -p $HOME/.local/share/fonts/win10-$lang
-    tar --zstd -xf win10-fonts/ttf-mswin10-arch-master/ttf-ms-win10-$lang-10.0.19043.1055-1-any.pkg.tar.zst -C win10-fonts
-    mv win10-fonts/usr/share/fonts/TTF/* $HOME/.local/share/fonts/win10-$lang
-    mv win10-fonts/usr/share/licenses/ttf-ms-win10-$lang/license.rtf $HOME/.local/share/licenses/win10-fonts/$lang-fonts-license.rtf
-done
-
 # Others
 cd $(mktemp -d)
+### Teams and VSCode
+sudo -E flatpak install flathub \
+    com.github.IsmaelMartinez.teams_for_linux \
+    com.visualstudio.code \
+    com.ulduzsoft.Birdtray
 ### Hugo
-curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.115.4/hugo_extended_0.115.4_Linux-64bit.tar.gz
+curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.125.4/hugo_0.125.4_linux-amd64.tar.gz
 tar -C $HOME/.local/bin -zxvf hugo.tar.gz hugo
 ### Perforce
-curl -o p4v.tgz -sSL https://cdist2.perforce.com/perforce/r18.2/bin.linux26x86_64/p4v.tgz
-tar -zxvf p4v.tgz -C $HOME/.local/share
-cat <<-EOF |tee $HOME/.local/share/applications/p4v.desktop
+if [[ ! -z $SETUP_WORKING ]]; then
+    curl -o p4v.tgz -sSL https://cdist2.perforce.com/perforce/r18.2/bin.linux26x86_64/p4v.tgz
+    tar -zxvf p4v.tgz -C $HOME/.local/share
+    cat <<-EOF |tee $HOME/.local/share/applications/p4v.desktop
 [Desktop Entry]
 Name=Perforce
 GenericName=Version Control GUI
@@ -197,21 +220,8 @@ Type=Application
 Categories=Development;RevisionControl;
 X-KDE-StartupNotify=false
 EOF
-ln -sf $HOME/.local/share/p4v-2018.2.1687764/bin/p4v $HOME/.local/bin
+    ln -sf $HOME/.local/share/p4v-2018.2.1687764/bin/p4v $HOME/.local/bin
+fi
 
 # Update desktop database
 update-desktop-database $HOME/.local/share/applications
-
-### Emacs
-if [ $SETUP_EMACS ]; then
-    cd $(mktemp -d)
-    git clone --depth 1 https://github.com/domtronn/all-the-icons.el.git
-    cd all-the-icons.el/fonts
-    mkdir -p $HOME/.local/share/fonts/all-the-icons && cp *.ttf $HOME/.local/share/fonts/all-the-icons
-    git clone --depth 1 github:doomemacs/doomemacs.git $HOME/.emacs.d
-    git clone gitlab:GinShio/doom-private.git $HOME/.doom.d
-    emacs --batch --eval "(progn (require 'org) (setq org-confirm-babel-evaluate nil) (org-babel-tangle-file \"$HOME/.doom.d/config.org\"))"
-    $HOME/.emacs.d/bin/doom install && $HOME/.emacs.d/bin/doom sync
-    curl -o twemoji-v2.tar -sSL "https://raw.githubusercontent.com/iqbalansari/emacs-emojify/9e36d0e8c2a9c373a39728f837a507adfbb7b931/twemoji-fixed-v2.tar"
-    mkdir -p $HOME/.emacs.d/.local/cache/emojis && tar -C $HOME/.emacs.d/.local/cache/emojis -xvf twemoji-v2.tar
-fi

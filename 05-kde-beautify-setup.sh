@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 BEAUTIFY_DIR=$(mktemp -d)
-mkdir -p $BEAUTIFY_DIR/{theme,icon,plugin,sddm,grup}
+cd $BEAUTIFY_DIR
+mkdir -p $BEAUTIFY_DIR/theme $BEAUTIFY_DIR/plugin $BEAUTIFY_DIR/sddm
 
 # Themes
 cd $BEAUTIFY_DIR/theme
@@ -23,7 +24,7 @@ function install_theme {
     for component in ${theme_components[@]}; do
         local source_dir=$THEME_TEMP_DIR/$THEME_REPO-$THEME_TAG/$THEME_SUBDIR/$component
         local target_dir=$THEME_PREFIX/$component
-        mkdir -p $target_dir
+        sudo mkdir -p $target_dir
         local subdir=themes
         case $component in
             "yakuake")
@@ -54,63 +55,14 @@ function install_theme {
                 [[ -e $source_dir ]] && sudo cp -R $source_dir/* $target_dir
                 ;;
         esac
+        sudo chown -R $USER:$USER $target_dir
     done
 }
 install_theme Arc PapirusDevelopmentTeam arc-kde master
 install_theme Dracula dracula gtk master kde
 install_theme Layan vinceliuice Layan-kde master
-install_theme SweetAmbarBule EliverLara Sweet Ambar-Blue kde
+#install_theme SweetAmbarBule EliverLara Sweet Ambar-Blue kde
 install_theme WhiteSur vinceliuice WhiteSur-kde master
-
-# Icons
-cd $BEAUTIFY_DIR/icon
-ICON_PREFIX=$HOME/.local/share/icons
-mkdir -p $ICON_PREFIX
-function install_icon {
-    local ICON_NAME=$1
-    local ICON_AUTHOR=$2
-    local ICON_REPO=$3
-    local ICON_TAG=$4
-    local ICON_INSTALL=$5
-    local ICON_INSTALL_ARGS=$(echo "$6" |tr ";" "\n")
-    local ICON_ALLDIR=$7
-    local ICON_PREFIXES=$(echo "$8" |tr ";" "\n")
-    local ICON_TEMP_DIR=$BEAUTIFY_DIR/icon/$ICON_NAME
-
-    echo "install ICON & CURSOR: $ICON_NAME ..."
-    mkdir -p $ICON_TEMP_DIR
-    curl -o $ICON_NAME.tar.gz -sSL https://github.com/$ICON_AUTHOR/$ICON_REPO/archive/$ICON_TAG.tar.gz
-    tar -xzf $ICON_NAME.tar.gz -C $ICON_TEMP_DIR
-    local source_dir=$ICON_TEMP_DIR/$ICON_REPO-$ICON_TAG
-
-    pushd $source_dir >/dev/null 2>&1
-    if [ "$ICON_INSTALL" = "true" ]; then
-        bash $source_dir/install.sh ${ICON_INSTALL_ARGS[@]}
-    elif [ "$ICON_ALLDIR" = "true" ]; then
-        mkdir -p $ICON_PREFIX/$ICON_NAME
-        cp -R $source_dir/* $ICON_PREFIX/$ICON_NAME
-    elif [[ ${#ICON_PREFIXES[@]} -ne 0 ]]; then
-        for prefix in ${ICON_PREFIXES[@]}; do
-            cp -R $source_dir/$prefix* $ICON_PREFIX
-        done
-    else
-        cp -R $source_dir/$ICON_NAME* $ICON_PREFIX
-    fi
-    popd >/dev/null 2>&1
-}
-install_icon Qogir vinceliuice Qogir-icon-theme master true
-install_icon Layan vinceliuice Layan-cursors master true
-#install_icon Numix numixproject numix-icon-theme master false
-install_icon Numix-Circle numixproject numix-icon-theme-circle master false
-install_icon Numix-Square numixproject numix-icon-theme-square master false
-install_icon Candy EliverLara candy-icons master false "" true
-install_icon Papirus PapirusDevelopmentTeam papirus-icon-theme master false "" false "Papirus;ePapirus"
-#install_icon Tela vinceliuice Tela-icon-theme master true
-install_icon Deepin zayronxio Deepin-icons-2022 master false "" true
-curl -o Bibata.tar.gz -SL https://github.com/ful1e5/Bibata_Cursor/releases/latest/download/Bibata.tar.gz
-mkdir -p $BEAUTIFY_DIR/icon/Bibata
-tar -xzf Bibata.tar.gz -C $BEAUTIFY_DIR/icon/Bibata
-cp -R $BEAUTIFY_DIR/icon/Bibata/Bibata-Modern-* $ICON_PREFIX
 
 # Plugins
 cd $BEAUTIFY_DIR/plugin
@@ -128,28 +80,28 @@ function install_plugin {
     mkdir -p $PLUGIN_TEMP_DIR
     case $PLUGIN_PLATFORM in
         "github")
-            curl -o $PLUGIN_NAME.tar.gz -sSL https://github.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/archive/$PLUGIN_TAG.tar.gz
+            proxychains4 curl -o $PLUGIN_NAME.tar.gz -sSL https://github.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/archive/$PLUGIN_TAG.tar.gz
             ;;
         "gitlab")
-            curl -o $PLUGIN_NAME.tar.gz -sSL https://gitlab.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/-/archive/$PLUGIN_TAG/$PLUGIN_REPO-$PLUGIN_TAG.tar.gz
+            proxychains4 curl -o $PLUGIN_NAME.tar.gz -sSL https://gitlab.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/-/archive/$PLUGIN_TAG/$PLUGIN_REPO-$PLUGIN_TAG.tar.gz
             ;;
     esac
     tar -xzf $PLUGIN_NAME.tar.gz -C $PLUGIN_TEMP_DIR
     local source_dir=$PLUGIN_TEMP_DIR/$PLUGIN_REPO-$PLUGIN_TAG/$PLUGIN_SUBDIR
-    kpackagetool5 --type Plasma/$PLUGIN_CATEGRAY --install $source_dir
+    kpackagetool6 --type Plasma/$PLUGIN_CATEGRAY --install $source_dir
 }
-install_plugin EventCalendar github Zren plasma-applet-eventcalendar master Applet package
-install_plugin LatteSeparator github psifidotos applet-latte-separator master Applet
-install_plugin WindowTitle github psifidotos applet-window-title master Applet
-install_plugin Win11Menu github prateekmedia Menu11 main Applet
-install_plugin ShaderWallpaper github y4my4my4m kde-shader-wallpaper master Wallpaper
-git clone --depth 1 https://github.com/rbn42/panon.git && pushd panon
-git submodule update --depth 1 --init
-cmake -Stranslations -B_build
-DESTDIR=../plasmoid/contents/locale make -f _build/Makefile install
-kpackagetool5 -t Plasma/Applet --install plasmoid
-popd
-curl -o panon-shaders.tar.gz -SL https://github.com/rbn42/panon-effects/archive/master.tar.gz
-mkdir -p panon-shaders $HOME/.config/panon
-tar -xzf panon-shaders.tar.gz -C panon-shaders
-cp -R panon-shaders/panon-effects-master/effects/rbn42-* $HOME/.config/panon
+# install_plugin EventCalendar github Zren plasma-applet-eventcalendar master Applet package
+# install_plugin LatteSeparator github psifidotos applet-latte-separator master Applet
+# install_plugin WindowTitle github psifidotos applet-window-title master Applet
+# install_plugin Win11Menu github prateekmedia Menu11 main Applet
+# install_plugin ShaderWallpaper github y4my4my4m kde-shader-wallpaper master Wallpaper
+# git clone --depth 1 https://github.com/rbn42/panon.git && pushd panon
+# git submodule update --depth 1 --init
+# cmake -Stranslations -B_build
+# DESTDIR=../plasmoid/contents/locale make -f _build/Makefile install
+# kpackagetool5 -t Plasma/Applet --install plasmoid
+# popd
+# curl -o panon-shaders.tar.gz -SL https://github.com/rbn42/panon-effects/archive/master.tar.gz
+# mkdir -p panon-shaders $HOME/.config/panon
+# tar -xzf panon-shaders.tar.gz -C panon-shaders
+# cp -R panon-shaders/panon-effects-master/effects/rbn42-* $HOME/.config/panon
