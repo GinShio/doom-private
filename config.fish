@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-set -x -g PATH $PATH ~/.local/bin
+# copy this file to ~/.config/fish/config
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
@@ -20,25 +20,8 @@ if status is-interactive
         alias ping "ping -c 8"
         #alias oneko=" oneko -fg brown -bg white -speed 16 -idle 100"
         #alias uuid=" cat /proc/sys/kernel/random/uuid"
-        abbr -a pc "proxychains"
-        abbr -a spc "sudo proxychains"
-    end
-
-    function __ginshio_init_systemV
-    end
-
-    function __ginshio_init_systemd
-        abbr -a Isrt  'sudo systemctl start'
-        abbr -a Istp  'sudo systemctl stop'
-        abbr -a Irst  'sudo systemctl restart'
-        abbr -a Irlod 'sudo systemctl reload'
-        abbr -a Istat 'systemctl status'
-        abbr -a Ikill 'sudo systemctl kill'
-        abbr -a Ienb  'sudo systemctl enable'
-        abbr -a Idsbl 'sudo systemctl disable'
-        abbr -a Isus  'systemctl suspend'
-        abbr -a Irb   'systemctl reboot'
-        abbr -a Ipo   'systemctl poweroff'
+        #abbr -a pc "proxychains4"
+        #abbr -a spc "sudo proxychains4"
     end
 
     # package management
@@ -184,16 +167,14 @@ if status is-interactive
     switch (bash -c "source /etc/os-release; echo \"\${NAME:-\${DISTRIB_ID}} \${VERSION_ID:-\${DISTRIB_RELEASE}}\"")
         # case 'FreeBSD*'
         #    __ginshio_freebsd_package_management
-        #    __ginshio_init_systemV
         # case 'CentOS*' 'Fedora*' 'Oracle*' 'openEuler*'
         #    __ginshio_dnf_package_management
-        #    __ginshio_init_systemd
         case 'Debian*' 'Ubuntu*' 'Kali*' 'Deepin*'
             __ginshio_apt_package_management
-            __ginshio_init_systemd
         case 'openSUSE*'
             __ginshio_zypp_package_management
-            __ginshio_init_systemd
+        case 'Arch*'
+            __ginshio_pacman_package_management
         case '*'
             echo "unknown $distro"
     end
@@ -209,8 +190,7 @@ if status is-interactive
             set -x XMODIFIERS "@im=fcitx"
             set -x GTK_IM_MODULE fcitx
             set -x QT_IM_MODULE fcitx
-            set fcitx5dir (mktemp -d)
-            daemonize -e $fcitx5dir/fcitx5.log -o $fcitx5dir/fcitx5.log -p $fcitx5dir/fcitx5.pid -l $fcitx5dir/fcitx5.pid -a /usr/bin/fcitx5 --disable=wayland
+            daemonize -e /tmp/fcitx5.log -o /tmp/fcitx5.log -p /tmp/fcitx5.pid -l /tmp/fcitx5.pid -a /usr/bin/fcitx5 --disable=wayland
             function proxy
                 set -x -g http_proxy  "http://$hostip:8118"
                 set -x -g https_proxy "http://$hostip:8118"
