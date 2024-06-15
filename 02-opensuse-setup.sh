@@ -65,6 +65,9 @@ sudo -E zypper in -y libvirt libvirt-dbus libvirt-doc \
 sudo -E zypper in -y lxd lxc libvirt-daemon-lxc podman podman-docker buildah
 sudo -E zypper in -y gcc-32bit gcc-c++-32bit
 sudo -E zypper in -y cross-{aarch64,arm,ppc64,ppc64le,riscv64,s390x}-{binutils,gcc14,linux-glibc-devel} cross-arm-none-gcc14
+# riscv64-suse-linux-gcc -march=rv64gc riscv.c
+# clang --target=riscv64-suse-linux --sysroot=/usr/riscv64-suse-linux/sys-root -mcpu=generic-rv64 -march=rv64g riscv.c
+# qemu-riscv64 -L /usr/riscv64-suse-linux/sys-root a.out
 
 # Mesa
 sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel libclc libLLVMSPIRVLib-devel rust-bindgen
