@@ -27,7 +27,8 @@ sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
 sudo -E zypper in -y gcc gcc-c++ gcc-info gdb binutils-gold \
     clang clang-tools lldb lld \
     cmake kf6-extra-cmake-modules meson ninja ccache conan \
-    'libboost_*-devel' poco-devel gcovr lcov
+    'libboost_*-devel' poco-devel gcovr lcov \
+    libstdc++-devel libstdc++-devel-32bit libc++-devel libc++abi-devel
 
 # Rust environment
 sudo -E zypper in -y cargo rust
