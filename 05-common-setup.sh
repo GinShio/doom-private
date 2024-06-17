@@ -149,6 +149,9 @@ set-option -g status off
 set-option -g default-shell "/bin/fish"
 EOF
 
+# Programming
+ccache -M 512G
+
 # Remote Desktop (not work)
 # x11vnc -storepasswd $HOME/.vnc/passwd
 # cat <<-EOF |sudo tee /etc/systemd/system/x11vnc.service
