@@ -4,7 +4,7 @@
 sudo usermod -a -G libvirt,render,video $USER
 
 # Directories
-mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos}
+mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.issues}
 mkdir -p $HOME/.local/{bin,share,lib}
 mkdir -p $HOME/.local/share/{fonts,applications}
 cat <<-EOF |tee $HOME/.config/user-dirs.dirs
