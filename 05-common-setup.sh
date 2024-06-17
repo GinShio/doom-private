@@ -4,7 +4,7 @@
 sudo usermod -a -G libvirt,render,video $USER
 
 # Directories
-mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.tmp}
+mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos}
 mkdir -p $HOME/.local/{bin,share,lib}
 mkdir -p $HOME/.local/share/{fonts,applications}
 cat <<-EOF |tee $HOME/.config/user-dirs.dirs
@@ -18,14 +18,13 @@ XDG_TEMPLATES_DIR="$HOME/Templates"
 XDG_VIDEOS_DIR="$HOME/Videos"
 EOF
 
-# swap file && temp dir
+# swap file && runtime dir
 sudo dd if=/dev/zero of=/swapfile bs=4MiB count=$(( 256*SETUP_SWAPSIZE )) status=progress
 sudo chmod 0600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 cat <<-EOF |sudo tee -a /etc/fstab
 /swapfile                                  none       swap  defaults,pri=10  0  0
-tmpfs                                      $HOME/.tmp tmpfs rw,size=${SETUP_SWAPSIZE}g,uid=root,gid=russell,mode=1770,nosuid,nodev,noatime  0  0
 EOF
 # sudo sysctl -w vm.swappiness=16
 cat <<-EOF |sudo tee -a /etc/sysctl.conf
@@ -38,6 +37,9 @@ cat <<-EOF |sudo tee -a /etc/sysctl.conf
 #
 ####
 vm.swappiness=10
+EOF
+cat <<-EOF |sudo tee -a /usr/lib/systemd/logind.conf
+RuntimeDirectorySize=100%
 EOF
 sudo sysctl -p
 
