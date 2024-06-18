@@ -142,6 +142,7 @@ EOF
 cat <<-EOF |tee $HOME/.tmux.conf
 unbind C-b
 set -g prefix C-t
+bind-key C-t send-prefix
 set -g default-terminal 'screen-256color'
 set -g history-limit 65535
 set -g mouse on
