@@ -39,7 +39,8 @@ cat <<-EOF |sudo tee -a /etc/sysctl.conf
 vm.swappiness=10
 EOF
 cat <<-EOF |sudo tee -a /usr/lib/systemd/logind.conf
-RuntimeDirectorySize=100%
+# 100% not work: https://github.com/systemd/systemd/blob/a1b2c92d8290c76a29ccd0887a92ac064e1bb5a1/src/login/logind-user.c#L860
+RuntimeDirectorySize=${SETUP_SWAPSIZE}G
 EOF
 sudo sysctl -p
 
