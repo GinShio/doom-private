@@ -38,7 +38,16 @@ cat <<-EOF |sudo tee -a /etc/sysctl.conf
 ####
 vm.swappiness=10
 EOF
-cat <<-EOF |sudo tee -a /usr/lib/systemd/logind.conf
+cat <<-EOF |sudo tee -a /etc/systemd/logind.conf
+####
+#
+# These files configure various parameters of the systemd login manager,
+# systemd‐logind.service(8). See systemd.syntax(7) for a general description of
+# the syntax.
+#
+# See logind.conf(5), logind.conf.d(5) for more information
+#
+####
 # 100% not work: https://github.com/systemd/systemd/blob/a1b2c92d8290c76a29ccd0887a92ac064e1bb5a1/src/login/logind-user.c#L860
 RuntimeDirectorySize=${SETUP_SWAPSIZE}G
 EOF
