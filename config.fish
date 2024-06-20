@@ -164,7 +164,7 @@ if status is-interactive
 
     __ginshio_command_abbreviation
 
-    switch (bash -c "source /etc/os-release; echo \"\${NAME:-\${DISTRIB_ID}} \${VERSION_ID:-\${DISTRIB_RELEASE}}\"")
+    switch ($SHELL -c ". /etc/os-release; echo \"\${NAME:-\${DISTRIB_ID}} \${VERSION_ID:-\${DISTRIB_RELEASE}}\"")
         # case 'FreeBSD*'
         #    __ginshio_freebsd_package_management
         # case 'CentOS*' 'Fedora*' 'Oracle*' 'openEuler*'
