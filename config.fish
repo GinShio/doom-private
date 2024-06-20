@@ -3,7 +3,7 @@
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
-    set --erase fish_greeting
+    set --universal fish_greeting
 
     function setconda
         source $HOME/.local/share/anaconda3/etc/fish/conf.d/conda.fish
