@@ -14,7 +14,7 @@ sudo -E zypper dup -y --allow-vendor-change
 
 # Common environment
 sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
-sudo -E zypper in -y bat curl dash{,-sh} emacs fd fish fzf git git-doc git-lfs ripgrep sshpass wget \
+sudo -E zypper in -y bat curl dash{,-sh} emacs fd fish fzf moreutils git git-doc git-lfs ripgrep sshpass wget \
     7zip aspell bison figlet flex neofetch privoxy proxychains-ng re2c sqlite3 unzip zip zstd \
     graphviz ImageMagick inkscape mpv obs-studio telegram-desktop osdlyrics \
     MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn
