@@ -51,8 +51,8 @@ sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
 sudo -E zypper in -y piglit spirv-tools spirv-cross shaderc vulkan-tools glslang-devel Mesa-libGL-devel Mesa-libRusticlOpenCL
 sudo -E zypper in -y freeglut-devel libdrm-devel libelf-devel libopenssl-devel ncurses5-devel waffle-devel
 sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libX11-devel libxcb-devel \
-    libXcomposite-devel libXdamage-devel libXext-devel libXfixes-devel libXfont-devel \
-    libXfont2-devel libxkbcommon-devel libXrandr-devel libxshmfence-devel libXxf86vm-devel
+    libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel libXfont-devel \
+    libXfont2-devel libXinerama-devel libxkbcommon-devel libXrandr-devel libxshmfence-devel libXxf86vm-devel
 sudo -E zypper in -y wayland-devel wayland-protocols-devel waylandpp-devel
 sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
     python3-distutils-extra python3-numpy python3-Mako python3-Jinja2
