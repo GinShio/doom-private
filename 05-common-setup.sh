@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # user group
-sudo usermod -a -G libvirt,render,video $USER
+sudo usermod -aG kvm,libvirt,render,video $(whoami)
 
 # Directories
 mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.issues}
@@ -77,7 +77,8 @@ auth     optional       pam_kwallet5.so
 session  optional       pam_kwallet5.so auto_start
 EOF
 
-# Containerization
+# Virtualization & Containerization & Cross compilation
+sudo systemctl enable --now libvirtd
 lxc remote add nju-images https://mirror.nju.edu.cn/lxc-images/ --protocol=simplestreams --public
 cat <<-EOF |sudo tee -a /etc/containers/registries.conf
 [[registry]]
