@@ -1,7 +1,8 @@
 # Common environment
 sudo -E dnf install -y bat curl dash emacs fd-find fish fzf git git-lfs ripgrep sshpass wget \
     p7zip aspell bison figlet flex neofetch privoxy proxychains-ng re2c sqlite3 unzip zip zstd \
-    graphviz ImageMagick inkscape mpv obs-studio firefox thunderbird steam flatpak flatpak-spawn
+    graphviz ImageMagick inkscape mpv obs-studio firefox thunderbird steam flatpak flatpak-spawn \
+    bridge-utils
 
 # C++ environment
 sudo -E dnf install -y binutils binutils-gold gdb gcc gcc-c++ \
