@@ -79,6 +79,7 @@ EOF
 
 # Virtualization & Containerization & Cross compilation
 sudo systemctl enable --now libvirtd
+sudo virsh net-autostart default
 lxc remote add nju-images https://mirror.nju.edu.cn/lxc-images/ --protocol=simplestreams --public
 cat <<-EOF |sudo tee -a /etc/containers/registries.conf
 [[registry]]
