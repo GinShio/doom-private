@@ -58,7 +58,7 @@ sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libX11-devel libxcb-dev
     libXrandr-devel libxshmfence-devel libXxf86vm-devel
 sudo -E zypper in -y wayland-devel wayland-protocols-devel waylandpp-devel
 sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
-    python3-distutils-extra python3-numpy python3-Mako python3-Jinja2
+    python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2
 sudo -E zypper in -y nanomsg-devel SDL2-devel libglfw-devel stb-devel tinyobjloader-devel
 
 # Virtualization & Containerization & Cross compilation
