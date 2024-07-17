@@ -49,11 +49,11 @@ case $DISTRO_NAME in
        exit 1
        ;;
 esac
-source $BASIC_DIR/common-setup.sh
-source $BASIC_DIR/common-beautify-setup.sh
+bash $BASIC_DIR/common-setup.sh
+bash $BASIC_DIR/common-beautify-setup.sh
 case $SETUP_DESKTOP in
     kde)
-        source $BASIC_DIR/kde-beautify-setup.sh
+        bash $BASIC_DIR/kde-beautify-setup.sh
         ;;
 esac
 

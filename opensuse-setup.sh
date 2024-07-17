@@ -1,9 +1,9 @@
 # update source
 ### zypper
 sudo zypper rr --all
-sudo zypper ar -fcg https://mirrors.ustc.edu.cn/opensuse/tumbleweed/repo/oss USTC:oss
-sudo zypper ar -fcg https://mirrors.ustc.edu.cn/opensuse/tumbleweed/repo/non-oss USTC:non-oss
-sudo zypper ar -fcg https://mirrors.ustc.edu.cn/packman/suse/openSUSE_Tumbleweed USTC:packman
+sudo zypper ar -fcg https://mirrors.shanghaitech.edu.cn/opensuse/tumbleweed/repo/oss SHTU:oss
+sudo zypper ar -fcg https://mirrors.shanghaitech.edu.cn/opensuse/tumbleweed/repo/non-oss SHTU:non-oss
+sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
 sudo zypper ar -fcg osb://Virtualization openSUSE:Virtualization
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
@@ -17,7 +17,7 @@ sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
 sudo -E zypper in -y bat curl dash emacs fd fish fzf moreutils git git-doc git-lfs ripgrep sshpass wget \
     7zip aspell bison figlet flex neofetch privoxy proxychains-ng re2c sqlite3 unzip zip zstd \
     graphviz ImageMagick inkscape mpv obs-studio telegram-desktop osdlyrics \
-    MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn
+    MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn tmux
 
 # kDE environment
 sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
@@ -25,7 +25,7 @@ sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
 
 # C++ environment
 sudo -E zypper in -y gcc gcc-c++ gcc-info gdb binutils-gold \
-    clang clang-tools lldb lld \
+    clang clang-tools clang-extract clang-tools llvm llvm-doc llvm-opt-viewer lldb lld \
     cmake kf6-extra-cmake-modules meson ninja ccache conan \
     'libboost_*-devel' poco-devel gcovr lcov \
     libstdc++-devel libstdc++-devel-32bit libc++-devel libc++abi-devel
@@ -50,13 +50,6 @@ sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
 # Working dependence
 sudo -E zypper in -y piglit spirv-tools spirv-cross shaderc vulkan-tools glslang-devel \
     Mesa-libGL-devel Mesa-libRusticlOpenCL
-sudo -E zypper in -y freeglut-devel libdrm-devel libelf-devel libopenssl-devel \
-    ncurses5-devel waffle-devel
-sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libX11-devel libxcb-devel \
-    libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel \
-    libXfont-devel libXfont2-devel libXi-devel libXinerama-devel libxkbcommon-devel \
-    libXrandr-devel libxshmfence-devel libXxf86vm-devel
-sudo -E zypper in -y wayland-devel wayland-protocols-devel waylandpp-devel
 sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
     python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2
 sudo -E zypper in -y nanomsg-devel SDL2-devel libglfw-devel stb-devel tinyobjloader-devel
@@ -76,6 +69,11 @@ sudo -E zypper in -y cross-{aarch64,arm,ppc64,ppc64le,riscv64,s390x}-{binutils,g
 
 # Mesa
 sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel libclc libLLVMSPIRVLib-devel rust-bindgen
+sudo -E zypper in -y freeglut-devel libdrm-devel libelf-devel libopenssl-devel ncurses5-devel waffle-devel
+sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libxcb-devel libxshmfence-devel \
+    libX11-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel libXfont2-devel \
+    libXi-devel libXinerama-devel libxkbcommon-devel libXrandr-devel libXxf86vm-devel
+sudo -E zypper in -y wayland-devel wayland-protocols-devel waylandpp-devel
 
 # TeX environment
 sudo -E zypper in -y 'texlive-*'

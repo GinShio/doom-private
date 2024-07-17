@@ -80,10 +80,10 @@ function install_plugin {
     mkdir -p $PLUGIN_TEMP_DIR
     case $PLUGIN_PLATFORM in
         "github")
-            proxychains4 curl -o $PLUGIN_NAME.tar.gz -sSL https://github.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/archive/$PLUGIN_TAG.tar.gz
+            curl -o $PLUGIN_NAME.tar.gz -sSL https://github.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/archive/$PLUGIN_TAG.tar.gz
             ;;
         "gitlab")
-            proxychains4 curl -o $PLUGIN_NAME.tar.gz -sSL https://gitlab.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/-/archive/$PLUGIN_TAG/$PLUGIN_REPO-$PLUGIN_TAG.tar.gz
+            curl -o $PLUGIN_NAME.tar.gz -sSL https://gitlab.com/$PLUGIN_AUTHOR/$PLUGIN_REPO/-/archive/$PLUGIN_TAG/$PLUGIN_REPO-$PLUGIN_TAG.tar.gz
             ;;
     esac
     tar -xzf $PLUGIN_NAME.tar.gz -C $PLUGIN_TEMP_DIR
