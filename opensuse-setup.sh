@@ -24,7 +24,7 @@ sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
     partitionmanager partitionmanager-lang freerdp-wayland okular-spectre
 
 # C++ environment
-sudo -E zypper in -y gcc gcc-c++ gcc-info gdb binutils-gold \
+sudo -E zypper in -y gcc gcc-c++ gcc-info gdb binutils-gold mold \
     clang clang-tools clang-extract clang-tools llvm llvm-doc llvm-opt-viewer lldb lld \
     cmake kf6-extra-cmake-modules meson ninja ccache conan \
     'libboost_*-devel' poco-devel gcovr lcov \
@@ -48,11 +48,21 @@ sudo -E zypper in -y nodejs-common yarn
 sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
 
 # Working dependence
-sudo -E zypper in -y piglit spirv-tools spirv-cross shaderc vulkan-tools glslang-devel \
-    Mesa-libGL-devel Mesa-libRusticlOpenCL
+sudo -E zypper in -y piglit spirv-tools spirv-cross shaderc vulkan-tools glslang-devel
 sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
     python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2
 sudo -E zypper in -y nanomsg-devel SDL2-devel libglfw-devel stb-devel tinyobjloader-devel
+sudo -E zypper in -y libzstd-devel-32bit zlib-devel-32bit
+
+# Graphics
+sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libxcb-devel{,-32bit} libxshmfence-devel \
+    libX11-devel{,-32bit} libXcomposite-devel{,-32bit} libXcursor-devel{,-32bit} libXdamage-devel{,-32bit} libXext-devel{,-32bit} libXfixes-devel{,-32bit} libXfont2-devel{,-32bit} \
+    libXi-devel{,-32bit} libXinerama-devel{,-32bit} libxkbcommon-devel{,-32bit} libXrandr-devel{,-32bit} libXxf86vm-devel{,-32bit}
+sudo -E zypper in -y wayland-devel{,-32bit} wayland-protocols-devel waylandpp-devel
+sudo cp /usr/lib{64,}/pkgconfig/xshmfence.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/xshmfence.pc
+sudo ln -sf /usr/lib/libxshmfence.so{.1,}
+sudo cp /usr/lib{64,}/pkgconfig/libudev.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/libudev.pc
+sudo ln -sf libudev.so{.1,}
 
 # Virtualization & Containerization & Cross compilation
 sudo -E zypper in -y -t pattern kvm_tools
@@ -68,12 +78,12 @@ sudo -E zypper in -y cross-{aarch64,arm,ppc64,ppc64le,riscv64,s390x}-{binutils,g
 # qemu-riscv64 -L /usr/riscv64-suse-linux/sys-root a.out
 
 # Mesa
-sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel libclc libLLVMSPIRVLib-devel rust-bindgen
-sudo -E zypper in -y freeglut-devel libdrm-devel libelf-devel libopenssl-devel ncurses5-devel waffle-devel
-sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libxcb-devel libxshmfence-devel \
-    libX11-devel libXcomposite-devel libXcursor-devel libXdamage-devel libXext-devel libXfixes-devel libXfont2-devel \
-    libXi-devel libXinerama-devel libxkbcommon-devel libXrandr-devel libXxf86vm-devel
-sudo -E zypper in -y wayland-devel wayland-protocols-devel waylandpp-devel
+sudo -E zypper in -y Mesa-dri-devel Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{,-32bit} Mesa-libRusticlOpenCL \
+    Mesa-vulkan-device-select{,-32bit} Mesa-vulkan-overlay{,-32bit} \
+    Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit}
+sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel{,-32bit} libclc libLLVMSPIRVLib-devel rust-bindgen
+sudo -E zypper in -y freeglut-devel libdrm-devel{,-32bit} libelf-devel{,-32bit} libopenssl-devel ncurses5-devel waffle-devel
+sudo -E zypper in -y libexpat-devel-32bit
 
 # TeX environment
 sudo -E zypper in -y 'texlive-*'
