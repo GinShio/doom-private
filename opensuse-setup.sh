@@ -6,6 +6,7 @@ sudo zypper ar -fcg https://mirrors.shanghaitech.edu.cn/opensuse/tumbleweed/repo
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
 sudo zypper ar -fcg osb://Virtualization openSUSE:Virtualization
+sudo zypper ar -fcg https://download.opensuse.org/repositories/devel:/tools:/compiler/openSUSE_Factory openSUSE:compiler
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
 #sudo zypper ar -fcg https://download.opensuse.org/repositories/utilities/openSUSE_Factory openSUSE:Utilities
 sudo -E zypper ref
@@ -24,11 +25,12 @@ sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
     partitionmanager partitionmanager-lang freerdp-wayland okular-spectre
 
 # C++ environment
-sudo -E zypper in -y gcc gcc-c++ gcc-info gdb binutils-gold mold \
+sudo -E zypper in -y gcc{,-32bit} gcc-c++{,-32bit} gcc-info gdb binutils-gold mold \
     clang clang-tools clang-extract clang-tools llvm llvm-doc llvm-opt-viewer lldb lld \
     cmake kf6-extra-cmake-modules meson ninja ccache conan \
     'libboost_*-devel' poco-devel gcovr lcov \
-    libstdc++-devel libstdc++-devel-32bit libc++-devel libc++abi-devel
+    libstdc++-devel{,-32bit} libc++-devel libc++abi-devel \
+    nanomsg-devel SDL2-devel{,-32bit} libglfw-devel stb-devel tinyobjloader-devel freeglut-devel{,-32bit} libopenssl-devel{,-32bit} ncurses5-devel{,-32bit} libzstd-devel-32bit zlib-devel-32bit
 
 # Rust environment
 sudo -E zypper in -y cargo rust
@@ -48,13 +50,11 @@ sudo -E zypper in -y nodejs-common yarn
 sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
 
 # Working dependence
-sudo -E zypper in -y piglit spirv-tools spirv-cross shaderc vulkan-tools glslang-devel
 sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
     python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2
-sudo -E zypper in -y nanomsg-devel SDL2-devel libglfw-devel stb-devel tinyobjloader-devel
-sudo -E zypper in -y libzstd-devel-32bit zlib-devel-32bit
 
 # Graphics
+sudo -E zypper in -y piglit spirv-cross shaderc vulkan-tools glslang-devel
 sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libxcb-devel{,-32bit} libxshmfence-devel \
     libX11-devel{,-32bit} libXcomposite-devel{,-32bit} libXcursor-devel{,-32bit} libXdamage-devel{,-32bit} libXext-devel{,-32bit} libXfixes-devel{,-32bit} libXfont2-devel{,-32bit} \
     libXi-devel{,-32bit} libXinerama-devel{,-32bit} libxkbcommon-devel{,-32bit} libXrandr-devel{,-32bit} libXxf86vm-devel{,-32bit}
@@ -71,7 +71,6 @@ sudo -E zypper in -y \
     qemu qemu-extra qemu-linux-user qemu-vhost-user-gpu qemu-doc qemu-lang \
     qemu-x86 qemu-arm qemu-ppc
 sudo -E zypper in -y lxd lxc libvirt-daemon-lxc podman podman-docker buildah
-sudo -E zypper in -y gcc-32bit gcc-c++-32bit
 sudo -E zypper in -y cross-{aarch64,arm,ppc64,ppc64le,riscv64,s390x}-{binutils,gcc14,linux-glibc-devel} cross-arm-none-gcc14
 # riscv64-suse-linux-gcc -march=rv64gc riscv.c
 # clang --target=riscv64-suse-linux --sysroot=/usr/riscv64-suse-linux/sys-root -mcpu=generic-rv64 -march=rv64g riscv.c
@@ -82,8 +81,7 @@ sudo -E zypper in -y Mesa-dri-devel Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{
     Mesa-vulkan-device-select{,-32bit} Mesa-vulkan-overlay{,-32bit} \
     Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit}
 sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel{,-32bit} libclc libLLVMSPIRVLib-devel rust-bindgen
-sudo -E zypper in -y freeglut-devel libdrm-devel{,-32bit} libelf-devel{,-32bit} libopenssl-devel ncurses5-devel waffle-devel
-sudo -E zypper in -y libexpat-devel-32bit
+sudo -E zypper in -y libdrm-devel{,-32bit} libelf-devel{,-32bit} libexpat-devel-32bit waffle-devel
 
 # TeX environment
 sudo -E zypper in -y 'texlive-*'
