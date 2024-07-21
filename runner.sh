@@ -35,7 +35,7 @@ export SETUP_HOSTNAME=${SETUP_HOSTNAME:-$([[ ! -z $SETUP_WORKING ]] && echo "$SE
 export SETUP_DESKTOP=${SETUP_DESKTOP:-"kde"}
 
 case $DISTRO_NAME in
-    Debian*|Ubuntu*|Kali*|Deepin*)
+    Debian*)
         bash $BASIC_DIR/debian-setup.sh
         ;;
     Fedora*)

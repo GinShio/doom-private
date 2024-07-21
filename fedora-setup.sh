@@ -7,7 +7,7 @@ sudo -E dnf install -y bat curl dash emacs fd-find fish fzf git git-lfs ripgrep 
 # C++ environment
 sudo -E dnf install -y binutils binutils-gold gdb gcc gcc-c++ \
     clang clang-libs clang-tools-extra lldb lld \
-    automake cmake extra-cmake-modules meson ninja-build ccache conan \
+    automake cmake extra-cmake-modules meson ninja-build ccache conan mold \
     'boost-*-devel' poco-devel
 
 # Rust environment

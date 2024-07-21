@@ -18,19 +18,23 @@ sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
 sudo -E zypper in -y bat curl dash emacs fd fish fzf moreutils git git-doc git-lfs ripgrep sshpass wget \
     7zip aspell bison figlet flex neofetch privoxy proxychains-ng re2c sqlite3 unzip zip zstd \
     graphviz ImageMagick inkscape mpv obs-studio telegram-desktop osdlyrics \
-    MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn tmux
+    MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn tmux xmlto
 
 # kDE environment
 sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
     partitionmanager partitionmanager-lang freerdp-wayland okular-spectre
 
 # C++ environment
-sudo -E zypper in -y gcc{,-32bit} gcc-c++{,-32bit} gcc-info gdb binutils-gold mold \
+sudo -E zypper in -y gcc{,-32bit} gcc-c++{,-32bit} gcc-info gdb binutils-gold gcovr \
     clang clang-tools clang-extract clang-tools llvm llvm-doc llvm-opt-viewer lldb lld \
-    cmake kf6-extra-cmake-modules meson ninja ccache conan \
-    'libboost_*-devel' poco-devel gcovr lcov \
-    libstdc++-devel{,-32bit} libc++-devel libc++abi-devel \
-    nanomsg-devel SDL2-devel{,-32bit} libglfw-devel stb-devel tinyobjloader-devel freeglut-devel{,-32bit} libopenssl-devel{,-32bit} ncurses5-devel{,-32bit} libzstd-devel-32bit zlib-devel-32bit
+    cmake kf6-extra-cmake-modules meson ninja ccache mold conan lcov doxygen imake
+sudo -E zypper in -y cairo-devel{,-32bit} freeglut-devel{,-32bit} 'libboost_*-devel' libc++-devel libc++abi-devel \
+    libcaca-devel libfontenc-devel{,-32bit} libFS-devel libglfw-devel libICE-devel{,-32bit} libopenssl-devel{,-32bit} \
+    libSM-devel{,-32bit} libstdc++-devel{,-32bit} \
+    libxml2-devel{,-32bit} libzstd-devel{,-32bit} nanomsg-devel ncurses5-devel{,-32bit} poco-devel SDL2-devel{,-32bit} \
+    stb-devel tinyobjloader-devel zlib-devel-32bit
+sudo cp /usr/lib{64,}/pkgconfig/libudev.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/libudev.pc
+sudo ln -sf libudev.so{.1,}
 
 # Rust environment
 sudo -E zypper in -y cargo rust
@@ -51,18 +55,21 @@ sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
 
 # Working dependence
 sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
-    python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2
+    python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2 python3-setuptools python3-lxml
 
 # Graphics
 sudo -E zypper in -y piglit spirv-cross shaderc vulkan-tools glslang-devel
-sudo -E zypper in -y xcb-proto-devel xorg-x11-server-sdk libxcb-devel{,-32bit} libxshmfence-devel \
-    libX11-devel{,-32bit} libXcomposite-devel{,-32bit} libXcursor-devel{,-32bit} libXdamage-devel{,-32bit} libXext-devel{,-32bit} libXfixes-devel{,-32bit} libXfont2-devel{,-32bit} \
-    libXi-devel{,-32bit} libXinerama-devel{,-32bit} libxkbcommon-devel{,-32bit} libXrandr-devel{,-32bit} libXxf86vm-devel{,-32bit}
+sudo -E zypper in -y xcb-proto-devel xorgproto-devel xorg-x11-server-sdk libdmx-devel \
+    libX11-devel{,-32bit} libXau-devel{,-32bit} libXaw-devel{,-32bit} libxcb-devel{,-32bit} libxcb-dri2-0{,-32bit} \
+    libxcb-dri3-0{,-32bit} libXcomposite-devel{,-32bit} libXcursor-devel{,-32bit} libXdamage-devel{,-32bit} \
+    libXdmcp-devel{,-32bit} libXext-devel{,-32bit} libXfixes-devel{,-32bit} libXfont2-devel{,-32bit} \
+    libXft-devel{,-32bit} libXi-devel{,-32bit} libXinerama-devel{,-32bit} libxkbcommon-devel{,-32bit} \
+    libxkbfile-devel{,-32bit} libXmu-devel{,-32bit} libXpm-devel{,-32bit} libXrandr-devel{,-32bit} \
+    libXrender-devel{,-32bit} libXres-devel{,-32bit} libxshmfence-devel libXss-devel{,-32bit} libXt-devel{,-32bit} \
+    libXtst-devel{,-32bit} libXv-devel{,-32bit} libXvMC-devel{,-32bit} libXxf86dga-devel libXxf86vm-devel{,-32bit}
 sudo -E zypper in -y wayland-devel{,-32bit} wayland-protocols-devel waylandpp-devel
 sudo cp /usr/lib{64,}/pkgconfig/xshmfence.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/xshmfence.pc
 sudo ln -sf /usr/lib/libxshmfence.so{.1,}
-sudo cp /usr/lib{64,}/pkgconfig/libudev.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/libudev.pc
-sudo ln -sf libudev.so{.1,}
 
 # Virtualization & Containerization & Cross compilation
 sudo -E zypper in -y -t pattern kvm_tools
@@ -81,7 +88,8 @@ sudo -E zypper in -y Mesa-dri-devel Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{
     Mesa-vulkan-device-select{,-32bit} Mesa-vulkan-overlay{,-32bit} \
     Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit}
 sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel{,-32bit} libclc libLLVMSPIRVLib-devel rust-bindgen
-sudo -E zypper in -y libdrm-devel{,-32bit} libelf-devel{,-32bit} libexpat-devel-32bit waffle-devel
+sudo -E zypper in -y libdrm-devel{,-32bit} libelf-devel{,-32bit} libexpat-devel{,-32bit} libglvnd-devel{,-32bit} \
+    libva-devel{,-32bit} libvdpau-devel{,-32bit} waffle-devel
 
 # TeX environment
 sudo -E zypper in -y 'texlive-*'

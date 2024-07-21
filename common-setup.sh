@@ -85,9 +85,6 @@ cat <<-EOF |sudo tee -a /etc/containers/registries.conf
 [[registry]]
 prefix = "docker.io"
 location = "docker.io"
-
-[[registry.mirror]]
-location = "docker.nju.edu.cn/"
 EOF
 
 # SSH
