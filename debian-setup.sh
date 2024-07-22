@@ -17,13 +17,14 @@ deb https://security.debian.org/debian-security bookworm-security main contrib n
 # deb-src https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
 EOF
 sudo dpkg --add-architecture i386 && sudo -E apt update && sudo apt dist-upgrade -y
-
+sudo apt purge akonadi-server mariadb-common mariadb-server mariadb-client redis
+sudo apt-mark hold akonadiconsole
 
 # Common environment
 sudo -E apt install -y bat curl dash emacs fd-find fish fzf moreutils git git-doc git-lfs ripgrep sshpass wget \
     7zip aspell bison figlet flex neofetch privoxy proxychains re2c sqlite3 unzip zip zstd \
     graphviz imagemagick-6-common inkscape mpv obs-studio telegram-desktop osdlyrics \
-    firefox-esr thunderbird steam-installer steam-libs flatpak tmux xsltproc xmlto cifs-utils
+    firefox-esr thunderbird steam-installer steam-libs flatpak tmux xsltproc xmlto cifs-utils dwarves
 
 # kDE environment
 sudo apt install -y fcitx5 fcitx5-rime krdc krfb kdeconnect partitionmanager freerdp3-wayland
@@ -46,7 +47,6 @@ sudo -E apt install -y openjdk-17-jdk openjdk-17-jre
 
 # Python3 environment
 sudo -E apt install -y python3 python3-virtualenv python3-doc pylint pipx
-pipx install pyright
 pipx install conan
 
 # NodeJS environment

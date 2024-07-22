@@ -10,7 +10,8 @@ sudo zypper ar -fcg https://download.opensuse.org/repositories/devel:/tools:/com
 sudo zypper ar -fcg https://download.opensuse.org/repositories/server:/messaging/openSUSE_Factory openSUSE:messaging
 #sudo zypper ar -fcg https://download.opensuse.org/repositories/utilities/openSUSE_Factory openSUSE:Utilities
 sudo -E zypper ref
-sudo -E zypper al cmake-gui git-gui vlc vlc-beta
+sudo zypper remove -u valkey mariadb mariadb-client akonadi
+sudo -E zypper al cmake-gui git-gui vlc vlc-beta akonadictl
 sudo -E zypper dup -y --allow-vendor-change
 
 # Common environment
@@ -18,7 +19,7 @@ sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
 sudo -E zypper in -y bat curl dash emacs fd fish fzf moreutils git git-doc git-lfs ripgrep sshpass wget \
     7zip aspell bison figlet flex neofetch privoxy proxychains-ng re2c sqlite3 unzip zip zstd \
     graphviz ImageMagick inkscape mpv obs-studio telegram-desktop osdlyrics \
-    MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn tmux xmlto
+    MozillaFirefox MozillaThunderbird steam flatpak flatpak-spawn tmux xmlto dwarves
 
 # kDE environment
 sudo -E zypper in -y pam_kwallet6 fcitx5 fcitx5-rime krdc krfb kdeconnect-kde \
@@ -45,7 +46,6 @@ sudo -E zypper in -y java-17-openjdk java-17-openjdk-devel \
 
 # Python3 environment
 sudo -E zypper in -y python3 python3-virtualenv python3-doc python3-pylint python3-pipx
-pipx install pyright
 
 # NodeJS environment
 sudo -E zypper in -y nodejs-common yarn

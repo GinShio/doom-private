@@ -22,6 +22,12 @@ if status is-interactive
         #alias uuid=" cat /proc/sys/kernel/random/uuid"
         #abbr -a pc "proxychains4"
         #abbr -a spc "sudo proxychains4"
+        if type -q fdfind; and not type -q fd
+            alias fd "fdfind"
+        end
+        if type -q batcat; and not type -q bat
+            alias bat "batcat"
+        end
     end
 
     # package management
@@ -95,7 +101,7 @@ if status is-interactive
         # need 'software-properties-common'
         # repository management
         abbr -a Par  "sudo add-apt-repository"
-        abbr -a Plr  ""
+        abbr -a Plr  "add-apt-repository --list"
         abbr -a Pref "sudo -E apt update"
         abbr -a Prr  "sudo add-apt-repository --remove"
         abbr -a Pmr  "sudo apt edit-sources"
@@ -117,9 +123,9 @@ if status is-interactive
         #alias Pwp="dpkg -s"
         # locking
         abbr -a Pal  "sudo apt-mark hold"
-        abbr -a Pll  ""
-        abbr -a Prl  "sudo zypper apt-mark unhold"
-        abbr -a Pcl  ""
+        abbr -a Pll  "apt-mark showhold"
+        abbr -a Prl  "sudo apt-mark unhold"
+        #abbr -a Pcl  ""
         # utilities
         abbr -a Pcc  "sudo apt clean"
         abbr -a Pinr ""

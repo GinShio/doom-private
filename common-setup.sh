@@ -209,6 +209,10 @@ cat <<-EOF |fish -c 'tide configure'
 y
 EOF
 
+# PipX
+pipx install pyright
+pipx install trash-cli
+
 # Others
 cd $(mktemp -d)
 ### Teams and VSCode
