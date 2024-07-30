@@ -54,8 +54,9 @@ sudo -E zypper in -y nodejs-common yarn
 sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
 
 # Working dependence
-sudo -E zypper in -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
-    python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2 python3-setuptools python3-lxml
+sudo -E zypper in -y python3-pybind11{,-devel} python3-pyelftools python3-ruamel.yaml python3-u-msgpack-python \
+    python3-distutils-extra python3-lit python3-numpy python3-Mako python3-Jinja2 python3-setuptools python3-lxml \
+    python3-pytest python3-lz4
 
 # Graphics
 sudo -E zypper in -y piglit spirv-cross shaderc vulkan-tools glslang-devel
