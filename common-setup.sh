@@ -7,6 +7,7 @@ sudo usermod -aG kvm,libvirt,render,video $(whoami)
 mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.issues}
 mkdir -p $HOME/.local/{bin,share,lib}
 mkdir -p $HOME/.local/share/{fonts,applications}
+mkdir -p $HOME/.config/user-tmpfiles.d
 cat <<-EOF |tee $HOME/.config/user-dirs.dirs
 XDG_DESKTOP_DIR="$HOME/Desktop"
 XDG_DOCUMENTS_DIR="$HOME/Documents"
@@ -54,6 +55,7 @@ cat <<-EOF |sudo tee -a /etc/systemd/logind.conf.d/runtime-dir.conf
 RuntimeDirectorySize=${SETUP_SWAPSIZE}G
 EOF
 sudo sysctl -p
+sudo systemctl enable --now systemd-tmpfiles-clean
 
 # Hosts
 sudo cp /etc/hosts /etc/hosts.bkp
@@ -88,6 +90,7 @@ cat <<-EOF |sudo tee -a /etc/containers/registries.conf
 prefix = "docker.io"
 location = "docker.io"
 EOF
+sudo systemctl enable --now podman
 
 # SSH
 mkdir -p $HOME/.ssh
