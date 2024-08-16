@@ -261,3 +261,14 @@ d   $XDG_RUNTIME_DIR/runner/baseline   0700   $USER   $USER   3d
 d   $XDG_RUNTIME_DIR/runner/deqp   0700   $USER   $USER   -
 d   $XDG_RUNTIME_DIR/runner/piglit   0700   $USER   $USER   -
 EOF
+
+
+
+### LSP temp files
+LSP_DEV_NAME=lsp.$USR
+cat <<-EOF >$HOME/.config/user-tmpfiles.d/$LSP_DEV_NAME.conf
+d   $XDG_RUNTIME_DIR/clangd   0700   $USER   $USER   4w
+L+  $HOME/.config/clangd   -   -   -   -   $XDG_RUNTIME_DIR/clangd
+d   $XDG_RUNTIME_DIR/mesa   0700   $USER   $USER   -
+L+  $HOME/Projects/mesa/.cache - - - - $XDG_RUNTIME_DIR/mesa
+EOF
