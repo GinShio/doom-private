@@ -7,7 +7,7 @@ sudo usermod -aG kvm,libvirt,render,video $(whoami)
 mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.issues}
 mkdir -p $HOME/.local/{bin,share,lib}
 mkdir -p $HOME/.local/share/{fonts,applications}
-mkdir -p $HOME/.config/user-tmpfiles.d
+mkdir -p $HOME/.config/{user-tmpfiles.d,autostart}
 cat <<-EOF |tee $HOME/.config/user-dirs.dirs
 XDG_DESKTOP_DIR="$HOME/Desktop"
 XDG_DOCUMENTS_DIR="$HOME/Documents"
