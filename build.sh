@@ -31,14 +31,20 @@ CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
     --libdir=lib64 --prefix $HOME/.local -Dbuildtype=release \
     -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
-meson compile -C$HOME/Projects/mesa/_build && meson install -C$HOME/Projects/mesa/_build
+meson compile -C $HOME/Projects/mesa/_build && meson install -C $_
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/local/lib/pkgconfig \
     CC='ccache gcc -m32' CXX='ccache g++ -m32' LDFLAGS='-fuse-ld=mold -m32' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build32 \
     --libdir=lib --prefix $HOME/.local -Dbuildtype=release \
     -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
-meson compile -C$HOME/Projects/mesa/_build32 && meson install -C$HOME/Projects/mesa/_build32
+meson compile -C $HOME/Projects/mesa/_build32 && meson install -C $_
+# MESA_ROOT=$HOME/.local \
+#     VK_DRIVER_FILES=$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:$MESA_ROOT/share/vulkan/icd.d/radeon_icd.i686.json \
+#     LD_LIBRARY_PATH=$MESA_ROOT/lib64:$MESA_ROOT/lib \
+#     LIBGL_DRIVERS_PATH=$MESA_ROOT/lib64/dri:$MESA_ROOT/lib/dri MESA_LOADER_DRIVER_OVERRIDE=radeonsi \
+#     RADV_DEBUG=nocache,shaders AMD_DEBUG= NIR_DEBUG= \
+#     dosomething
 
 ### vk-gl-cts
 # git clone https://github.com/KhronosGroup/VK-GL-CTS.git $HOME/Projects/deqp
