@@ -35,7 +35,7 @@ meson compile -C$HOME/Projects/mesa/_build && meson install -C$HOME/Projects/mes
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/local/lib/pkgconfig \
     CC='ccache gcc -m32' CXX='ccache g++ -m32' LDFLAGS='-fuse-ld=mold -m32' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build32 \
-    --libdir=lib --prefix $HOME/.loca -Dbuildtype=release \
+    --libdir=lib --prefix $HOME/.local -Dbuildtype=release \
     -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
 meson compile -C$HOME/Projects/mesa/_build32 && meson install -C$HOME/Projects/mesa/_build32
@@ -119,7 +119,7 @@ cat <<-EOF >$HOME/.config/autostart/$DAILY_TEST_NAME.sh
 
 export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
 
-RUNNERDIR=\$XDG_RUNTIME_DIR/runner
+RUNNER_DIR=\$XDG_RUNTIME_DIR/runner
 SUFFIX=_\$(date --iso-8601="date")
 
 DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; exit}')
@@ -137,15 +137,15 @@ for glapi in \${deqp_runner_set[@]}; do
         vk)
             exe_name=deqp-vk
             case_lists=(
-                \$RUNNERDIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
-                \$RUNNERDIR/deqp/mustpass/vk-default/compute.txt
-                #\$RUNNERDIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
-                \$RUNNERDIR/deqp/mustpass/vk-default/image/{depth-stencil,load-store,sample,store}*.txt
-                \$RUNNERDIR/deqp/mustpass/vk-default/pipeline/monolithic.txt
-                \$RUNNERDIR/deqp/mustpass/vk-default/{ray-tracing-pipeline,ray-query}.txt
-                #\$RUNNERDIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
-                \$RUNNERDIR/deqp/mustpass/vk-default/{reconvergence,robustness}.txt
-                \$RUNNERDIR/deqp/mustpass/vk-default/{ssbo,texture,ubo}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/compute.txt
+                #\$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/image/{depth-stencil,load-store,sample,store}*.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/monolithic.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{ray-tracing-pipeline,ray-query}.txt
+                #\$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,robustness}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{ssbo,texture,ubo}.txt
             )
             ext_files=(dEQP-VK.info.device)
             ext_runner_options=(
@@ -156,8 +156,8 @@ for glapi in \${deqp_runner_set[@]}; do
         gl)
             exe_name=glcts
             case_lists=(
-                \$RUNNERDIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
-                \$RUNNERDIR/deqp/mustpass/gl{,es}/khronos_mustpass/main/*-main.txt
+                \$RUNNER_DIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
+                \$RUNNER_DIR/deqp/mustpass/gl{,es}/khronos_mustpass/main/*-main.txt
             )
             ext_files=()
             ext_runner_options=()
@@ -197,16 +197,16 @@ for glapi in \${deqp_runner_set[@]}; do
 
         output_dir=\${vendor}_deqp-\${glapi}\${SUFFIX}
         tarball_name=deqp-\${glapi}_\${DEVICE_ID}\${SUFFIX}
-        \$RUNNERDIR/deqp-runner run \\
+        \$RUNNER_DIR/deqp-runner run \\
             \$RUNNER_OPTIONS \${ext_runner_options[@]} \\
-            --deqp \$RUNNERDIR/deqp/\$exe_name \\
-            --output \$RUNNERDIR/baseline/\$output_dir \\
+            --deqp \$RUNNER_DIR/deqp/\$exe_name \\
+            --output \$RUNNER_DIR/baseline/\$output_dir \\
             --caselist \${case_lists[@]} \\
             --env \${env_lists[@]} \\
             -- \\
             \$DEQP_OPTIONS \${ext_deqp_options[@]}
-        cd \$RUNNERDIR/baseline/\$output_dir
-        ls -1 \${case_lists[@]} |sed "s~\$RUNNERDIR/mustpass/~~g" >testlist.txt
+        cd \$RUNNER_DIR/baseline/\$output_dir
+        ls -1 \${case_lists[@]} |sed "s~\$RUNNER_DIR/mustpass/~~g" >testlist.txt
         tar -H pax -cf - {failures,results}.csv \$(eval echo \${RESULT_FILES[@]}) \${ext_files[@]} | \\
             zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
     done
