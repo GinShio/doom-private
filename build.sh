@@ -262,7 +262,6 @@ EOF
 ### user temp files
 cat <<-EOF >$HOME/.config/user-tmpfiles.d/$DEVELOP_AUTOSTART_NAME.conf
 d   $XDG_RUNTIME_DIR/issues   0700   $USER   $USER   2w
-d   $XDG_RUNTIME_DIR/runner   0700   $USER   $USER   -
 d   $XDG_RUNTIME_DIR/runner/baseline   0700   $USER   $USER   3d
 d   $XDG_RUNTIME_DIR/runner/deqp   0700   $USER   $USER   -
 d   $XDG_RUNTIME_DIR/runner/piglit   0700   $USER   $USER   -
@@ -273,8 +272,10 @@ EOF
 ### LSP temp files
 LSP_DEV_NAME=lsp.$USER
 cat <<-EOF >$HOME/.config/user-tmpfiles.d/$LSP_DEV_NAME.conf
-d   $XDG_RUNTIME_DIR/clangd   0700   $USER   $USER   4w
-L+  $HOME/.config/clangd   -   -   -   -   $XDG_RUNTIME_DIR/clangd
-d   $XDG_RUNTIME_DIR/mesa   0700   $USER   $USER   -
-L+  $HOME/Projects/mesa/.cache - - - - $XDG_RUNTIME_DIR/mesa
+d   $XDG_RUNTIME_DIR/lsp/amdvlk   0700   $USER   $USER   -
+L+  $HOME/Projects/amdvlk/drivers/xgl/.cache   -   -   -   -   $XDG_RUNTIME_DIR/lsp/amdvlk
+d   $XDG_RUNTIME_DIR/lsp/clangd   0700   $USER   $USER   4w
+L+  $HOME/.config/clangd   -   -   -   -   $XDG_RUNTIME_DIR/lsp/clangd
+d   $XDG_RUNTIME_DIR/lsp/mesa   0700   $USER   $USER   -
+L+  $HOME/Projects/mesa/.cache   -   -   -   -   $XDG_RUNTIME_DIR/lsp/mesa
 EOF
