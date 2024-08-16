@@ -109,7 +109,7 @@ EOF
 cat <<-EOF >$HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.desktop
 [Desktop Entry]
 Name=development directory settings
-Exec=/usr/bin/env bash $HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.sh
+Exec=/usr/bin/bash $HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.sh
 Type=Application
 Categories=Development;Utility;
 X-KDE-autostart-phase=2
@@ -132,7 +132,7 @@ DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; e
 RUNNER_OPTIONS="--jobs $(perl -e "print int($(( $(lscpu -e |wc -l) - 1 )) * 0.8)") --timeout 240.0"
 DEQP_OPTIONS='--deqp-log-images=disable --deqp-log-shader-sources=disable --deqp-log-decompiled-spirv=disable --deqp-shadercache=disable'
 RESULT_FILES=(
-    git-sha1.txt
+    #git-sha1.txt
     testlist.txt
 )
 
@@ -215,8 +215,8 @@ for glapi in \${deqp_runner_set[@]}; do
         ls -1 \${case_lists[@]} |sed "s~\$RUNNER_DIR/mustpass/~~g" >testlist.txt
         tar -H pax -cf - {failures,results}.csv \$(eval echo \${RESULT_FILES[@]}) \${ext_files[@]} | \\
             zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
-    done
-done
+    done # driver_vendor_set loop end
+done # deqp_runner_set loop end
 EOF
 
 
@@ -271,7 +271,7 @@ EOF
 
 
 ### LSP temp files
-LSP_DEV_NAME=lsp.$USR
+LSP_DEV_NAME=lsp.$USER
 cat <<-EOF >$HOME/.config/user-tmpfiles.d/$LSP_DEV_NAME.conf
 d   $XDG_RUNTIME_DIR/clangd   0700   $USER   $USER   4w
 L+  $HOME/.config/clangd   -   -   -   -   $XDG_RUNTIME_DIR/clangd
