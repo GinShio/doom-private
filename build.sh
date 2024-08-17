@@ -27,18 +27,24 @@ CMAKE_OPTIONS=(
 ### mesa
 git clone https://gitlab.freedesktop.org/mesa/mesa.git $HOME/Projects/mesa
 CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
-    meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build \
+    meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_rel \
     --libdir=lib64 --prefix $HOME/.local -Dbuildtype=release \
     -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
-meson compile -C $HOME/Projects/mesa/_build && meson install -C $_
+meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C $_
+CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
+    meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_dbg \
+    --libdir=lib64 --prefix $HOME/Projects/mesa/_build/_dbg -Dbuildtype=debug \
+    -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
+    -Dgallium-opencl=disabled -Dgallium-rusticl=false
+meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C $_
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/local/lib/pkgconfig \
     CC='ccache gcc -m32' CXX='ccache g++ -m32' LDFLAGS='-fuse-ld=mold -m32' \
-    meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build32 \
+    meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_rel32 \
     --libdir=lib --prefix $HOME/.local -Dbuildtype=release \
     -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
-meson compile -C $HOME/Projects/mesa/_build32 && meson install -C $_
+meson compile -C $HOME/Projects/mesa/_build/_rel32 && meson install -C $_
 # MESA_ROOT=$HOME/.local \
 #     VK_DRIVER_FILES=$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:$MESA_ROOT/share/vulkan/icd.d/radeon_icd.i686.json \
 #     LD_LIBRARY_PATH=$MESA_ROOT/lib64:$MESA_ROOT/lib \
@@ -240,6 +246,11 @@ drivers=(
     #\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)  # mesa
     #$HOME/.local/lib64/dri/radeonsi_dri.so
 )
+
+git -C $HOME/Projects/mesa pull --all --prune
+meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C $_
+meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C $_
+meson compile -C $HOME/Projects/mesa/_build/_rel32 && meson install -C $_
 
 for driver in \${drivers[@]}; do
     if ! [ -e \$driver ] || [ \$now_timestamps -ge \$(stat -c "%Y" "\$driver") ]; then
