@@ -88,7 +88,8 @@ sudo -E zypper in -y cross-{aarch64,arm,ppc64,ppc64le,riscv64,s390x}-{binutils,g
 sudo -E zypper in -y Mesa-dri-devel Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{,-32bit} Mesa-libRusticlOpenCL \
     Mesa-vulkan-device-select{,-32bit} Mesa-vulkan-overlay{,-32bit} \
     Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit}
-sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel{,-32bit} libclc libLLVMSPIRVLib-devel rust-bindgen
+sudo -E zypper in -y clang-devel llvm-devel spirv-tools-devel{,-32bit} readline-devel{,-32bit} \
+    libclc libLLVMSPIRVLib-devel rust-bindgen
 sudo -E zypper in -y libdrm-devel{,-32bit} libelf-devel{,-32bit} libexpat-devel{,-32bit} libglvnd-devel{,-32bit} \
     libva-devel{,-32bit} libvdpau-devel{,-32bit} waffle-devel
 sudo -E zypper in -y wine-devel
