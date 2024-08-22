@@ -151,11 +151,12 @@ for glapi in \${deqp_runner_set[@]}; do
             case_lists=(
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/compute.txt
-                #\$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/image/{depth-stencil,load-store,sample,store}*.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/fragment-{operations,shader-interlock,shading-barycentric,shading-rate}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/image/*.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/monolithic.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{ray-tracing-pipeline,ray-query}.txt
-                #\$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,robustness}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{ssbo,texture,ubo}.txt
             )
