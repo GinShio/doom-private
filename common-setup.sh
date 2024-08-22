@@ -37,7 +37,7 @@ cat <<-EOF |sudo tee -a /etc/sysctl.conf
 # See sysctl.conf(5), sysctl.d(5) and sysctl(8) for more information
 #
 ####
-vm.swappiness=10
+vm.swappiness=20
 EOF
 cat <<-EOF |sudo tee -a /etc/systemd/logind.conf.d/runtime-dir.conf
 ####
@@ -52,7 +52,7 @@ cat <<-EOF |sudo tee -a /etc/systemd/logind.conf.d/runtime-dir.conf
 # 100% not work: https://github.com/systemd/systemd/blob/a1b2c92d8290c76a29ccd0887a92ac064e1bb5a1/src/login/logind-user.c#L860
 
 [Login]
-RuntimeDirectorySize=${SETUP_SWAPSIZE}G
+RuntimeDirectorySize=99%
 EOF
 sudo sysctl -p
 sudo systemctl enable --now systemd-tmpfiles-clean
