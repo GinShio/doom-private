@@ -135,95 +135,133 @@ RUNNER_DIR=\$XDG_RUNTIME_DIR/runner
 SUFFIX=_\$(date --iso-8601="date")
 
 DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; exit}')
-RUNNER_OPTIONS="--jobs $(perl -e "print int($(( $(lscpu -e |wc -l) - 1 )) * 0.8)") --timeout 240.0"
-DEQP_OPTIONS='--deqp-log-images=disable --deqp-log-shader-sources=disable --deqp-log-decompiled-spirv=disable --deqp-shadercache=disable'
-RESULT_FILES=(
-    #git-sha1.txt
-    testlist.txt
-)
+AVAILABLE_CPUS_CNT=$(perl -e "print int($(( $(lscpu -e |wc -l) - 1 )) * 0.8)")
+DRIVER_VENDOR_SET=(llpc mesa)
+TEST_KITS=(deqp piglit)
 
-deqp_runner_set=(vk)
-driver_vendor_set=(llpc)
-for glapi in \${deqp_runner_set[@]}; do
-    case \$glapi in
-        vk)
-            exe_name=deqp-vk
-            case_lists=(
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/compute.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/fragment-{operations,shader-interlock,shading-barycentric,shading-rate}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/image/*.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/monolithic.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{ray-tracing-pipeline,ray-query}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,robustness}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{ssbo,texture,ubo}.txt
-            )
-            ext_files=(dEQP-VK.info.device)
-            ext_runner_options=(
-                "--tests-per-group 4096"
-            )
-            ext_deqp_options=()
-            ;;
-        gl)
-            exe_name=glcts
-            case_lists=(
-                \$RUNNER_DIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
-                \$RUNNER_DIR/deqp/mustpass/gl{,es}/khronos_mustpass/main/*-main.txt
-            )
-            ext_files=()
-            ext_runner_options=()
-            ext_deqp_options=(
-                --deqp-gl-config-name=rgba8888d24s8ms0
-                --deqp-surface-{height,width}=256
-                --deqp-visibility=hidden
-            )
-            ;;
-        *)
-            exit -1
-            ;;
-    esac
-    for vendor in \${driver_vendor_set[@]}; do
-        case \$vendor in
-            mesa)
-                MESA_ROOT=$HOME/.local
-                env_lists=(
-                    VK_ICD_FILENAMES=\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.i686.json
-                    LD_LIBRARY_PATH=\$MESA_ROOT/lib64:\$MESA_ROOT/lib
-                    LIBGL_DRIVERS_PATH=\$MESA_ROOT/lib64/dri:\$MESA_ROOT/lib/dri
-                    MESA_LOADER_DRIVER_OVERRIDE=radeonsi
-                    RADV_DEBUG=nocache
-                    AMD_DEBUG=
-                    NIR_DEBUG=
+function test_kits_deqp() {
+    deqp_runner_set=(vk gl)
+    deqp_options='--deqp-log-images=disable --deqp-log-shader-sources=disable --deqp-log-decompiled-spirv=disable --deqp-shadercache=disable'
+    result_files=(
+        flakes.txt
+        #git-sha1.txt
+        testlist.txt
+    )
+    for glapi in \${deqp_runner_set[@]}; do
+        case \$glapi in
+            vk)
+                exe_name=deqp-vk
+                case_lists=(
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/compute.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/fragment-{operations,shader-interlock,shading-barycentric,shading-rate}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/image/*.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/{fast-linked-library,monolithic,pipeline-library}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/{ray-tracing-pipeline,ray-query}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,robustness}.txt
+                    \$RUNNER_DIR/deqp/mustpass/vk-default/{ssbo,texture,ubo}.txt
                 )
+                ext_files=(dEQP-VK.info.device)
+                runner_options=(
+                    "--jobs \$AVAILABLE_CPUS_CNT"
+                    "--tests-per-group 4096"
+                    "--timeout 240.0"
+                )
+                ext_deqp_options=()
                 ;;
-            llpc)
-                env_lists=(
-                    VK_ICD_FILENAMES=$HOME/Projects/amdvlk/_icd/rel.json
+            gl)
+                exe_name=glcts
+                case_lists=(
+                    \$RUNNER_DIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
+                    \$RUNNER_DIR/deqp/mustpass/gl{,es}/khronos_mustpass/main/*-main.txt
+                )
+                ext_files=()
+                runner_options=(
+                    "--jobs \$(( \$AVAILABLE_CPUS_CNT < 5 ? \$AVAILABLE_CPUS_CNT : 4 ))"
+                    "--timeout 300.0"
+                )
+                ext_deqp_options=(
+                    --deqp-gl-config-name=rgba8888d24s8ms0
+                    --deqp-surface-{height,width}=256
+                    --deqp-visibility=hidden
                 )
                 ;;
             *)
                 exit -1
                 ;;
         esac
-
         output_dir=\${vendor}_deqp-\${glapi}\${SUFFIX}
         tarball_name=deqp-\${glapi}_\${DEVICE_ID}\${SUFFIX}
         \$RUNNER_DIR/deqp-runner run \\
-            \$RUNNER_OPTIONS \${ext_runner_options[@]} \\
+            \${runner_options[@]} \\
             --deqp \$RUNNER_DIR/deqp/\$exe_name \\
             --output \$RUNNER_DIR/baseline/\$output_dir \\
             --caselist \${case_lists[@]} \\
             --env \${env_lists[@]} \\
             -- \\
-            \$DEQP_OPTIONS \${ext_deqp_options[@]}
+            \$deqp_options \${ext_deqp_options[@]}
         cd \$RUNNER_DIR/baseline/\$output_dir
-        ls -1 \${case_lists[@]} |sed "s~\$RUNNER_DIR/mustpass/~~g" >testlist.txt
-        tar -H pax -cf - {failures,results}.csv \$(eval echo \${RESULT_FILES[@]}) \${ext_files[@]} | \\
+        ls -1 \${case_lists[@]} |sed "s~\$RUNNER_DIR/deqp/mustpass/~~g" >testlist.txt
+        awk -F, '\$2 == "Flake"{print \$1}' results.csv >flakes.txt
+        tar -H pax -cf - {failures,results}.csv \$(eval echo \${result_files[@]}) \${ext_files[@]} | \\
             zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
-    done # driver_vendor_set loop end
-done # deqp_runner_set loop end
+    done # deqp_runner_set loop end
+} # test_kits_deqp function end
+
+function test_kits_piglit() {
+    output_dir=\${vendor}_piglit-\${SUFFIX}
+    tarball_name=piglit_\${DEVICE_ID}\${SUFFIX}
+    runner_options=(
+        "--jobs \$(( \$AVAILABLE_CPUS_CNT < 5 ? \$AVAILABLE_CPUS_CNT : 4 ))"
+        "--timeout 300"
+    )
+    result_files=(
+        flakes.txt
+        #git-sha1.txt
+    )
+    \$RUNNER_DIR/piglit-runner run \\
+        \${runner_options[@]} \\
+        --piglit-folder \$RUNNER_DIR/piglit \\
+        --output \$RUNNER_DIR/baseline/\$output_dir \\
+        --env \${env_lists[@]} \\
+        --profile quick \\
+        -- \\
+
+    cd \$RUNNER_DIR/baseline/\$output_dir
+    awk -F, '\$2 == "Flake"{print \$1}' results.csv >flakes.txt
+    tar -H pax -cf - {failures,results}.csv \$(eval echo \${result_files[@]}) | \\
+        zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
+} # test_kits_piglit function end
+
+for vendor in \${DRIVER_VENDOR_SET[@]}; do
+    case \$vendor in
+        mesa)
+            MESA_ROOT=$HOME/.local
+            env_lists=(
+                VK_ICD_FILENAMES=\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.i686.json
+                LD_LIBRARY_PATH=\$MESA_ROOT/lib64:\$MESA_ROOT/lib
+                LIBGL_DRIVERS_PATH=\$MESA_ROOT/lib64/dri:\$MESA_ROOT/lib/dri
+                MESA_LOADER_DRIVER_OVERRIDE=radeonsi
+                RADV_DEBUG=nocache
+                AMD_DEBUG=
+                NIR_DEBUG=
+            )
+            ;;
+        llpc)
+            env_lists=(
+                VK_ICD_FILENAMES=$HOME/Projects/amdvlk/_icd/rel.json
+            )
+            ;;
+        *)
+            exit -1
+            ;;
+    esac
+    for testkit in \${TEST_KITS[@]}; do
+        test_kits_\$testkit
+    done # test kits loop end
+done # driver_vendor_set loop end
 EOF
 
 
@@ -244,7 +282,7 @@ export PATH=$HOME/.local/bin:\$PATH
 now_timestamps=\$(date +%s)
 drivers=(
     \$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)  # amdvlk
-    #\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)  # mesa
+    \$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)  # mesa
     #$HOME/.local/lib64/dri/radeonsi_dri.so
 )
 
