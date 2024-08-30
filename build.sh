@@ -12,6 +12,7 @@ git config --global user.email "$USEREMAIL"
 
 CMAKE_OPTIONS=(
   "-GNinja Multi-Config"
+  -DCMAKE_DEFAULT_BUILD_TYPE=Release
   -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold
   -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=mold
   -DCMAKE_MODULE_LINKER_FLAGS=-fuse-ld=mold
@@ -22,35 +23,39 @@ CMAKE_OPTIONS=(
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
   -DCMAKE_CXX_COMPILER=g++
   -DCMAKE_CXX_FLAGS_INIT=-fdiagnostics-color=always
+  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
 )
 
 ### mesa
 git clone https://gitlab.freedesktop.org/mesa/mesa.git $HOME/Projects/mesa
-CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
+CC='ccache gcc' CXX='ccache g++' CFLAGS='-flto' CXXFLAGS='-flto' LDFLAGS='-fuse-ld=mold' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_rel \
     --libdir=lib64 --prefix $HOME/.local -Dbuildtype=release \
-    -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
+    -Dgallium-drivers=radeonsi,zink,llvmpipe -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
 meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C $_
 CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_dbg \
     --libdir=lib64 --prefix $HOME/Projects/mesa/_build/_dbg -Dbuildtype=debug \
-    -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
+    -Dgallium-drivers=radeonsi,zink,llvmpipe -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
 meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C $_
 PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/local/lib/pkgconfig \
-    CC='ccache gcc -m32' CXX='ccache g++ -m32' LDFLAGS='-fuse-ld=mold -m32' \
+    CC='ccache gcc -m32' CXX='ccache g++ -m32' CFLAGS='-flto' CXXFLAGS='-flto' LDFLAGS='-m32 -fuse-ld=mold' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_rel32 \
     --libdir=lib --prefix $HOME/.local -Dbuildtype=release \
-    -Dgallium-drivers=radeonsi,zink,swrast -Dvulkan-drivers=amd,swrast \
+    -Dgallium-drivers=radeonsi,zink,llvmpipe -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
 meson compile -C $HOME/Projects/mesa/_build/_rel32 && meson install -C $_
 # MESA_ROOT=$HOME/.local \
-#     VK_DRIVER_FILES=$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:$MESA_ROOT/share/vulkan/icd.d/radeon_icd.i686.json \
-#     LD_LIBRARY_PATH=$MESA_ROOT/lib64:$MESA_ROOT/lib \
-#     LIBGL_DRIVERS_PATH=$MESA_ROOT/lib64/dri:$MESA_ROOT/lib/dri MESA_LOADER_DRIVER_OVERRIDE=radeonsi \
-#     RADV_DEBUG=nocache,shaders AMD_DEBUG= NIR_DEBUG= \
-#     dosomething
+#       LD_LIBRARY_PATH=$MESA_ROOT/lib64:$MESA_ROOT/lib LIBGL_DRIVERS_PATH=$MESA_ROOT/lib64/dri:$MESA_ROOT/lib/dri \
+#       VK_DRIVER_FILES=$(eval echo "$MESA_ROOT/share/vulkan/icd.d/{radeon,lvp}_icd.{x86_64,i686}.json" |tr ' ' ':') \
+#       MESA_SHADER_CACHE_DISABLE=true MESA_LOADER_DRIVER_OVERRIDE=radeonsi LIBGL_ALWAYS_SOFTWARE= VK_LOADER_DRIVERS_DISABLE= \
+#       RADV_DEBUG=nocache RADV_PERFTEST= \
+#       AMD_DEBUG= \
+#       LP_DEBUG= LP_PERF= \
+#       ACO_DEBUG= NIR_DEBUG= \
+#       dosomething
 
 ### vk-gl-cts
 # git clone https://github.com/KhronosGroup/VK-GL-CTS.git $HOME/Projects/deqp
@@ -219,7 +224,7 @@ function test_kits_piglit() {
     output_dir=\${vendor}_piglit-\${SUFFIX}
     tarball_name=piglit_\${DEVICE_ID}\${SUFFIX}
     runner_options=(
-        "--jobs 1"
+        "--jobs 2"
         "--timeout 300"
     )
     result_files=(
@@ -300,6 +305,7 @@ meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C \$_
 meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C \$_
 meson compile -C $HOME/Projects/mesa/_build/_rel32 && meson install -C \$_
 
+declare -a test_infos=()
 for elem in \${drivers_tuple[@]}; do
     IFS=',' read vendor glapi testkits driver <<< "\${elem}"
     if ! [ -e \$driver ] || [ \$now_timestamps -ge \$(stat -c "%Y" "\$driver") ]; then
@@ -307,7 +313,7 @@ for elem in \${drivers_tuple[@]}; do
     fi
     test_infos+=("\$vendor,\$glapi,\$testkits")
 done
-tmux send-keys -t runner "bash $HOME/.config/autostart/$DAILY_TEST_NAME.sh \\"\${test_infos[*]}\\"" ENTER
+tmux send-keys -t runner "bash $HOME/.config/autostart/$DAILY_TEST_NAME.sh '\${test_infos[*]}'" ENTER
 
 #systemctl reboot
 EOF
@@ -316,27 +322,4 @@ cat <<-EOF |sudo tee /var/spool/cron/tabs/$USER
 # ($(mktemp) installed on $(date --iso-8601="seconds"))
 # (Cronie version 4.2)
 0 6 * * * /usr/bin/bash $HOME/.config/autostart/$DAILY_SCRIPT_NAME.sh
-EOF
-
-
-
-### user temp files
-cat <<-EOF >$HOME/.config/user-tmpfiles.d/$DEVELOP_AUTOSTART_NAME.conf
-d   $XDG_RUNTIME_DIR/issues   0700   $USER   $USER   2w
-d   $XDG_RUNTIME_DIR/runner/baseline   0700   $USER   $USER   3d
-d   $XDG_RUNTIME_DIR/runner/deqp   0700   $USER   $USER   -
-d   $XDG_RUNTIME_DIR/runner/piglit   0700   $USER   $USER   -
-EOF
-
-
-
-### LSP temp files
-LSP_DEV_NAME=lsp.$USER
-cat <<-EOF >$HOME/.config/user-tmpfiles.d/$LSP_DEV_NAME.conf
-d   $XDG_RUNTIME_DIR/lsp/amdvlk   0700   $USER   $USER   -
-L+  $HOME/Projects/amdvlk/drivers/xgl/.cache   -   -   -   -   $XDG_RUNTIME_DIR/lsp/amdvlk
-d   $XDG_RUNTIME_DIR/lsp/clangd   0700   $USER   $USER   4w
-L+  $HOME/.config/clangd   -   -   -   -   $XDG_RUNTIME_DIR/lsp/clangd
-d   $XDG_RUNTIME_DIR/lsp/mesa   0700   $USER   $USER   -
-L+  $HOME/Projects/mesa/.cache   -   -   -   -   $XDG_RUNTIME_DIR/lsp/mesa
 EOF
