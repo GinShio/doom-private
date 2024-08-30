@@ -30,26 +30,19 @@ CMAKE_OPTIONS=(
 git clone https://gitlab.freedesktop.org/mesa/mesa.git $HOME/Projects/mesa
 CC='ccache gcc' CXX='ccache g++' CFLAGS='-flto' CXXFLAGS='-flto' LDFLAGS='-fuse-ld=mold' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_rel \
-    --libdir=lib64 --prefix $HOME/.local -Dbuildtype=release \
+    --libdir=lib --prefix $HOME/.local -Dbuildtype=release \
     -Dgallium-drivers=radeonsi,zink,llvmpipe -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
 meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C $_
 CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
     meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_dbg \
-    --libdir=lib64 --prefix $HOME/Projects/mesa/_build/_dbg -Dbuildtype=debug \
+    --libdir=lib --prefix $HOME/Projects/mesa/_build/_dbg -Dbuildtype=debug \
     -Dgallium-drivers=radeonsi,zink,llvmpipe -Dvulkan-drivers=amd,swrast \
     -Dgallium-opencl=disabled -Dgallium-rusticl=false
 meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C $_
-PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/local/lib/pkgconfig \
-    CC='ccache gcc -m32' CXX='ccache g++ -m32' CFLAGS='-flto' CXXFLAGS='-flto' LDFLAGS='-m32 -fuse-ld=mold' \
-    meson setup $HOME/Projects/mesa $HOME/Projects/mesa/_build/_rel32 \
-    --libdir=lib --prefix $HOME/.local -Dbuildtype=release \
-    -Dgallium-drivers=radeonsi,zink,llvmpipe -Dvulkan-drivers=amd,swrast \
-    -Dgallium-opencl=disabled -Dgallium-rusticl=false
-meson compile -C $HOME/Projects/mesa/_build/_rel32 && meson install -C $_
 # MESA_ROOT=$HOME/.local \
-#       LD_LIBRARY_PATH=$MESA_ROOT/lib64:$MESA_ROOT/lib LIBGL_DRIVERS_PATH=$MESA_ROOT/lib64/dri:$MESA_ROOT/lib/dri \
-#       VK_DRIVER_FILES=$(eval echo "$MESA_ROOT/share/vulkan/icd.d/{radeon,lvp}_icd.{x86_64,i686}.json" |tr ' ' ':') \
+#       LD_LIBRARY_PATH=$MESA_ROOT/lib LIBGL_DRIVERS_PATH=$MESA_ROOT/lib/dri \
+#       VK_DRIVER_FILES=$(eval echo "$MESA_ROOT/share/vulkan/icd.d/{radeon,lvp}_icd.x86_64.json" |tr ' ' ':') \
 #       MESA_SHADER_CACHE_DISABLE=true MESA_LOADER_DRIVER_OVERRIDE=radeonsi LIBGL_ALWAYS_SOFTWARE= VK_LOADER_DRIVERS_DISABLE= \
 #       RADV_DEBUG=nocache RADV_PERFTEST= \
 #       AMD_DEBUG= \
@@ -253,9 +246,9 @@ for elem in \${test_infos[@]}; do
         mesa)
             MESA_ROOT=$HOME/.local
             env_lists=(
-                VK_ICD_FILENAMES=\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.i686.json
-                LD_LIBRARY_PATH=\$MESA_ROOT/lib64:\$MESA_ROOT/lib
-                LIBGL_DRIVERS_PATH=\$MESA_ROOT/lib64/dri:\$MESA_ROOT/lib/dri
+                VK_ICD_FILENAMES=\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:\$MESA_ROOT/share/vulkan/icd.d/lvp_icd.x86_64.json
+                LD_LIBRARY_PATH=\$MESA_ROOT/lib
+                LIBGL_DRIVERS_PATH=\$MESA_ROOT/lib/dri
                 MESA_LOADER_DRIVER_OVERRIDE=radeonsi
                 RADV_DEBUG=nocache
                 AMD_DEBUG=

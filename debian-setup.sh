@@ -1,5 +1,5 @@
 # update source
-sudo apt install apt-transport-https ca-certificates
+sudo -E apt install apt-transport-https ca-certificates
 cat <<-EOF |sudo tee /etc/apt/sources.list
 deb https://mirrors.shanghaitech.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
 # deb-src https://mirrors.shanghaitech.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
@@ -16,37 +16,43 @@ deb https://mirrors.shanghaitech.edu.cn/debian/ bookworm-backports main contrib 
 deb https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
 # deb-src https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
 EOF
-sudo dpkg --add-architecture i386 && sudo -E apt update && sudo apt dist-upgrade -y
+sudo dpkg --add-architecture i386 && sudo -E apt update && sudo -E apt dist-upgrade -y
 sudo apt purge akonadi-server mariadb-common mariadb-server mariadb-client redis
 sudo apt-mark hold akonadiconsole
 
 # Common environment
-sudo -E apt install -y bat curl dash emacs fd-find fish fzf moreutils git git-doc git-lfs ripgrep sshpass wget \
-    7zip aspell bison figlet flex neofetch privoxy proxychains re2c sqlite3 unzip zip zstd \
-    graphviz imagemagick-6-common inkscape mpv obs-studio telegram-desktop osdlyrics \
-    firefox-esr thunderbird steam-installer steam-libs flatpak tmux xsltproc xmlto cifs-utils dwarves
+sudo -E apt install -y \
+    7zip aspell bat bison cifs-utils curl dash dwarves emacs fd-find figlet firefox-esr fish flatpak flex fzf \
+    git{,-doc,-lfs} graphviz imagemagick-6-common inkscape moreutils mpv neofetch obs-studio osdlyrics privoxy \
+    proxychains4 re2c ripgrep sqlite3 sshpass steam-{installer,lib} telegram-desktop thunderbird tmux unzip wget \
+    xmlto xsltproc zip zstd
 
 # kDE environment
-sudo apt install -y fcitx5 fcitx5-rime krdc krfb kdeconnect partitionmanager freerdp3-wayland
+sudo -E apt install -y \
+    fcitx5{,-rime} filelight freerdp3-wayland kdeconnect krdc krfb partitionmanager
 
 # C++ environment
-sudo -E apt install -y build-essential binutils gdb gcc g++ g++-multilib gcovr \
-    clang clangd clang-tools clang-format clang-tidy llvm lldb lld \
-    automake cmake extra-cmake-modules meson ninja-build ccache mold lcov doxygen
 sudo -E apt install -y \
-    freeglut3-dev{,:i386} libboost1.81-all-dev libc++-dev libc++abi-dev libcaca-dev{,:i386} libcairo2-dev{,:i386} \
-    libglfw3-{dev,wayland} libnanomsg-dev libncurses5-dev libpciaccess-dev{,:i386} libpoco-dev libsdl2-dev{,:i386} \
-    libssl-dev{,:i386} libstb-dev libtinyobjloader-dev libudev-dev{,:i386} libva-dev{,:i386} libvdpau-dev{,:i386} \
-    libxml2-dev{,:i386} libzip-dev{,:i386} libzstd-dev{,:i386} xutils-dev
+    binutils build-essential gcc g++ g++-multilib gcovr gdb \
+    clang{,d,-format,-tidy,-tools} libclang-dev llvm{,-dev} lldb lld \
+    ccache cmake doxygen extra-cmake-modules lcov meson mold ninja-build
+sudo -E apt install -y \
+    libboost1.81-all-dev libc++{,abi}-dev libcaca-dev{,:i386} libelf-dev{,:i386} libexpat1-dev{,:i386} libnanomsg-dev \
+    libncurses5-dev libpciaccess-dev{,:i386} libpoco-dev libreadline-dev{,:i386} libssl-dev{,:i386} libstb-dev \
+    libtinyobjloader-dev libudev-dev{,:i386} libunwind-dev{,:i386} libxml2-dev{,:i386} libzip-dev{,:i386} \
+    libzstd-dev{,:i386}
 
 # Rust environment
-sudo -E apt install -y cargo rust-all
+sudo -E apt install -y cargo rust-all librust-bindgen-dev
 
 # Java environment
-sudo -E apt install -y openjdk-17-jdk openjdk-17-jre
+sudo -E apt install -y openjdk-17-{jdk,jre}
 
 # Python3 environment
 sudo -E apt install -y python3 python3-virtualenv python3-doc pylint pipx
+sudo -E apt install -y \
+    python3-distutils-extra python3-jinja2 python3-lxml python3-lz4 python3-mako python3-numpy python3-pybind11 \
+    python3-pyelftools python3-pytest python3-ruamel.yaml python3-setuptools python3-u-msgpack
 pipx install conan
 
 # NodeJS environment
@@ -55,24 +61,31 @@ sudo -E apt install -y nodejs node-builtins node-util yarnpkg
 # Beam environment
 sudo -E apt install -y erlang elixir
 
-# Working dependence
-sudo -E apt install -y python3-pyelftools python3-ruamel.yaml python3-u-msgpack \
-    python3-distutils-extra python3-numpy python3-mako python3-jinja2 python3-setuptools python3-lxml
-
 # Graphics
-sudo -E apt install -y piglit mesa-utils glslang-{dev,tools} vulkan-tools libvulkan-dev spirv-tools spirv-cross
-sudo -E apt install -y libx11-dev{,:i386} libx11-xcb-dev{,:i386} libxcb-dri2-0-dev{,:i386} \
-    libxcb-dri3-dev{,:i386} libxcb-glx0-dev{,:i386} libxcb-present-dev{,:i386} libxcb-shm0-dev{,:i386} \
-    libxcomposite-dev{,:i386} libxcursor-dev{,:i386} libxdamage-dev{,:i386} libxext-dev{,:i386} libxfixes-dev{,:i386} \
-    libxi-dev{,:i386} libxinerama-dev{,:i386} libxkbcommon-dev{,:i386}   libxrandr-dev{,:i386} libxrender-dev{,:i386} \
+sudo -E apt install -y \
+    freeglut3-dev{,:i386} glslang-{dev,tools} libcairo2-dev{,:i386} libdmx-dev libdrm-dev{,:i386} \
+    libfontenc-dev{,:i386} libglfw3-{dev,wayland} libglvnd-dev{,:i386} \
+    libllvmspirvlib-$(llvm-config --version |awk -F. '{print $1}')-dev libsdl2-dev{,:i386} libva-dev{,:i386} \
+    libvdpau-dev{,:i386} libwaffle-dev{,:i386} xutils-dev
+sudo -E apt install -y \
+    libx11-dev{,:i386} libx11-xcb-dev{,:i386} libxcb-dri2-0-dev{,:i386} libxcb-dri3-dev{,:i386} \
+    libxcb-glx0-dev{,:i386} libxcb-present-dev{,:i386} libxcb-shm0-dev{,:i386} libxcomposite-dev{,:i386} \
+    libxcursor-dev{,:i386} libxdamage-dev{,:i386} libxext-dev{,:i386} libxfixes-dev{,:i386} libxi-dev{,:i386} \
+    libxinerama-dev{,:i386} libxkbcommon-dev{,:i386}   libxrandr-dev{,:i386} libxrender-dev{,:i386} \
     libxshmfence-dev{,:i386} libxxf86vm-dev{,:i386} x11proto-dev x11proto-gl-dev xorg-dev xserver-xorg-dev
-sudo -E apt install -y libwayland-dev{,:i386} wayland-protocols waylandpp-dev libwayland-egl-backend-dev
+sudo -E apt install -y \
+    libwayland-dev{,:i386} libwayland-egl-backend-dev waylandpp-dev wayland-protocols
+sudo -E apt install -y \
+    libegl1-mesa-dev{,:i386} libgl1-mesa-dev{,:i386} libvulkan-dev mesa-common-dev{,:i386} mesa-utils piglit \
+    spirv-{cross,tools} vulkan-tools vulkan-validationlayers-dev
 
-# Mesa
-sudo -E apt install -y mesa-common-dev{,:i386} libgl1-mesa-dev{,:i386} libegl1-mesa-dev{,:i386}
-sudo -E apt install -y vulkan-validationlayers-dev libclang-dev llvm-dev \
-    libllvmspirvlib-$(llvm-config --version |awk -F. '{print $1}')-dev librust-bindgen-dev
-sudo -E apt install -y libdrm-dev{,:i386} libelf-dev{,:i386} libglvnd-dev{,:i386} libwaffle-dev{,:i386}
+# Virtualization & Containerization & Cross compilation
+sudo -E api install -y \
+    libvirt-{common,clients,daemon,dbus,doc} \
+    qemu{,-kvm,-system,-user,-utils} libvirt-clients-qemu libvirt-daemon-driver-qemu \
+    qemu-efi{,-aarch64,-arm,-riscv64} qemu-system{,arm,common,data,ppc,x86} \
+    lxd lxc libvirt-daemon-driver-lxc podman podman-docker buildah \
+    cross-gcc-dev crossbuild-essential-{arm64,armhf,ppc64el,s390x}
 
 # Font
 sudo -E apt install -y fonts-wqy-{microhei,zenhei}

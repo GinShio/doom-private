@@ -4,11 +4,11 @@
 sudo usermod -aG kvm,libvirt,render,video $(whoami)
 
 # Directories
-mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos,.issues}
+mkdir -p $HOME/{Desktop,Documents,Downloads,Music,Pictures,Projects,Public,Templates,Videos}
 mkdir -p $HOME/.local/{bin,share,lib}
 mkdir -p $HOME/.local/share/{fonts,applications}
 mkdir -p $HOME/.config/{user-tmpfiles.d,autostart}
-cat <<-EOF |tee $HOME/.config/user-dirs.dirs
+cat <<-EOF >$HOME/.config/user-dirs.dirs
 XDG_DESKTOP_DIR="$HOME/Desktop"
 XDG_DOCUMENTS_DIR="$HOME/Documents"
 XDG_DOWNLOAD_DIR="$HOME/Downloads"
@@ -96,13 +96,6 @@ EOF
 #flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 sudo flatpak remote-modify flathub --url=https://mirror.sjtu.edu.cn/flathub
 
-# KDE wallet
-sudo -E zypper in -y pam_kwallet
-cat <<-EOF |sudo tee -a /etc/pam.d/sddm
-auth     optional       pam_kwallet5.so
-session  optional       pam_kwallet5.so auto_start
-EOF
-
 # Virtualization & Containerization & Cross compilation
 sudo systemctl enable --now libvirtd
 sudo virsh net-autostart default
@@ -116,7 +109,7 @@ sudo systemctl enable --now podman
 
 # SSH
 mkdir -p $HOME/.ssh
-cat <<-EOF |tee $HOME/.ssh/config
+cat <<-EOF >$HOME/.ssh/config
 # https://docs.github.com/en/authentication/troubleshooting-ssh/using-ssh-over-the-https-port
 Host github github.com
     Hostname ssh.github.com
@@ -168,14 +161,14 @@ AutoEnable=true
 EOF
 
 # screen
-cat <<-EOF |tee $HOME/.screenrc
+cat <<-EOF >$HOME/.screenrc
 escape ^Tt
 autodetach on
 defshell /bin/fish
 EOF
 
 # tmux
-cat <<-EOF |tee $HOME/.tmux.conf
+cat <<-EOF >$HOME/.tmux.conf
 unbind C-b
 set -g prefix C-t
 bind-key C-t send-prefix
@@ -187,7 +180,7 @@ set-option -g default-shell "/bin/fish"
 EOF
 
 # Programming
-ccache -M 512G
+ccache -M $(df -h |awk '$6=="/"{print $2 * 0.2}')G
 
 # Remote Desktop (not work)
 # x11vnc -storepasswd $HOME/.vnc/passwd

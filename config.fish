@@ -10,6 +10,7 @@ if status is-interactive
     end
 
     function unproxy
+        set -e no_proxy
         set -e http_proxy
         set -e https_proxy
     end
@@ -213,8 +214,9 @@ if status is-interactive
             set -x -g PATH $__ginshio_wsl_path
         case '*'
             function proxy
-                set -x -g http_proxy  "http://localhost:8118"
-                set -x -g https_proxy "http://localhost:8118"
+                set -xg no_proxy "localhost,127.0.0.1,localaddress,.localdomain.com,.cn"
+                set -xg http_proxy  "http://localhost:8118"
+                set -xg https_proxy "http://localhost:8118"
             end
     end
 end

@@ -35,9 +35,6 @@ case $DISTRO_NAME in
     Debian*)
         bash $BASIC_DIR/debian-setup.sh
         ;;
-    Fedora*)
-        bash $BASIC_DIR/fedora-setup.sh
-        ;;
     openSUSE*)
         bash $BASIC_DIR/opensuse-setup.sh
         ;;
@@ -47,15 +44,5 @@ case $DISTRO_NAME in
        ;;
 esac
 bash $BASIC_DIR/common-setup.sh
-bash $BASIC_DIR/common-beautify-setup.sh
-case $SETUP_DESKTOP in
-    kde)
-        bash $BASIC_DIR/kde-beautify-setup.sh
-        ;;
-    *)
-       echo Unknown DE
-       exit 1
-       ;;
-esac
-
-$BASIC_DIR/build.sh
+bash $BASIC_DIR/beautify-setup.sh
+bash $BASIC_DIR/build.sh
