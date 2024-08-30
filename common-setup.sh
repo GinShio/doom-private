@@ -37,7 +37,7 @@ cat <<-EOF |sudo tee -a /etc/sysctl.conf
 # See sysctl.conf(5), sysctl.d(5) and sysctl(8) for more information
 #
 ####
-vm.swappiness=20
+vm.swappiness=30
 EOF
 cat <<-EOF |sudo tee -a /etc/systemd/logind.conf.d/runtime-dir.conf
 ####
@@ -55,6 +55,25 @@ cat <<-EOF |sudo tee -a /etc/systemd/logind.conf.d/runtime-dir.conf
 RuntimeDirectorySize=99%
 EOF
 sudo sysctl -p
+
+# tmpfiles.d
+### user develop directories
+cat <<-EOF >$HOME/.config/user-tmpfiles.d/develop.$USER.conf
+d   $XDG_RUNTIME_DIR/issues   0700   $USER   $USER   2w
+d   $XDG_RUNTIME_DIR/runner/baseline   0700   $USER   $USER   3d
+d   $XDG_RUNTIME_DIR/runner/deqp   0700   $USER   $USER   -
+d   $XDG_RUNTIME_DIR/runner/piglit   0700   $USER   $USER   -
+EOF
+### LSP directories
+cat <<-EOF >$HOME/.config/user-tmpfiles.d/lsp.$USER.conf
+d   $XDG_RUNTIME_DIR/lsp/amdvlk   0700   $USER   $USER   -
+L+  $HOME/Projects/amdvlk/drivers/xgl/.cache   -   -   -   -   $XDG_RUNTIME_DIR/lsp/amdvlk
+d   $XDG_RUNTIME_DIR/lsp/clangd   0700   $USER   $USER   4w
+L+  $HOME/.config/clangd   -   -   -   -   $XDG_RUNTIME_DIR/lsp/clangd
+d   $XDG_RUNTIME_DIR/lsp/mesa   0700   $USER   $USER   -
+L+  $HOME/Projects/mesa/.cache   -   -   -   -   $XDG_RUNTIME_DIR/lsp/mesa
+EOF
+### Enabled
 sudo systemctl enable --now systemd-tmpfiles-clean
 
 # Hosts
@@ -69,6 +88,9 @@ cat <<-EOF |sudo tee -a /etc/sudoers.d/privacy
 Defaults        rootpw
 Defaults        lecture = always # always / never / once
 EOF
+
+# Grub boot arguments
+# amdgpu.gpu_recovery=1 zswap.enabled=1 zswap.compressor=zstd zswap.max_pool_percent=40
 
 # flatpak
 #flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
