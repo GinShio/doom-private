@@ -1,20 +1,18 @@
 # update source
 sudo -E apt install apt-transport-https ca-certificates
-cat <<-EOF |sudo tee /etc/apt/sources.list
-deb https://mirrors.shanghaitech.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
-# deb-src https://mirrors.shanghaitech.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
+source /etc/os-release
+cat <<-EOF |tee /etc/apt/sources.list
+deb https://mirrors.shanghaitech.edu.cn/debian/ ${VERSION_CODENAME} main contrib non-free non-free-firmware
+# deb-src https://mirrors.shanghaitech.edu.cn/debian/ ${VERSION_CODENAME} main contrib non-free non-free-firmware
 
-deb https://mirrors.shanghaitech.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
-# deb-src https://mirrors.shanghaitech.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
+deb https://mirrors.shanghaitech.edu.cn/debian/ ${VERSION_CODENAME}-updates main contrib non-free non-free-firmware
+# deb-src https://mirrors.shanghaitech.edu.cn/debian/ ${VERSION_CODENAME}-updates main contrib non-free non-free-firmware
 
-deb https://mirrors.shanghaitech.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
-# deb-src https://mirrors.shanghaitech.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
+deb https://mirrors.shanghaitech.edu.cn/debian/ ${VERSION_CODENAME}-backports main contrib non-free non-free-firmware
+# deb-src https://mirrors.shanghaitech.edu.cn/debian/ ${VERSION_CODENAME}-backports main contrib non-free non-free-firmware
 
-# deb https://mirrors.shanghaitech.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
-# # deb-src https://mirrors.shanghaitech.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware
-
-deb https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
-# deb-src https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+deb https://mirrors.shanghaitech.edu.cn/debian-security ${VERSION_CODENAME}-security main contrib non-free non-free-firmware
+# deb-src https://mirrors.shanghaitech.edu.cn/debian-security ${VERSION_CODENAME}-security main contrib non-free non-free-firmware
 EOF
 sudo dpkg --add-architecture i386 && sudo -E apt update && sudo -E apt dist-upgrade -y
 sudo apt purge akonadi-server mariadb-common mariadb-server mariadb-client redis
@@ -24,8 +22,8 @@ sudo apt-mark hold akonadiconsole
 sudo -E apt install -y \
     7zip aspell bat bison cifs-utils curl dash dwarves emacs fd-find figlet firefox-esr fish flatpak flex fzf \
     git{,-doc,-lfs} graphviz imagemagick-6-common inkscape moreutils mpv neofetch obs-studio osdlyrics privoxy \
-    proxychains4 re2c ripgrep sqlite3 sshpass steam-{installer,lib} telegram-desktop thunderbird tmux unzip wget \
-    xmlto xsltproc zip zstd
+    proxychains4 qbittorrent re2c ripgrep sqlite3 sshpass steam-{installer,libs} telegram-desktop thunderbird tmux \
+    unzip wget xmlto xsltproc zip zstd
 
 # kDE environment
 sudo -E apt install -y \
@@ -39,7 +37,7 @@ sudo -E apt install -y \
 sudo -E apt install -y \
     libboost1.81-all-dev libc++{,abi}-dev libcaca-dev{,:i386} libelf-dev{,:i386} libexpat1-dev{,:i386} libnanomsg-dev \
     libncurses5-dev libpciaccess-dev{,:i386} libpoco-dev libreadline-dev{,:i386} libssl-dev{,:i386} libstb-dev \
-    libtinyobjloader-dev libudev-dev{,:i386} libunwind-dev{,:i386} libxml2-dev{,:i386} libzip-dev{,:i386} \
+    libtinyobjloader-dev libudev-dev{,:i386} libunwind-14-dev{,:i386} libxml2-dev{,:i386} libzip-dev{,:i386} \
     libzstd-dev{,:i386}
 
 # Rust environment
@@ -81,9 +79,9 @@ sudo -E apt install -y \
 
 # Virtualization & Containerization & Cross compilation
 sudo -E api install -y \
-    libvirt-{common,clients,daemon,dbus,doc} \
-    qemu{,-kvm,-system,-user,-utils} libvirt-clients-qemu libvirt-daemon-driver-qemu \
-    qemu-efi{,-aarch64,-arm,-riscv64} qemu-system{,arm,common,data,ppc,x86} \
+    virt-manager libvirt-{clients,daemon,dbus,doc} libvirt-daemon-system \
+    qemu-{kvm,system,user,utils} libvirt-clients-qemu libvirt-daemon-driver-qemu \
+    qemu-efi{,-aarch64,-arm} qemu-system-{,arm,common,data,ppc,x86} \
     lxd lxc libvirt-daemon-driver-lxc podman podman-docker buildah \
     cross-gcc-dev crossbuild-essential-{arm64,armhf,ppc64el,s390x}
 
