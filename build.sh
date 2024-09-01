@@ -296,7 +296,6 @@ drivers_tuple=(
 git -C $HOME/Projects/mesa pull --all --prune
 meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C \$_
 meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C \$_
-meson compile -C $HOME/Projects/mesa/_build/_rel32 && meson install -C \$_
 
 declare -a test_infos=()
 for elem in \${drivers_tuple[@]}; do
