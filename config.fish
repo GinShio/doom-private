@@ -15,6 +15,32 @@ if status is-interactive
         set -e https_proxy
     end
 
+    function zswap_statistics
+        # Copy from https://unix.stackexchange.com/questions/406936/get-current-zswap-memory-usage-and-statistics.
+        # Authored-by: Вадим Илларионов
+        set -l command_string '
+MDL=/sys/module/zswap
+DBG=/sys/kernel/debug/zswap
+PAGE=$[`cat $DBG/stored_pages`*4096]
+POOL=$[`cat $DBG/pool_total_size`]
+
+Show(){
+    printf "========\n$1\n========\n"
+    grep -R . $2 2>/dev/null |sed "s|.*/||"
+}
+
+Show Settings $MDL
+Show Stats    $DBG
+
+printf "\nCompression ratio: "
+
+[ $POOL -gt 0 ] && {
+     echo "scale=3;$PAGE/$POOL" | bc
+} || echo zswap disabled
+'
+        test $EUID -ne 0 && sudo -- bash -c $command_string || bash -c $command_string
+    end
+
     function __ginshio_command_abbreviation
         #alias cat "lolcat"
         alias clear "clear && echo -en \"\e[3J\""
