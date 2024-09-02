@@ -297,6 +297,8 @@ git -C $HOME/Projects/mesa pull --all --prune
 meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C \$_
 meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C \$_
 
+fd -iHx /usr/bin/rm -rf {} \\; --changed-before 3d --type directory -- . '$XDG_RUNTIME_DIR/runner/baseline'
+
 declare -a test_infos=()
 for elem in \${drivers_tuple[@]}; do
     IFS=',' read vendor glapi testkits driver <<< "\${elem}"
