@@ -244,11 +244,10 @@ for elem in \${test_infos[@]}; do
     IFS=',' read vendor glapi testkits <<< "\${elem}"
     case \$vendor in
         mesa)
-            MESA_ROOT=$HOME/.local
             env_lists=(
-                VK_ICD_FILENAMES=\$MESA_ROOT/share/vulkan/icd.d/radeon_icd.x86_64.json:\$MESA_ROOT/share/vulkan/icd.d/lvp_icd.x86_64.json
-                LD_LIBRARY_PATH=\$MESA_ROOT/lib
-                LIBGL_DRIVERS_PATH=\$MESA_ROOT/lib/dri
+                VK_ICD_FILENAMES=$HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json
+                LD_LIBRARY_PATH=$HOME/.localT/lib
+                LIBGL_DRIVERS_PATH=$HOME/.local/lib/dri
                 MESA_LOADER_DRIVER_OVERRIDE=radeonsi
                 RADV_DEBUG=nocache
                 AMD_DEBUG=
@@ -290,7 +289,7 @@ drivers_tuple=(
     # vendor,glapi,kits,driver
     llpc,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
     mesa,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
-    #mesa,gl,"deqp:piglit",$HOME/.local/lib64/dri/radeonsi_dri.so
+    #mesa,gl,"deqp:piglit",$HOME/.local/lib/dri/radeonsi_dri.so
 ) # drivers tuple declare end
 
 git -C $HOME/Projects/mesa pull --all --prune
