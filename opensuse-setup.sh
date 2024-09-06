@@ -38,8 +38,9 @@ sudo -E zypper in -y \
     libzstd-devel{,-32bit} nanomsg-devel ncurses5-devel{,-32bit} poco-devel readline-devel{,-32bit} stb-devel \
     tinyobjloader-devel zlib-devel{,-32bit}
 
-# Rust environment
+# Rust & Zig environment
 sudo -E zypper in -y cargo rust rust-bindgen
+sudo -E zypper in -y zig zig-libs zls
 
 # Java environment
 sudo -E zypper in -y java-{17,21}-openjdk{,-devel}
