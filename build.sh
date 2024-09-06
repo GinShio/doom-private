@@ -293,11 +293,14 @@ drivers_tuple=(
     #mesa,gl,"deqp:piglit",$HOME/.local/lib/dri/radeonsi_dri.so
 ) # drivers tuple declare end
 
-git -C $HOME/Projects/mesa pull --all --prune 2>/dev/null >/dev/null
+pushd $HOME/Projects/mesa
+{ git fetch --all --prune && git merge --ff-only origin/main; } >/dev/null 2>&1
 if [ \$? -eq 0 ]; then
-    meson compile -C $HOME/Projects/mesa/_build/_rel && meson install -C \$_
-    meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C \$_
+    meson compile -C _build/_rel && meson install --quiet -C \$_
+    meson compile -C _build/_dbg && meson install --quiet -C \$_
 fi
+popd
+
 
 fd -iHx /usr/bin/rm -rf {} \\; --changed-before 3d --type directory -- . '$XDG_RUNTIME_DIR/runner/baseline'
 
