@@ -89,7 +89,8 @@ sudo -E zypper in -y \
     cross-{aarch64,arm,ppc64,ppc64le,riscv64,s390x}-{binutils,gcc14,linux-glibc-devel}
 # riscv64-suse-linux-gcc -march=rv64gc riscv.c
 # clang --target=riscv64-suse-linux --sysroot=/usr/riscv64-suse-linux/sys-root -mcpu=generic-rv64 -march=rv64g riscv.c
-# qemu-riscv64 -L /usr/riscv64-suse-linux/sys-root a.out
+# QEMU_LD_PREFIX=/usr/riscv64-suse-linux/sys-root c.out
+# QEMU_LD_PREFIX=/usr/riscv64-suse-linux/sys-root QEMU_SET_ENV='LD_LIBRARY_PATH=/usr/riscv64-suse-linux/sys-root/lib64:/usr/lib64/gcc/riscv64-suse-linux/14' cc.out
 
 # TeX environment
 sudo -E zypper in -y 'texlive-*'
