@@ -83,6 +83,7 @@ tools/build/b2 toolset=gcc variant=release cflags=-fPIC cxxflags=-fPIC link=stat
 DEVELOP_AUTOSTART_NAME=develop.$USER
 cat <<-EOF >$HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.sh
 #!/usr/bin/env bash
+shopt -s globstar
 
 rsync $HOME/Projects/runner/_build/release/{deqp,piglit}-runner $XDG_RUNTIME_DIR/runner
 
@@ -106,7 +107,7 @@ rsync -rR \$PIGLIT_SRCDIR/_build/./bin \$PIGLIT_DSTDIR
 rsync -rR \$PIGLIT_SRCDIR/./{framework,templates} \$PIGLIT_DSTDIR
 rsync -rR \$PIGLIT_SRCDIR/_build/./tests/*.xml.gz \$PIGLIT_DSTDIR
 rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' \$PIGLIT_SRCDIR/./tests \$PIGLIT_DSTDIR
-rsync -rR \$PIGLIT_SRCDIR/./generated_tests/**.inc \$PIGLIT_DSTDIR
+rsync -rR \$PIGLIT_SRCDIR/./generated_tests/**/*.inc \$PIGLIT_DSTDIR
 rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' \$PIGLIT_SRCDIR/_build/./generated_tests \$PIGLIT_DSTDIR
 
 tmux new-session -d -s runner -c $XDG_RUNTIME_DIR/runner
