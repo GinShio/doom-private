@@ -159,14 +159,18 @@ function test_kits_deqp() {
             exe_name=deqp-vk
             case_lists=(
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{image/*,robustness,ssbo,texture,ubo}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/compute.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/fragment-{operations,shader-interlock,shading-barycentric,shading-rate}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/image/*.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/{fast-linked-library,monolithic,pipeline-library}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/tessellation.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/geometry.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{clipping,transform-feedback}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/mesh-shader.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{depth,fragment-*}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{ray-tracing-pipeline,ray-query}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,renderpass{,2},robustness}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{ssbo,texture,ubo}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/*.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering,renderpass{,2}}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,subgroups}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/dgc.txt
             )
             ext_files=(dEQP-VK.info.device)
             runner_options=(
