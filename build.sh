@@ -185,6 +185,7 @@ function test_kits_deqp() {
             case_lists=(
                 \$RUNNER_DIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
                 \$RUNNER_DIR/deqp/mustpass/gl{,es}/khronos_mustpass/main/*-main.txt
+                \$RUNNER_DIR/deqp/mustpass/gl/khronos_mustpass_single/main/*-single.txt
             )
             ext_files=()
             runner_options=(
