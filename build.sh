@@ -158,8 +158,8 @@ function test_kits_deqp() {
         vk)
             exe_name=deqp-vk
             case_lists=(
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing,sparse-resources}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/{image/*,robustness,ssbo,texture,ubo}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{binding-model,descriptor-indexing}.txt
+                \$RUNNER_DIR/deqp/mustpass/vk-default/{image/*,robustness,sparse-resources,ssbo,texture,ubo}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/compute.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/tessellation.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/geometry.txt
