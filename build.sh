@@ -146,6 +146,7 @@ cat <<-EOF >$HOME/.config/autostart/$DAILY_TEST_NAME.sh
 export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
 
 RUNNER_DIR=\$XDG_RUNTIME_DIR/runner
+BASELINE_DIR=\$RUNNER_DIR/baseline
 SUFFIX=_\$(date --iso-8601="date")
 DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; exit}')
 AVAILABLE_CPUS_CNT=$(perl -e "print int($(( $(lscpu -e |wc -l) - 1 )) * 0.8)")
@@ -216,17 +217,18 @@ function test_kits_deqp() {
             exit -1
             ;;
     esac
-    output_dir=\${vendor}_deqp-\${glapi}\${SUFFIX}
-    tarball_name=deqp-\${glapi}_\${DEVICE_ID}\${SUFFIX}
+    output_dir=\${vendor}_\${testkit}-\${glapi}\${SUFFIX}
+    tarball_name=\${testkit}-\${glapi}_\${DEVICE_ID}\${SUFFIX}
+    OUTDIR=\$BASELINE_DIR/\$output_dir
     \$RUNNER_DIR/deqp-runner run \\
         \${runner_options[@]} \\
-        --deqp \$RUNNER_DIR/deqp/\$exe_name \\
-        --output \$RUNNER_DIR/baseline/\$output_dir \\
+        --deqp \$RUNNER_DIR/\$testkit/\$exe_name \\
+        --output \$OUTDIR \\
         --caselist \${case_lists[@]} \\
         --env \${env_lists[@]} \\
         -- \\
         \$deqp_options \${ext_deqp_options[@]}
-    cd \$RUNNER_DIR/baseline/\$output_dir
+    cd \$OUTDIR
     get_vendor_sha1
     ls -1 \${case_lists[@]} |sed "s~\$RUNNER_DIR/deqp/mustpass/~~g" >testlist.txt
     awk -F, '\$2 == "Flake"{print \$1}' results.csv >flakes.txt
@@ -235,8 +237,6 @@ function test_kits_deqp() {
 } # test_kits_deqp function end
 
 function test_kits_piglit() {
-    output_dir=\${vendor}_piglit\${SUFFIX}
-    tarball_name=piglit_\${DEVICE_ID}\${SUFFIX}
     runner_options=(
         "--jobs 2"
         "--timeout 300"
@@ -248,12 +248,12 @@ function test_kits_piglit() {
     \$RUNNER_DIR/piglit-runner run \\
         \${runner_options[@]} \\
         --piglit-folder \$RUNNER_DIR/piglit \\
-        --output \$RUNNER_DIR/baseline/\$output_dir \\
+        --output \$OUTDIR \\
         --env \${env_lists[@]} \\
         --profile quick \\
         -- \\
 
-    cd \$RUNNER_DIR/baseline/\$output_dir
+    cd \$OUTDIR
     get_vendor_sha1
     awk -F, '\$2 == "Flake"{print \$1}' results.csv >flakes.txt
     tar -H pax -cf - {failures,results}.csv \$(eval echo \${result_files[@]}) | \\
@@ -261,16 +261,14 @@ function test_kits_piglit() {
 } # test_kits_piglit function end
 
 function test_kits_vkd3d() {
-    output_dir=\${vendor}_vkd3d\${SUFFIX}
-    tarball_name=vkd3d_\${DEVICE_ID}\${SUFFIX}
     declare -x \${env_lists[@]}
     VKD3D_SHADER_CACHE_PATH=0 \\
     bash \$RUNNER_DIR/vkd3d/tests/test-runner.sh \\
-        --output-dir \$RUNNER_DIR/baseline/\$output_dir \\
+        --output-dir \$OUTDIR \\
         --jobs \$AVAILABLE_CPUS_CNT \\
-        \$RUNNER_DIR/vkd3d/bin/d3d12 >\$RUNNER_DIR/baseline/\$output_dir-results.txt
-    cd \$RUNNER_DIR/baseline/\$output_dir
-    mv \$RUNNER_DIR/baseline/\$output_dir-results.txt results.txt
+        \$RUNNER_DIR/vkd3d/bin/d3d12 >\$OUTDIR-results.txt
+    cd \$OUTDIR
+    mv \$OUTDIR-results.txt results.txt
     tar -H pax -cf - results.txt *.log | \\
         zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
 } # test_kits_vkd3d function end
@@ -300,6 +298,9 @@ for elem in \${test_infos[@]}; do
             ;;
     esac
     for testkit in \$(tr ':' '\\t' <<<\$testkits); do
+        output_dir=\${vendor}_\${testkit}\${SUFFIX}
+        tarball_name=\${testkit}_\${DEVICE_ID}\${SUFFIX}
+        OUTDIR=\$BASELINE_DIR/\$output_dir
         test_kits_\$testkit
     done # test kits loop end
 done # test infos loop end
