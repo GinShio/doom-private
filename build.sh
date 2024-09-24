@@ -67,6 +67,14 @@ git clone https://gitlab.freedesktop.org/mesa/deqp-runner.git $HOME/Projects/run
 cd $HOME/Projects/runner
 cargo build --release --target-dir $HOME/Projects/runner/_build
 
+### vkd3d-proton
+git clone https://github.com/HansKristian-Work/vkd3d-proton.git $HOME/Projects/vkd3d
+git -C $HOME/Projects/vkd3d submodule update --recursive --init
+CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
+    meson setup $HOME/Projects/vkd3d $HOME/Projects/vkd3d/_build/_rel \
+    -Dbuildtype=release -Denable_tests=true -Denable_extras=false
+meson compile -C $HOME/Projects/vkd3d/_build/_rel
+
 ### boost
 cd $(mktemp -d)
 curl -o boost_1_84_0.tar.gz -SL https://archives.boost.io/release/1.84.0/source/boost_1_84_0.tar.gz
@@ -109,6 +117,12 @@ rsync -rR \$PIGLIT_SRCDIR/_build/./tests/*.xml.gz \$PIGLIT_DSTDIR
 rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' \$PIGLIT_SRCDIR/./tests \$PIGLIT_DSTDIR
 rsync -rR \$PIGLIT_SRCDIR/./generated_tests/**/*.inc \$PIGLIT_DSTDIR
 rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' \$PIGLIT_SRCDIR/_build/./generated_tests \$PIGLIT_DSTDIR
+
+VKD3D_SRCDIR=$HOME/Projects/vkd3d
+VKD3D_DSTDIR=$XDG_RUNTIME_DIR/runner/vkd3d
+rsync -f'- */' -f'- *.a' \$VKD3D_SRCDIR/_build/_rel/tests/* \$VKD3D_DSTDIR/bin
+rsync -rR \$VKD3D_SRCDIR/tests/./{d3d12_tests.h,test-runner.sh} \$VKD3D_DSTDIR/tests
+rsync -rR \$VKD3D_SRCDIR/_build/_rel/./libs/**/*.so \$VKD3D_DSTDIR
 
 tmux new-session -d -s runner -c $XDG_RUNTIME_DIR/runner
 EOF
@@ -221,7 +235,7 @@ function test_kits_deqp() {
 } # test_kits_deqp function end
 
 function test_kits_piglit() {
-    output_dir=\${vendor}_piglit-\${SUFFIX}
+    output_dir=\${vendor}_piglit\${SUFFIX}
     tarball_name=piglit_\${DEVICE_ID}\${SUFFIX}
     runner_options=(
         "--jobs 2"
@@ -245,6 +259,21 @@ function test_kits_piglit() {
     tar -H pax -cf - {failures,results}.csv \$(eval echo \${result_files[@]}) | \\
         zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
 } # test_kits_piglit function end
+
+function test_kits_vkd3d() {
+    output_dir=\${vendor}_vkd3d\${SUFFIX}
+    tarball_name=vkd3d_\${DEVICE_ID}\${SUFFIX}
+    declare -x \${env_lists[@]}
+    VKD3D_SHADER_CACHE_PATH=0 \\
+    bash \$RUNNER_DIR/vkd3d/tests/test-runner.sh \\
+        --output-dir \$RUNNER_DIR/baseline/\$output_dir \\
+        --jobs \$AVAILABLE_CPUS_CNT \\
+        \$RUNNER_DIR/vkd3d/bin/d3d12 >\$RUNNER_DIR/baseline/\$output_dir-results.txt
+    cd \$RUNNER_DIR/baseline/\$output_dir
+    mv \$RUNNER_DIR/baseline/\$output_dir-results.txt results.txt
+    tar -H pax -cf - results.txt *.log | \\
+        zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
+} # test_kits_vkd3d function end
 
 declare -a test_infos=\$1
 for elem in \${test_infos[@]}; do
@@ -306,7 +335,6 @@ if [ \$? -eq 0 ]; then
     meson compile -C _build/_dbg && meson install --quiet -C \$_
 fi
 popd
-
 
 fd -iHx /usr/bin/rm -rf {} \\; --changed-before 3d --type directory -- . '$XDG_RUNTIME_DIR/runner/baseline'
 

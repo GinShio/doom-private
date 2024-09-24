@@ -63,6 +63,7 @@ d   $XDG_RUNTIME_DIR/issues   0700   $USER   $USER   2w
 d   $XDG_RUNTIME_DIR/runner/baseline   0700   $USER   $USER   3d
 d   $XDG_RUNTIME_DIR/runner/deqp   0700   $USER   $USER   -
 d   $XDG_RUNTIME_DIR/runner/piglit   0700   $USER   $USER   -
+d   $XDG_RUNTIME_DIR/runner/vkd3d/bin   0700   $USER   $USER   -
 EOF
 ### LSP directories
 cat <<-EOF >$HOME/.config/user-tmpfiles.d/lsp.$USER.conf
