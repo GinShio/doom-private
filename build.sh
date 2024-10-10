@@ -68,12 +68,16 @@ cd $HOME/Projects/runner
 cargo build --release --target-dir $HOME/Projects/runner/_build
 
 ### vkd3d-proton
-git clone https://github.com/HansKristian-Work/vkd3d-proton.git $HOME/Projects/vkd3d
-git -C $HOME/Projects/vkd3d submodule update --recursive --init
+git clone https://github.com/HansKristian-Work/vkd3d-proton.git --recursive $HOME/Projects/vkd3d
 CC='ccache gcc' CXX='ccache g++' LDFLAGS='-fuse-ld=mold' \
     meson setup $HOME/Projects/vkd3d $HOME/Projects/vkd3d/_build/_rel \
     -Dbuildtype=release -Denable_tests=true -Denable_extras=false
 meson compile -C $HOME/Projects/vkd3d/_build/_rel
+
+### slang
+git clone https://github.com/shader-slang/slang.git --recursive $HOME/Projects/slang
+cmake -S$HOME/Projects/slang -B$HOME/Projects/slang/_build "${CMAKE_OPTIONS[@]}" -DSLANG_SLANG_LLVM_FLAVOR=DISABLE
+cmake --build $HOME/Projects/slang/_build --config Release
 
 ### boost
 cd $(mktemp -d)
