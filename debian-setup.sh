@@ -35,10 +35,10 @@ sudo -E apt install -y \
     clang{,d,-format,-tidy,-tools} libclang-dev llvm{,-dev} lldb lld \
     ccache cmake doxygen extra-cmake-modules lcov meson mold ninja-build
 sudo -E apt install -y \
-    libboost1.81-all-dev libc++{,abi}-dev libcaca-dev{,:i386} libelf-dev{,:i386} libexpat1-dev{,:i386} libnanomsg-dev \
-    libncurses5-dev libpciaccess-dev{,:i386} libpoco-dev libreadline-dev{,:i386} libssl-dev{,:i386} libstb-dev \
-    libtinyobjloader-dev libudev-dev{,:i386} libunwind-14-dev{,:i386} libxml2-dev{,:i386} libzip-dev{,:i386} \
-    libzstd-dev{,:i386}
+    libboost1.81-all-dev libc++{,abi}-dev libcaca-dev{,:i386} libcli11-dev libelf-dev{,:i386} libexpat1-dev{,:i386} \
+    libnanomsg-dev libncurses5-dev libpciaccess-dev{,:i386} libpoco-dev libreadline-dev{,:i386} libssl-dev{,:i386} \
+    libspdlog-dev{,:i386} libstb-dev libtinyobjloader-dev libudev-dev{,:i386} libunwind-14-dev{,:i386} \
+    libxml2-dev{,:i386} libzip-dev{,:i386} libzstd-dev{,:i386}
 
 # Rust environment
 sudo -E apt install -y cargo rust-all librust-bindgen-dev
@@ -74,8 +74,8 @@ sudo -E apt install -y \
 sudo -E apt install -y \
     libwayland-dev{,:i386} libwayland-egl-backend-dev waylandpp-dev wayland-protocols
 sudo -E apt install -y \
-    libegl1-mesa-dev{,:i386} libgl1-mesa-dev{,:i386} libvulkan-dev mesa-common-dev{,:i386} mesa-utils piglit \
-    spirv-{cross,tools} vulkan-tools vulkan-validationlayers-dev
+    libegl1-mesa-dev{,:i386} libgl1-mesa-dev{,:i386} libglm-dev libslang2-dev{,:i386} libvulkan-dev \
+    mesa-common-dev{,:i386} mesa-utils piglit slsh spirv-{cross,tools} vulkan-tools vulkan-validationlayers-dev
 
 # Virtualization & Containerization & Cross compilation
 sudo -E api install -y \

@@ -33,10 +33,10 @@ sudo -E zypper in -y \
     clang{,-doc,-extract,-tools,-devel} llvm{,-doc,-opt-viewer,-devel} lldb lld \
     ccache cmake conan doxygen imake kf6-extra-cmake-modules lcov meson mold ninja
 sudo -E zypper in -y \
-    'libboost_*-devel' libc++{,abi}-devel libcaca-devel libelf-devel{,-32bit} libexpat-devel{,-32bit} \
+    cli11-devel 'libboost_*-devel' libc++{,abi}-devel libcaca-devel libelf-devel{,-32bit} libexpat-devel{,-32bit} \
     libopenssl-devel{,-32bit} libpciaccess-devel libstdc++-devel{,-32bit} libunwind-devel libxml2-devel{,-32bit} \
-    libzstd-devel{,-32bit} nanomsg-devel ncurses5-devel{,-32bit} poco-devel readline-devel{,-32bit} stb-devel \
-    tinyobjloader-devel zlib-devel{,-32bit}
+    libzstd-devel{,-32bit} nanomsg-devel ncurses5-devel{,-32bit} poco-devel readline-devel{,-32bit} spdlog-devel \
+    stb-devel tinyobjloader-devel zlib-devel{,-32bit}
 
 # Rust & Zig environment
 sudo -E zypper in -y cargo rust rust-bindgen
@@ -75,10 +75,10 @@ sudo -E zypper in -y \
 sudo -E zypper in -y \
     wayland-devel{,-32bit} wayland-protocols-devel waylandpp-devel
 sudo -E zypper in -y \
-    glslang-devel Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit} Mesa-dri{,-32bit,-devel} \
+    glslang-devel glm-devel Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit} Mesa-dri{,-32bit,-devel} \
     Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{,-32bit} Mesa-libRusticlOpenCL Mesa-vulkan-device-select{,-32bit} \
-    Mesa-vulkan-overlay{,-32bit} piglit shaderc spirv-{cross,tools} spirv-tools-devel{,-32bit} \
-    vulkan-{tools,devel}{,-32bit}
+    Mesa-vulkan-overlay{,-32bit} piglit shaderc libslang2{,-32bit} slang-devel slang-slsh spirv-{cross,tools} \
+    spirv-tools-devel{,-32bit} vulkan-{tools,devel}{,-32bit}
 
 # Virtualization & Containerization & Cross compilation
 sudo -E zypper in -y -t pattern kvm_tools
