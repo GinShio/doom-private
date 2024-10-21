@@ -79,6 +79,24 @@ git clone https://github.com/shader-slang/slang.git --recursive $HOME/Projects/s
 cmake -S$HOME/Projects/slang -B$HOME/Projects/slang/_build "${CMAKE_OPTIONS[@]}" -DSLANG_SLANG_LLVM_FLAVOR=DISABLE
 cmake --build $HOME/Projects/slang/_build --config Release
 
+### LLVM
+git clone https://github.com/llvm/llvm-project.git $HOME/Projects/llvm
+llvm_num_link=$(awk '/MemTotal/{targets = int($2 / (16 * 2^20)); print targets<1?1:targets}' /proc/meminfo)
+cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg \
+    -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DBUILD_SHARED_LIBS=ON \
+    -DLLVM_BUILD_TESTS=ON \
+    -DLLVM_BUILD_TOOLS=ON \
+    -DLLVM_CCACHE_BUILD=ON \
+    -DLLVM_ENABLE_PIC=ON \
+    -DLLVM_ENABLE_PROJECTS='clang;mlir' \
+    -DLLVM_INCLUDE_TOOLS=ON \
+    -DLLVM_PARALLEL_LINK_JOBS:STRING=$llvm_num_link \
+    -DLLVM_TARGETS_TO_BUILD='RISCV;X86' \
+    -DLLVM_USE_LINKER=mold \
+
+cmake --build $HOME/Projects/llvm/_build/_dbg
+
 ### boost
 cd $(mktemp -d)
 curl -o boost_1_84_0.tar.gz -SL https://archives.boost.io/release/1.84.0/source/boost_1_84_0.tar.gz
