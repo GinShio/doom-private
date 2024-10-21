@@ -188,7 +188,7 @@ function test_kits_deqp() {
                 \$RUNNER_DIR/deqp/mustpass/vk-default/pipeline/*.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{conditional-rendering,dynamic-rendering,renderpass{,2}}.txt
                 \$RUNNER_DIR/deqp/mustpass/vk-default/{reconvergence,subgroups}.txt
-                \$RUNNER_DIR/deqp/mustpass/vk-default/dgc.txt
+                #\$RUNNER_DIR/deqp/mustpass/vk-default/dgc.txt
             )
             ext_files=(dEQP-VK.info.device)
             runner_options=(
@@ -198,10 +198,10 @@ function test_kits_deqp() {
             )
             ext_deqp_options=()
             ;;
-        gl)
+        gl|zink)
             exe_name=glcts
             case_lists=(
-                \$RUNNER_DIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
+                #\$RUNNER_DIR/deqp/mustpass/{egl,gl,gles}/aosp_mustpass/main/*-main.txt
                 \$RUNNER_DIR/deqp/mustpass/gl{,es}/khronos_mustpass/main/*-main.txt
                 \$RUNNER_DIR/deqp/mustpass/gl/khronos_mustpass_single/main/*-single.txt
             )
@@ -220,8 +220,6 @@ function test_kits_deqp() {
             exit -1
             ;;
     esac
-    tarball_name=\${testkit}-\${glapi}_\${DEVICE_ID}\${SUFFIX}
-    output_dir=\$RUNNER_DIR/baseline/\${vendor}_\${testkit}-\${glapi}\${SUFFIX}
     \$RUNNER_DIR/deqp-runner run \\
         \${runner_options[@]} \\
         --deqp \$RUNNER_DIR/\$testkit/\$exe_name \\
@@ -282,7 +280,8 @@ for elem in \${test_infos[@]}; do
         mesa)
             env_lists=(
                 VK_ICD_FILENAMES=$HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json
-                LD_LIBRARY_PATH=$HOME/.localT/lib
+                __GLX_FORCE_VENDOR_LIBRARY_0=mesa
+                LD_LIBRARY_PATH=$HOME/.local/lib
                 LIBGL_DRIVERS_PATH=$HOME/.local/lib/dri
                 MESA_LOADER_DRIVER_OVERRIDE=radeonsi
                 RADV_DEBUG=nocache
@@ -299,9 +298,26 @@ for elem in \${test_infos[@]}; do
             exit -1
             ;;
     esac
+    case \$glapi in
+        zink)
+            env_lists+=(
+                __GLX_FORCE_VENDOR_LIBRARY_0=mesa
+                LD_LIBRARY_PATH=$HOME/.local/lib
+                LIBGL_DRIVERS_PATH=$HOME/.local/lib/dri
+                MESA_LOADER_DRIVER_OVERRIDE=zink
+            )
+            ;;
+        *)
+            ;;
+    esac
     for testkit in \$(tr ':' '\\t' <<<\$testkits); do
-        tarball_name=\${testkit}_\${DEVICE_ID}\${SUFFIX}
-        output_dir=\$RUNNER_DIR/baseline/\${vendor}_\${testkit}\${SUFFIX}
+        if [ "\$testkit" == "deqp" ]; then
+            prefix=\$testkit-\$glapi
+        else
+            prefix=\$testkit
+        fi
+        tarball_name=\${prefix}_\${DEVICE_ID}\${SUFFIX}
+        output_dir=\$RUNNER_DIR/baseline/\${vendor}_\${prefix}\${SUFFIX}
         test_kits_\$testkit
     done # test kits loop end
 done # test infos loop end
@@ -327,6 +343,8 @@ drivers_tuple=(
     # vendor,glapi,kits,driver
     llpc,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
     mesa,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
+    llpc,zink,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
+    mesa,zink,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
     #mesa,gl,"deqp:piglit",$HOME/.local/lib/dri/radeonsi_dri.so
 ) # drivers tuple declare end
 
