@@ -41,6 +41,46 @@ printf "\nCompression ratio: "
         test $EUID -ne 0 && sudo -- bash -c $command_string || bash -c $command_string
     end
 
+    function copy_graphics_testcase
+        argparse deqp piglit vkd3d -- $argv
+        or return
+
+        if set -ql _flag_deqp
+            set -lx DEQP_SRCDIR $HOME/Projects/deqp
+            set -lx DEQP_DSTDIR $XDG_RUNTIME_DIR/runner/deqp
+            rsync $DEQP_SRCDIR/_build/external/vulkancts/modules/vulkan/Release/deqp-vk $DEQP_DSTDIR
+            rsync -rR $DEQP_SRCDIR/external/vulkancts/data/./vulkan $DEQP_DSTDIR
+            rsync -rR $DEQP_SRCDIR/external/vulkancts/mustpass/main/./vk-default{,.txt} $DEQP_DSTDIR/mustpass
+            rsync $DEQP_SRCDIR/_build/external/openglcts/modules/Release/glcts $DEQP_DSTDIR
+            rsync -rR $DEQP_SRCDIR/_build/external/openglcts/modules/./gles{2,3,31}/{data,shaders} $DEQP_DSTDIR
+            rsync -rR $DEQP_SRCDIR/_build/external/openglcts/modules/./gl_cts/data/GTF $DEQP_DSTDIR
+            rsync -rR $DEQP_SRCDIR/external/graphicsfuzz/data/./gles3/graphicsfuzz/ $DEQP_DSTDIR
+            rsync -rR --exclude='mustpass' $DEQP_SRCDIR/external/openglcts/data/./gl_cts $DEQP_DSTDIR
+            rsync -rR --exclude='src' $DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./gl/khronos_mustpass{,_single}/main/*.txt $DEQP_DSTDIR/mustpass
+            rsync -rR --exclude='src' $DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./{egl,gles}/*_mustpass/main/*.txt $DEQP_DSTDIR/mustpass
+            rsync -rR $DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./waivers $DEQP_DSTDIR/mustpass
+        end
+
+        if set -ql _flag_piglit
+            set -lx PIGLIT_SRCDIR $HOME/Projects/piglit
+            set -lx PIGLIT_DSTDIR $XDG_RUNTIME_DIR/runner/piglit
+            rsync -rR $PIGLIT_SRCDIR/_build/./bin $PIGLIT_DSTDIR
+            rsync -rR $PIGLIT_SRCDIR/./{framework,templates} $PIGLIT_DSTDIR
+            rsync -rR $PIGLIT_SRCDIR/_build/./tests/*.xml.gz $PIGLIT_DSTDIR
+            rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' $PIGLIT_SRCDIR/./tests $PIGLIT_DSTDIR
+            rsync -rR $PIGLIT_SRCDIR/./generated_tests/**/*.inc $PIGLIT_DSTDIR
+            rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' $PIGLIT_SRCDIR/_build/./generated_tests $PIGLIT_DSTDIR
+        end
+
+        if set -ql _flag_vkd3d
+            set -lx VKD3D_SRCDIR $HOME/Projects/vkd3d
+            set -lx VKD3D_DSTDIR $XDG_RUNTIME_DIR/runner/vkd3d
+            rsync -f'- */' -f'- *.a' $VKD3D_SRCDIR/_build/_rel/tests/* $VKD3D_DSTDIR/bin
+            rsync -rR $VKD3D_SRCDIR/tests/./{d3d12_tests.h,test-runner.sh} $VKD3D_DSTDIR/tests
+            rsync -rR $VKD3D_SRCDIR/_build/_rel/./libs/**/*.so $VKD3D_DSTDIR
+        end
+    end
+
     function __ginshio_command_abbreviation
         #alias cat "lolcat"
         alias clear "clear && echo -en \"\e[3J\""

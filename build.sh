@@ -49,6 +49,7 @@ meson compile -C $HOME/Projects/mesa/_build/_dbg && meson install -C $_
 #       LP_DEBUG= LP_PERF= \
 #       ACO_DEBUG= NIR_DEBUG= \
 #       dosomething
+#### If disable radv: VK_LOADER_DRIVERS_DISABLE='radeon*'
 
 ### vk-gl-cts
 # git clone https://github.com/KhronosGroup/VK-GL-CTS.git $HOME/Projects/deqp
@@ -117,36 +118,9 @@ shopt -s globstar
 
 rsync $HOME/Projects/runner/_build/release/{deqp,piglit}-runner $XDG_RUNTIME_DIR/runner
 
-DEQP_SRCDIR=$HOME/Projects/deqp
-DEQP_DSTDIR=$XDG_RUNTIME_DIR/runner/deqp
-rsync \$DEQP_SRCDIR/_build/external/vulkancts/modules/vulkan/Release/deqp-vk \$DEQP_DSTDIR
-rsync -rR \$DEQP_SRCDIR/external/vulkancts/data/./vulkan \$DEQP_DSTDIR
-rsync -rR \$DEQP_SRCDIR/external/vulkancts/mustpass/main/./vk-default{,.txt} \$DEQP_DSTDIR/mustpass
-rsync \$DEQP_SRCDIR/_build/external/openglcts/modules/Release/glcts \$DEQP_DSTDIR
-rsync -rR \$DEQP_SRCDIR/_build/external/openglcts/modules/./gles{2,3,31}/{data,shaders} \$DEQP_DSTDIR
-rsync -rR \$DEQP_SRCDIR/_build/external/openglcts/modules/./gl_cts/data/GTF \$DEQP_DSTDIR
-rsync -rR \$DEQP_SRCDIR/external/graphicsfuzz/data/./gles3/graphicsfuzz/ \$DEQP_DSTDIR
-rsync -rR --exclude='mustpass' \$DEQP_SRCDIR/external/openglcts/data/./gl_cts \$DEQP_DSTDIR
-rsync -rR --exclude='src' \$DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./gl/khronos_mustpass{,_single}/main/*.txt \$DEQP_DSTDIR/mustpass
-rsync -rR --exclude='src' \$DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./{egl,gles}/*_mustpass/main/*.txt \$DEQP_DSTDIR/mustpass
-rsync -rR \$DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./waivers \$DEQP_DSTDIR/mustpass
-
-PIGLIT_SRCDIR=$HOME/Projects/piglit
-PIGLIT_DSTDIR=$XDG_RUNTIME_DIR/runner/piglit
-rsync -rR \$PIGLIT_SRCDIR/_build/./bin \$PIGLIT_DSTDIR
-rsync -rR \$PIGLIT_SRCDIR/./{framework,templates} \$PIGLIT_DSTDIR
-rsync -rR \$PIGLIT_SRCDIR/_build/./tests/*.xml.gz \$PIGLIT_DSTDIR
-rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' \$PIGLIT_SRCDIR/./tests \$PIGLIT_DSTDIR
-rsync -rR \$PIGLIT_SRCDIR/./generated_tests/**/*.inc \$PIGLIT_DSTDIR
-rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' \$PIGLIT_SRCDIR/_build/./generated_tests \$PIGLIT_DSTDIR
-
-VKD3D_SRCDIR=$HOME/Projects/vkd3d
-VKD3D_DSTDIR=$XDG_RUNTIME_DIR/runner/vkd3d
-rsync -f'- */' -f'- *.a' \$VKD3D_SRCDIR/_build/_rel/tests/* \$VKD3D_DSTDIR/bin
-rsync -rR \$VKD3D_SRCDIR/tests/./{d3d12_tests.h,test-runner.sh} \$VKD3D_DSTDIR/tests
-rsync -rR \$VKD3D_SRCDIR/_build/_rel/./libs/**/*.so \$VKD3D_DSTDIR
-
 tmux new-session -d -s runner -c $XDG_RUNTIME_DIR/runner
+tmux new-session -d -s build -c $HOME/Projects
+tmux send-keys -t runner "copy_graphics_testcase --deqp --piglit --vkd3d" ENTER
 EOF
 cat <<-EOF >$HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.desktop
 [Desktop Entry]
