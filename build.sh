@@ -172,15 +172,12 @@ SUFFIX=_\$(date --iso-8601="date")
 DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; exit}')
 AVAILABLE_CPUS_CNT=$(perl -e "print int($(( $(lscpu -e |wc -l) - 1 )) * 0.8)")
 
-function get_vendor_sha1() {
-    case \$vendor in # get_vendor_sha1 check vendor
-        mesa)
-            git -C $HOME/Projects/mesa rev-parse --short=11 HEAD >git-sha1.txt
-            ;;
-        *)
-            touch git-sha1.txt
-            ;;
-    esac
+function get_repo_sha1() {
+    touch git-sha1.txt
+    if [ "\$glapi" == "zink" ] || [ "\$vendor" == "mesa" ]; then
+        echo " + mesa: \$(git -C $HOME/Projects/mesa rev-parse --short=11 HEAD)" >>git-sha1.txt
+    fi
+    echo " + \$testkit: \$(git -C $HOME/Projects/\$testkit rev-parse --short=11 HEAD)" >>git-sha1.txt
 }
 
 function test_kits_deqp() {
@@ -247,7 +244,7 @@ function test_kits_deqp() {
         -- \\
         \$deqp_options \${ext_deqp_options[@]}
     cd \$output_dir
-    get_vendor_sha1
+    get_repo_sha1
     ls -1 \${case_lists[@]} |sed "s~\$RUNNER_DIR/\$testkit/mustpass/~~g" >testlist.txt
     awk -F, '\$2 == "Flake"{print \$1}' results.csv >flakes.txt
     tar -H pax -cf - {failures,results}.csv \$(eval echo \${result_files[@]}) \${ext_files[@]} | \\
@@ -272,7 +269,7 @@ function test_kits_piglit() {
         -- \\
 
     cd \$output_dir
-    get_vendor_sha1
+    get_repo_sha1
     awk -F, '\$2 == "Flake"{print \$1}' results.csv >flakes.txt
     tar -H pax -cf - {failures,results}.csv \$(eval echo \${result_files[@]}) | \\
         zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
@@ -286,8 +283,9 @@ function test_kits_vkd3d() {
         --jobs \$AVAILABLE_CPUS_CNT \\
         \$RUNNER_DIR/vkd3d/bin/d3d12 >\$output_dir-results.txt
     cd \$output_dir
+    get_repo_sha1
     mv \$output_dir-results.txt results.txt
-    tar -H pax -cf - results.txt *.log | \\
+    tar -H pax -cf - results.txt git-sha1.txt *.log | \\
         zstd -z -19 --ultra --quiet -o \${tarball_name}.tar.zst
 } # test_kits_vkd3d function end
 
