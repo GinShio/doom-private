@@ -329,13 +329,8 @@ for elem in \${test_infos[@]}; do
             ;;
     esac
     for testkit in \$(tr ':' '\\t' <<<\$testkits); do
-        if [ "\$testkit" == "deqp" ]; then
-            prefix=\$testkit-\$glapi
-        else
-            prefix=\$testkit
-        fi
-        tarball_name=\${prefix}_\${DEVICE_ID}\${SUFFIX}
-        output_dir=\$RUNNER_DIR/baseline/\${vendor}_\${prefix}\${SUFFIX}
+        tarball_name=\${testkit}-\${glapi}_\${DEVICE_ID}\${SUFFIX}
+        output_dir=\$RUNNER_DIR/baseline/\${vendor}_\${testkit}-\${glapi}\${SUFFIX}
         test_kits_\$testkit
     done # test kits loop end
 done # test infos loop end
@@ -361,8 +356,8 @@ drivers_tuple=(
     # vendor,glapi,kits,driver
     llpc,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
     mesa,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
-    llpc,zink,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
-    mesa,zink,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
+    llpc,zink,"deqp:piglit",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
+    mesa,zink,"deqp:piglit",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
     #mesa,gl,"deqp:piglit",$HOME/.local/lib/dri/radeonsi_dri.so
 ) # drivers tuple declare end
 
