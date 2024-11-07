@@ -1,8 +1,8 @@
 # update source
 ### zypper
 sudo zypper rr --all
-sudo zypper ar -fcg https://mirrors.zju.edu.cn/opensuse/tumbleweed/repo/oss ZJU:oss
-sudo zypper ar -fcg https://mirrors.zju.edu.cn/opensuse/tumbleweed/repo/non-oss ZJU:non-oss
+sudo zypper ar -fcg https://mirrors.nju.edu.cn/opensuse/tumbleweed/repo/oss NJU:oss
+sudo zypper ar -fcg https://mirrors.nju.edu.cn/opensuse/tumbleweed/repo/non-oss NJU:non-oss
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
 sudo zypper ar -fcg osb://Virtualization openSUSE:Virtualization
@@ -11,7 +11,7 @@ sudo zypper ar -fcg https://download.opensuse.org/repositories/devel:/tools:/com
 #sudo zypper ar -fcg https://download.opensuse.org/repositories/utilities/openSUSE_Factory openSUSE:Utilities
 sudo -E zypper ref
 sudo zypper remove -u valkey mariadb mariadb-client akonadi
-sudo -E zypper al cmake-gui git-gui vlc vlc-beta akonadictl
+sudo -E zypper al cmake-gui git-gui akonadictl
 sudo -E zypper dup -y --allow-vendor-change
 
 # Common environment
@@ -35,7 +35,7 @@ sudo -E zypper in -y \
     cli11-devel 'libboost_*-devel' libc++{,abi}-devel libcaca-devel libelf-devel{,-32bit} libexpat-devel{,-32bit} \
     libopenssl-devel{,-32bit} libpciaccess-devel libstdc++-devel{,-32bit} libunwind-devel libxml2-devel{,-32bit} \
     libzstd-devel{,-32bit} nanomsg-devel ncurses5-devel{,-32bit} poco-devel readline-devel{,-32bit} spdlog-devel \
-    stb-devel tinyobjloader-devel zlib-devel{,-32bit}
+    stb-devel tinyobjloader-devel zlib-ng-compat-devel
 
 # Rust & Zig environment
 sudo -E zypper in -y cargo rust rust-bindgen
@@ -95,7 +95,7 @@ sudo -E zypper in -y \
 sudo -E zypper in -y 'texlive-*'
 
 # Emacs
-sudo -E zypper in -y libvterm-{tools,devel} libtool
+sudo -E zypper in -y emacs-x11 libvterm-{tools,devel} libtool
 
 # Font
 sudo -E zypper in -y \
@@ -104,13 +104,3 @@ sudo -E zypper in -y \
     wqy-{bitmap,microhei,zenhei}-fonts \
     fontawesome-fonts \
     symbols-only-nerd-fonts
-
-
-
-# Fix missing 32bit devel files
-sudo cp /usr/lib{64,}/pkgconfig/libudev.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/libudev.pc
-sudo ln -sf /usr/lib/libudev.so{.1,}
-sudo cp /usr/lib{64,}/pkgconfig/xshmfence.pc && sudo sed -i 's~/usr/lib64~/usr/lib~g' /usr/lib/pkgconfig/xshmfence.pc
-sudo ln -sf /usr/lib/libxshmfence.so{.1,}
-LLVM_VERSION=$(llvm-config --version |sed -nE 's/([[:digit:]]+\.[[:digit:]]+).*/\1/p')
-sudo ln -sf /usr/lib/libLLVM.so.$(LLVM_VERSION) /usr/lib/libLLVM.so

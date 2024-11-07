@@ -181,7 +181,7 @@ set-option -g default-shell "/bin/fish"
 EOF
 
 # Programming
-ccache -M $(df -h |awk '$6=="/"{print $2 * 0.2}')G
+ccache -M $(df -h |awk '$6=="/"{print $2*0.2 substr($2,length($2),1)}')
 
 # Remote Desktop (not work)
 # x11vnc -storepasswd $HOME/.vnc/passwd
@@ -221,9 +221,6 @@ pipx install trash-cli
 
 # Others
 cd $(mktemp -d)
-### VSCode
-sudo -E flatpak install flathub \
-    com.visualstudio.code
 ### Hugo
 curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.125.4/hugo_0.125.4_linux-amd64.tar.gz
 tar -C $HOME/.local/bin -zxvf hugo.tar.gz hugo
