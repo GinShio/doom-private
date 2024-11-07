@@ -1,8 +1,8 @@
 # update source
 ### zypper
 sudo zypper rr --all
-sudo zypper ar -fcg https://mirrors.shanghaitech.edu.cn/opensuse/tumbleweed/repo/oss SHTU:oss
-sudo zypper ar -fcg https://mirrors.shanghaitech.edu.cn/opensuse/tumbleweed/repo/non-oss SHTU:non-oss
+sudo zypper ar -fcg https://mirrors.zju.edu.cn/opensuse/tumbleweed/repo/oss ZJU:oss
+sudo zypper ar -fcg https://mirrors.zju.edu.cn/opensuse/tumbleweed/repo/non-oss ZJU:non-oss
 sudo zypper ar -fcg https://mirrors.tuna.tsinghua.edu.cn/packman/suse/openSUSE_Tumbleweed TUNA:packman
 sudo zypper ar -fcg obs://KDE:Extra openSUSE:kDE:Extra
 sudo zypper ar -fcg osb://Virtualization openSUSE:Virtualization
@@ -19,8 +19,7 @@ sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
 sudo -E zypper in -y \
     7zip aspell bat bison cifs-utils curl dash dwarves emacs fd figlet fish flatpak{,-spawn} flex fzf git{,-doc,-lfs} \
     graphviz ImageMagick inkscape libxslt-tools moreutils Mozilla{Firefox,Thunderbird} mpv neofetch obs-studio \
-    osdlyrics privoxy proxychains-ng qbittorrent re2c ripgrep sqlite3 sshpass steam telegram-desktop tmux unzip wget \
-    xmlto zip zstd
+    osdlyrics privoxy proxychains-ng qbittorrent re2c ripgrep sqlite3 sshpass steam tmux unzip wget xmlto zip zstd
 
 # kDE environment
 sudo -E zypper in -y \

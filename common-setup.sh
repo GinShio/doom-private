@@ -221,33 +221,12 @@ pipx install trash-cli
 
 # Others
 cd $(mktemp -d)
-### Teams and VSCode
+### VSCode
 sudo -E flatpak install flathub \
-    com.github.IsmaelMartinez.teams_for_linux \
-    com.visualstudio.code \
-    com.ulduzsoft.Birdtray
+    com.visualstudio.code
 ### Hugo
 curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.125.4/hugo_0.125.4_linux-amd64.tar.gz
 tar -C $HOME/.local/bin -zxvf hugo.tar.gz hugo
-### Perforce
-if [[ ! -z $SETUP_WORKING ]]; then
-    curl -o p4v.tgz -sSL https://cdist2.perforce.com/perforce/r18.2/bin.linux26x86_64/p4v.tgz
-    tar -zxvf p4v.tgz -C $HOME/.local/share
-    cat <<-EOF |tee $HOME/.local/share/applications/p4v.desktop
-[Desktop Entry]
-Name=Perforce
-GenericName=Version Control GUI
-Comment=Perforce GUI
-Icon=$HOME/.local/share/p4v-2018.2.1687764/lib/P4VResources/icons/p4v.svg
-Exec=p4v
-Terminal=false
-StartupNotify=false
-Type=Application
-Categories=Development;RevisionControl;
-X-KDE-StartupNotify=false
-EOF
-    ln -sf $HOME/.local/share/p4v-2018.2.1687764/bin/p4v $HOME/.local/bin
-fi
 
 # Update desktop database
 update-desktop-database $HOME/.local/share/applications
