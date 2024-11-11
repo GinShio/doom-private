@@ -50,7 +50,7 @@ printf "\nCompression ratio: "
             set -lx DEQP_DSTDIR $XDG_RUNTIME_DIR/runner/deqp
             rsync $DEQP_SRCDIR/_build/external/vulkancts/modules/vulkan/Release/deqp-vk $DEQP_DSTDIR
             rsync -rR $DEQP_SRCDIR/external/vulkancts/data/./vulkan $DEQP_DSTDIR
-            rsync -rR $DEQP_SRCDIR/external/vulkancts/mustpass/main/./vk-default{,.txt} $DEQP_DSTDIR/mustpass
+            rsync -rR --exclude-from=$DEQP_DSTDIR/vk-exclude.txt $DEQP_SRCDIR/external/vulkancts/mustpass/main/./vk-default $DEQP_DSTDIR/mustpass
             rsync $DEQP_SRCDIR/_build/external/openglcts/modules/Release/glcts $DEQP_DSTDIR
             rsync -rR $DEQP_SRCDIR/_build/external/openglcts/modules/./gles{2,3,31}/{data,shaders} $DEQP_DSTDIR
             rsync -rR $DEQP_SRCDIR/_build/external/openglcts/modules/./gl_cts/data/GTF $DEQP_DSTDIR
@@ -59,6 +59,7 @@ printf "\nCompression ratio: "
             rsync -rR --exclude='src' $DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./gl/khronos_mustpass{,_single}/main/*.txt $DEQP_DSTDIR/mustpass
             rsync -rR --exclude='src' $DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./{egl,gles}/*_mustpass/main/*.txt $DEQP_DSTDIR/mustpass
             rsync -rR $DEQP_SRCDIR/external/openglcts/data/gl_cts/data/mustpass/./waivers $DEQP_DSTDIR/mustpass
+            fd --regex '.*\.txt' -- $DEQP_DSTDIR/mustpass/vk-default |sed -e "s~^$DEQP_DSTDIR/mustpass/~~" >$DEQP_DSTDIR/mustpass/vk-default.txt
         end
 
         if set -ql _flag_piglit

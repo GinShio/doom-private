@@ -86,6 +86,7 @@ llvm_num_link=$(awk '/MemTotal/{targets = int($2 / (16 * 2^20)); print targets<1
 cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg \
     -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DBUILD_SHARED_LIBS=ON \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_BUILD_TESTS=ON \
     -DLLVM_BUILD_TOOLS=ON \
     -DLLVM_CCACHE_BUILD=ON \
@@ -93,10 +94,13 @@ cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg \
     -DLLVM_ENABLE_PROJECTS='clang;mlir' \
     -DLLVM_INCLUDE_TOOLS=ON \
     -DLLVM_PARALLEL_LINK_JOBS:STRING=$llvm_num_link \
-    -DLLVM_TARGETS_TO_BUILD='RISCV;X86' \
+    -DLLVM_TARGETS_TO_BUILD='AMDGPU;RISCV;X86' \
     -DLLVM_USE_LINKER=mold \
 
 
+### UMR
+cmake -S$HOME/Projects/umr -B$HOME/Projects/umr/_build "${CMAKE_OPTIONS[@]}"
+cmake --build $HOME/Projects/piglit/_build --config Release
 
 ### develop scripts
 DEVELOP_AUTOSTART_NAME=develop.$USER
@@ -105,6 +109,16 @@ cat <<-EOF >$HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.sh
 shopt -s globstar
 
 rsync $HOME/Projects/runner/_build/release/{deqp,piglit}-runner $XDG_RUNTIME_DIR/runner
+rsync $HOME/Projects/umr/_build/src/app/Release/umr $HOME/.local/bin
+
+cat <<-VKEXCLUDE >$XDG_RUNTIME_DIR/runner/deqp/vk-exclude.txt
+api.txt
+image/swapchain-mutable.txt
+info.txt
+query-pool.txt
+video.txt
+wsi.txt
+VKEXCLUDE
 
 tmux new-session -d -s runner -c $XDG_RUNTIME_DIR/runner
 tmux new-session -d -s build -c $HOME/Projects
@@ -326,6 +340,14 @@ pushd $HOME/Projects/mesa
 if [ \$? -eq 0 ]; then
     meson compile -C _build/_rel && meson install --quiet -C \$_
     meson compile -C _build/_dbg && meson install --quiet -C \$_
+fi
+popd
+
+pushd $HOME/Projects/umr
+{ git fetch --all --prune && git merge --ff-only origin/main; } >/dev/null 2>&1
+if [ \$? -eq 0 ]; then
+    cmake --build _build --config Release
+    rsync $HOME/Projects/umr/_build/src/app/Release/umr $HOME/.local/bin
 fi
 popd
 
