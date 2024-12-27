@@ -2,11 +2,6 @@
 
 mkdir -p $HOME/Projects
 
-source $HOME/.setup-info.txt
-echo ${USERNAME:?Missing User Name.} >/dev/null
-echo ${USEREMAIL:?Missing User email.} >/dev/null
-echo ${ROOT_PASSPHRASE:?Missing local host root passphrase.} >/dev/null
-
 git config --global user.name "$USERNAME"
 git config --global user.email "$USEREMAIL"
 
@@ -100,16 +95,16 @@ cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg \
 
 ### UMR
 cmake -S$HOME/Projects/umr -B$HOME/Projects/umr/_build "${CMAKE_OPTIONS[@]}"
-cmake --build $HOME/Projects/piglit/_build --config Release
+cmake --build $HOME/Projects/umr/_build --config Release
+rsync $HOME/Projects/umr/_build/src/app/Release/umr $HOME/.local/bin
 
 ### develop scripts
 DEVELOP_AUTOSTART_NAME=develop.$USER
 cat <<-EOF >$HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.sh
 #!/usr/bin/env bash
-shopt -s globstar
 
-rsync $HOME/Projects/runner/_build/release/{deqp,piglit}-runner $XDG_RUNTIME_DIR/runner
-rsync $HOME/Projects/umr/_build/src/app/Release/umr $HOME/.local/bin
+tmux new-session -d -s runner -c $XDG_RUNTIME_DIR/runner
+tmux new-session -d -s build -c $HOME/Projects
 
 cat <<-VKEXCLUDE >$XDG_RUNTIME_DIR/runner/deqp/vk-exclude.txt
 api.txt
@@ -119,10 +114,7 @@ query-pool.txt
 video.txt
 wsi.txt
 VKEXCLUDE
-
-tmux new-session -d -s runner -c $XDG_RUNTIME_DIR/runner
-tmux new-session -d -s build -c $HOME/Projects
-tmux send-keys -t runner "copy_graphics_testcase --deqp --piglit --vkd3d" ENTER
+tmux send-keys -t runner "copy_graphics_testcase --deqp --piglit --tool --vkd3d" ENTER
 EOF
 cat <<-EOF >$HOME/.config/autostart/$DEVELOP_AUTOSTART_NAME.desktop
 [Desktop Entry]
@@ -144,14 +136,14 @@ cat <<-EOF >$HOME/.config/autostart/$DAILY_TEST_NAME.sh
 export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
 RUNNER_DIR=\$XDG_RUNTIME_DIR/runner
 
-SUFFIX=_\$(date --iso-8601="date")
+SUFFIX=_\$(date "+%Y-%m-%d")
 DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; exit}')
-AVAILABLE_CPUS_CNT=$(perl -e "print int($(( $(lscpu -e |wc -l) - 1 )) * 0.8)")
+AVAILABLE_CPUS_CNT=$(echo "($(lscpu -e |wc -l) - 1) * 0.8 / 1" |bc)
 
 function get_repo_sha1() {
     touch git-sha1.txt
-    if [ "\$glapi" == "zink" ] || [ "\$vendor" == "mesa" ]; then
-        echo " + mesa: \$(git -C $HOME/Projects/mesa rev-parse --short=11 HEAD)" >>git-sha1.txt
+    if [ "\$glapi" = "zink" ] || [ "\$vendor" = "mesa" ]
+    then echo " + mesa: \$(git -C $HOME/Projects/mesa rev-parse --short=11 HEAD)" >>git-sha1.txt
     fi
     echo " + \$testkit: \$(git -C $HOME/Projects/\$testkit rev-parse --short=11 HEAD)" >>git-sha1.txt
 }
@@ -352,6 +344,9 @@ fi
 popd
 
 fd -iHx /usr/bin/rm -rf {} \\; --changed-before 3d --type directory -- . '$XDG_RUNTIME_DIR/runner/baseline'
+
+# Testing only on Monday or Thursday
+{ date +%A |grep -qi -e Monday -e Thursday; } || exit 0
 
 declare -a test_infos=()
 for elem in \${drivers_tuple[@]}; do
