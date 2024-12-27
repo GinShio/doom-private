@@ -125,6 +125,15 @@ Categories=Development;Utility;
 X-KDE-autostart-phase=2
 X-GNOME-Autostart-Phase=Panel
 EOF
+DEVELOP_DRIVER_ENV_NAME=.driver.env
+cat <<-EOF >$HOME/.config/autostart/$DEVELOP_DRIVER_ENV_NAME
+AMDVLK_ICD_PATH=$HOME/Projects/amdvlk/_icd/rel.json
+AMDVLK_PATH=\$(sed -nE '/"library_path"/ {s/.*: "(.*)".*/\1/p;q}' \$AMDVLK_ICD_PATH)
+RADV_ICD_PATH=$HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json
+RADV_PATH=\$(sed -nE '/"library_path"/ {s/.*: "(.*)".*/\1/p;q}' \$RADV_ICD_PATH)
+MESA_ROOT=$HOME/.local/lib
+RADEONSI_PATH=$MESA_ROOT/dri/radeonsi_dri.so
+EOF
 
 
 
@@ -135,10 +144,13 @@ cat <<-EOF >$HOME/.config/autostart/$DAILY_TEST_NAME.sh
 
 export XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
 RUNNER_DIR=\$XDG_RUNTIME_DIR/runner
+set -o allexport
+source $HOME/.config/autostart/$DEVELOP_DRIVER_ENV_NAME
+set +o allexport
 
 SUFFIX=_\$(date "+%Y-%m-%d")
 DEVICE_ID=\$(vulkaninfo 2>/dev/null |awk '/deviceID[[:blank:]]*=/ {print \$NF; exit}')
-AVAILABLE_CPUS_CNT=$(echo "($(lscpu -e |wc -l) - 1) * 0.8 / 1" |bc)
+AVAILABLE_CPUS_CNT=$(cnt=$(bc <<<"($(lscpu -e |wc -l) - 1) * 0.8 / 1"); echo $(($cnt > 0 ? $cnt : 1)))
 
 function get_repo_sha1() {
     touch git-sha1.txt
@@ -190,7 +202,7 @@ function test_kits_deqp() {
             )
             ext_files=()
             runner_options=(
-                "--jobs \$AVAILABLE_CPUS_CNT$AVAILABLE_CPUS_CNT$AVAILABLE_CPUS_CNT"
+                "--jobs \$AVAILABLE_CPUS_CNT"
                 "--timeout 300.0"
             )
             ext_deqp_options=(
@@ -263,10 +275,10 @@ for elem in \${test_infos[@]}; do
     case \$vendor in
         mesa)
             env_lists=(
-                VK_ICD_FILENAMES=$HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json
+                VK_ICD_FILENAMES=\$RADV_ICD_PATH
                 __GLX_FORCE_VENDOR_LIBRARY_0=mesa
-                LD_LIBRARY_PATH=$HOME/.local/lib
-                LIBGL_DRIVERS_PATH=$HOME/.local/lib/dri
+                LD_LIBRARY_PATH=\$MESA_ROOT
+                LIBGL_DRIVERS_PATH=\$MESA_ROOT/dri
                 MESA_LOADER_DRIVER_OVERRIDE=radeonsi
                 RADV_DEBUG=nocache
                 AMD_DEBUG=
@@ -275,7 +287,7 @@ for elem in \${test_infos[@]}; do
             ;;
         llpc)
             env_lists=(
-                VK_ICD_FILENAMES=$HOME/Projects/amdvlk/_icd/rel.json
+                VK_ICD_FILENAMES=\$AMDVLK_ICD_PATH
             )
             ;;
         *)
@@ -286,8 +298,8 @@ for elem in \${test_infos[@]}; do
         zink)
             env_lists+=(
                 __GLX_FORCE_VENDOR_LIBRARY_0=mesa
-                LD_LIBRARY_PATH=$HOME/.local/lib
-                LIBGL_DRIVERS_PATH=$HOME/.local/lib/dri
+                LD_LIBRARY_PATH=\$MESA_ROOT
+                LIBGL_DRIVERS_PATH=\$MESA_ROOT/dri
                 MESA_LOADER_DRIVER_OVERRIDE=zink
             )
             ;;
@@ -318,13 +330,16 @@ sudo bash -c "curl -s https://gitlab.com/ineo6/hosts/-/raw/master/next-hosts |se
 export PATH=$HOME/.local/bin:\$PATH
 
 now_timestamps=\$(date +%s)
+set -o allexport
+source $HOME/.config/autostart/$DEVELOP_DRIVER_ENV_NAME
+set +o allexport
 drivers_tuple=(
     # vendor,glapi,kits,driver
-    llpc,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
-    mesa,vk,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
-    llpc,zink,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/Projects/amdvlk/_icd/rel.json |head -1)
-    mesa,zink,"deqp",\$(sed -nE 's/[[:space:]]*"library_path": "(.*)".*/\1/p' $HOME/.local/share/vulkan/icd.d/radeon_icd.x86_64.json |head -1)
-    #mesa,gl,"deqp:piglit",$HOME/.local/lib/dri/radeonsi_dri.so
+    llpc,vk,"deqp",\$AMDVLK_PATH
+    mesa,vk,"deqp",\$RADV_PATH
+    llpc,zink,"deqp",\$AMDVLK_PATH
+    mesa,zink,"deqp",\$RADV_PATH
+    #mesa,gl,"deqp:piglit",\$RADEONSI_PATH
 ) # drivers tuple declare end
 
 pushd $HOME/Projects/mesa
