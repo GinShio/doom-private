@@ -31,18 +31,34 @@ export SETUP_SWAPSIZE=${SETUP_SWAPSIZE:-16}
 export SETUP_HOSTNAME=${SETUP_HOSTNAME:-$([[ ! -z $SETUP_WORKING ]] && echo "$SETUP_WORKING-")$USER-$(echo $DISTRO_NAME |awk '{ print $1 }')}
 export SETUP_DESKTOP=${SETUP_DESKTOP:-"kde"}
 
+set -o allexport
+source $BASIC_DIR/.setup-info
+set +o allexport
+echo ${USERNAME:?Missing User Name.} >/dev/null
+echo ${USEREMAIL:?Missing User email.} >/dev/null
+echo ${ROOT_PASSPHRASE:?Missing local host root passphrase.} >/dev/null
+if [[ ! -z $SETUP_WORKING ]]
+then
+    echo ${WORK_ORGNAIZATION:?Missing work orgnaization.} >/dev/null
+    export WORK_ORGNAIZATION=$WORK_ORGNAIZATION-pub
+else export WORK_ORGNAIZATION=personal
+fi
+
+
+sudo -Sv <<<"$ROOT_PASSPHRASE"
 case $DISTRO_NAME in
     Debian*)
-        bash $BASIC_DIR/debian-setup.sh
+        sudo bash $BASIC_DIR/debian-setup.sh
         ;;
     openSUSE*)
-        bash $BASIC_DIR/opensuse-setup.sh
+        sudo bash $BASIC_DIR/opensuse-setup.sh
         ;;
     *)
        echo Unknown Distro
        exit 1
        ;;
 esac
+sudo -Sv <<<"$ROOT_PASSPHRASE"
 bash $BASIC_DIR/common-setup.sh
 bash $BASIC_DIR/beautify-setup.sh
 bash $BASIC_DIR/build.sh

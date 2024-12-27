@@ -117,7 +117,7 @@ Host github github.com
     User git
     Port 443
     PreferredAuthentications publickey
-    IdentityFile $HOME/.ssh/amd-pub-git
+    IdentityFile $HOME/.ssh/$WORK_ORGNAIZATION-git
 
 # https://docs.gitlab.com/ee/user/gitlab_com
 Host gitlab gitlab.com
@@ -125,7 +125,7 @@ Host gitlab gitlab.com
     User git
     Port 443
     PreferredAuthentications publickey
-    IdentityFile $HOME/.ssh/amd-pub-git
+    IdentityFile $HOME/.ssh/$WORK_ORGNAIZATION-git
 
 # https://garbers.co.za/2014/03/03/connecting-to-bitbucket-on-https-port
 Host bitbucket bitbucket.org
@@ -133,10 +133,10 @@ Host bitbucket bitbucket.org
     User git
     Port 443
     PreferredAuthentications publickey
-    IdentityFile $HOME/.ssh/amd-pub-git
+    IdentityFile $HOME/.ssh/$WORK_ORGNAIZATION-git
 EOF
-#ssh-keygen -C "ED25519 Comment" -t ed25519     -f "$HOME/.ssh/amd-pub-git" -N ""
-#ssh-keygen -C "RSA Comment"     -t rsa -b 4096 -f "$HOME/.ssh/amd-pub-git" -N ""
+#ssh-keygen -C "ED25519 Comment" -t ed25519     -f "$HOME/.ssh/git" -N ""
+#ssh-keygen -C "RSA Comment"     -t rsa -b 4096 -f "$HOME/.ssh/git" -N ""
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bkp >/dev/null 2>&1
 cat <<-EOF |sudo tee /etc/ssh/sshd_config
 Port 22

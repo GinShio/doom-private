@@ -317,11 +317,11 @@ DAILY_SCRIPT_NAME=daily.$USER
 cat <<-EOF >$HOME/.config/autostart/$DAILY_SCRIPT_NAME.sh
 #!/usr/bin/env bash
 
-echo $ROOT_PASSPHRASE |sudo -S -E zypper ref
-echo $ROOT_PASSPHRASE |sudo -S -E zypper dup -y
-
-echo $ROOT_PASSPHRASE |sudo -S cp /etc/hosts.bkp /etc/hosts
-echo $ROOT_PASSPHRASE |sudo -S bash -c "curl https://gitlab.com/ineo6/hosts/-/raw/master/next-hosts |sed '1,4d' - |tee -a /etc/hosts"
+sudo -Sv <<<"$ROOT_PASSPHRASE"
+sudo -E zypper ref
+sudo -E zypper dup -y
+sudo cp /etc/hosts.bkp /etc/hosts
+sudo bash -c "curl -s https://gitlab.com/ineo6/hosts/-/raw/master/next-hosts |sed '1,2d' - |tee -a /etc/hosts"
 
 export PATH=$HOME/.local/bin:\$PATH
 
@@ -364,7 +364,4 @@ done
 tmux send-keys -t runner "bash $HOME/.config/autostart/$DAILY_TEST_NAME.sh '\${test_infos[*]}'" ENTER
 
 #systemctl reboot
-EOF
-cat <<-EOF |sudo tee /var/spool/cron/tabs/$USER
-0 6 * * * /usr/bin/bash $HOME/.config/autostart/$DAILY_SCRIPT_NAME.sh
 EOF
