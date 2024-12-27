@@ -21,8 +21,9 @@ if status is-interactive
         set -l command_string '
 MDL=/sys/module/zswap
 DBG=/sys/kernel/debug/zswap
-PAGE=$[`cat $DBG/stored_pages`*4096]
-POOL=$[`cat $DBG/pool_total_size`]
+PAGE=$(($(cat $DBG/stored_pages)*4096))
+POOL=$(cat $DBG/pool_total_size)
+EN=$(cat $MDL/parameters/enabled)
 
 Show(){
     printf "========\n$1\n========\n"
@@ -33,21 +34,20 @@ Show Settings $MDL
 Show Stats    $DBG
 
 printf "\nCompression ratio: "
-
-[ $POOL -gt 0 ] && {
-     echo "scale=3;$PAGE/$POOL" | bc
-} || echo zswap disabled
+[ $POOL -gt 0 ] && { echo "scale=3;$PAGE/$POOL" | bc; } || { [ $EN = "Y" ] && echo 0 || echo disabled; }
 '
         test $EUID -ne 0 && sudo -- bash -c $command_string || bash -c $command_string
     end
 
     function copy_graphics_testcase
-        argparse deqp piglit vkd3d -- $argv
+        argparse deqp piglit tool vkd3d -- $argv
         or return
+        set -fx PROJECT_DIR $HOME/Projects
+        set -fx RUNNER_DIR $XDG_RUNTIME_DIR/runner
 
         if set -ql _flag_deqp
-            set -lx DEQP_SRCDIR $HOME/Projects/deqp
-            set -lx DEQP_DSTDIR $XDG_RUNTIME_DIR/runner/deqp
+            set -lx DEQP_SRCDIR $PROJECT_DIR/deqp
+            set -lx DEQP_DSTDIR $RUNNER_DIR/deqp
             rsync $DEQP_SRCDIR/_build/external/vulkancts/modules/vulkan/Release/deqp-vk $DEQP_DSTDIR
             rsync -rR $DEQP_SRCDIR/external/vulkancts/data/./vulkan $DEQP_DSTDIR
             rsync -rR --exclude-from=$DEQP_DSTDIR/vk-exclude.txt $DEQP_SRCDIR/external/vulkancts/mustpass/main/./vk-default $DEQP_DSTDIR/mustpass
@@ -63,8 +63,8 @@ printf "\nCompression ratio: "
         end
 
         if set -ql _flag_piglit
-            set -lx PIGLIT_SRCDIR $HOME/Projects/piglit
-            set -lx PIGLIT_DSTDIR $XDG_RUNTIME_DIR/runner/piglit
+            set -lx PIGLIT_SRCDIR $PROJECT_DIR/piglit
+            set -lx PIGLIT_DSTDIR $RUNNER_DIR/piglit
             rsync -rR $PIGLIT_SRCDIR/_build/./bin $PIGLIT_DSTDIR
             rsync -rR $PIGLIT_SRCDIR/./{framework,templates} $PIGLIT_DSTDIR
             rsync -rR $PIGLIT_SRCDIR/_build/./tests/*.xml.gz $PIGLIT_DSTDIR
@@ -73,9 +73,13 @@ printf "\nCompression ratio: "
             rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' $PIGLIT_SRCDIR/_build/./generated_tests $PIGLIT_DSTDIR
         end
 
+        if set -ql _flag_tool
+            rsync $PROJECT_DIR/runner/_build/release/{deqp,piglit}-runner $RUNNER_DIR
+        end
+
         if set -ql _flag_vkd3d
-            set -lx VKD3D_SRCDIR $HOME/Projects/vkd3d
-            set -lx VKD3D_DSTDIR $XDG_RUNTIME_DIR/runner/vkd3d
+            set -lx VKD3D_SRCDIR $PROJECT_DIR/vkd3d
+            set -lx VKD3D_DSTDIR $RUNNER_DIR/vkd3d
             rsync -f'- */' -f'- *.a' $VKD3D_SRCDIR/_build/_rel/tests/* $VKD3D_DSTDIR/bin
             rsync -rR $VKD3D_SRCDIR/tests/./{d3d12_tests.h,test-runner.sh} $VKD3D_DSTDIR/tests
             rsync -rR $VKD3D_SRCDIR/_build/_rel/./libs/**/*.so $VKD3D_DSTDIR
@@ -163,6 +167,10 @@ printf "\nCompression ratio: "
         abbr -a Pinr "sudo -E zypper install-new-recommends"
         abbr -a Pps  "zypper ps"
         abbr -a Pve  "sudo -E zypper verify"
+
+        function packman_log
+            sudo cut -d "|" -f 1-4 -s --output-delimiter " | " /var/log/zypp/history
+        end
     end
 
     function __ginshio_apt_package_management
