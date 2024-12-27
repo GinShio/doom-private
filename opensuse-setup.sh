@@ -15,53 +15,46 @@ sudo -E zypper al cmake-gui git-gui akonadictl
 sudo -E zypper dup -y --allow-vendor-change
 
 # Common environment
-sudo -E zypper in -y -t pattern devel_basis devel_C_C++ devel_vulkan
+sudo -E zypper in -y -t pattern devel_basis
 sudo -E zypper in -y \
     7zip aspell bat bison cifs-utils curl dash dwarves emacs fd figlet fish flatpak{,-spawn} flex fzf git{,-doc,-lfs} \
-    graphviz ImageMagick inkscape libxslt-tools moreutils Mozilla{Firefox,Thunderbird} mpv neofetch obs-studio \
-    osdlyrics privoxy proxychains-ng qbittorrent re2c ripgrep sqlite3 sshpass steam tmux unzip wget xmlto zip zstd
-
-# kDE environment
-sudo -E zypper in -y \
-    fcitx5{,-rime} filelight{,-lang} freerdp-wayland kdeconnect-kde{,-lang} krdc{,-lang} krfb{,-lang} \
-    kvantum-manager{,-lang} pam_kwallet6 partitionmanager{,-lang}
+    graphviz ImageMagick inkscape libxslt-tools moreutils Mozilla{Firefox,Thunderbird} mpv neowofetch obs-studio \
+    osdlyrics pandoc-cli privoxy proxychains-ng qbittorrent re2c ripgrep sqlite3 sshpass steam tmux tree-sitter unzip \
+    wget xmlto zip zstd
 
 # C++ environment
+sudo -E zypper in -y -t pattern devel_C_C++
 sudo -E zypper in -y \
     binutils-gold gcc{,-32bit} gcc-c++{,-32bit} gcc-info gcovr gdb \
     clang{,-doc,-extract,-tools,-devel} llvm{,-doc,-opt-viewer,-devel} lldb lld \
-    ccache cmake conan doxygen imake kf6-extra-cmake-modules lcov meson mold ninja
+    ccache cmake conan doxygen imake kf6-extra-cmake-modules lcov meson mold ninja tree-sitter-c{,pp}
 sudo -E zypper in -y \
     cli11-devel 'libboost_*-devel' libc++{,abi}-devel libcaca-devel libelf-devel{,-32bit} libexpat-devel{,-32bit} \
     libopenssl-devel{,-32bit} libpciaccess-devel libstdc++-devel{,-32bit} libunwind-devel libxml2-devel{,-32bit} \
     libzstd-devel{,-32bit} nanomsg-devel ncurses5-devel{,-32bit} poco-devel readline-devel{,-32bit} spdlog-devel \
     stb-devel tinyobjloader-devel zlib-ng-compat-devel
 
-# Rust & Zig environment
-sudo -E zypper in -y cargo rust rust-bindgen
-sudo -E zypper in -y zig zig-libs zls
-
-# Java environment
-sudo -E zypper in -y java-{17,21}-openjdk{,-devel}
-
 # Python3 environment
-sudo -E zypper in -y python3 python3-doc python3-pipx python3-pylint python3-virtualenv
+sudo -E zypper in -y python3 python3-doc python3-pipx python3-pylint python3-virtualenv tree-sitter-python
 sudo -E zypper in -y \
     python3-distutils-extra python3-Jinja2 python3-lit python3-lxml python3-lz4 python3-Mako python3-numpy \
     python3-pybind11{,-devel} python3-pyelftools python3-pytest python3-ruamel.yaml python3-setuptools \
     python3-u-msgpack-python
 
-# NodeJS environment
-sudo -E zypper in -y nodejs-common yarn
-
-# Beam environment
+# Programmings environment
 sudo -E zypper in -y erlang erlang-doc elixir elixir-doc elixir-hex
+sudo -E zypper in -y java-{17,21}-openjdk{,-devel}
+sudo -E zypper in -y nodejs-common yarn
+sudo -E zypper in -y cargo rust rust-bindgen tree-sitter-rust
+sudo -E zypper in -y ghc{,-doc,-manual,-prof} tree-sitter-haskell
+sudo -E zypper in -y zig zig-libs zls tree-sitter-zig
 
 # Graphics
+sudo -E zypper in -y -t pattern devel_vulkan
 sudo -E zypper in -y \
     cairo-devel{,-32bit} freeglut-devel{,-32bit} libclc libdmx-devel libdrm-devel{,-32bit} libfontenc-devel{,-32bit} \
-    libFS-devel libglfw3-wayland libglvnd-devel{,-32bit} libICE-devel{,-32bit} libLLVMSPIRVLib-devel \
-    libSM-devel{,-32bit} libva-devel{,-32bit} libvdpau-devel{,-32bit} SDL2-devel{,-32bit} waffle-devel wine-devel
+    libglfw3-wayland libglvnd-devel{,-32bit} libICE-devel{,-32bit} libLLVMSPIRVLib-devel libSM-devel{,-32bit} \
+    libva-devel{,-32bit} libvdpau-devel{,-32bit} SDL2-devel{,-32bit} waffle-devel wine-devel
 sudo -E zypper in -y \
     libX11-devel{,-32bit} libXau-devel{,-32bit} libXaw-devel{,-32bit} libxcb-devel{,-32bit} libxcb-dri2-0{,-32bit} \
     libxcb-dri3-0{,-32bit} libXcomposite-devel{,-32bit} libXcursor-devel{,-32bit} libXdamage-devel{,-32bit} \
@@ -74,10 +67,17 @@ sudo -E zypper in -y \
 sudo -E zypper in -y \
     wayland-devel{,-32bit} wayland-protocols-devel waylandpp-devel
 sudo -E zypper in -y \
-    glslang-devel glm-devel Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit} Mesa-dri{,-32bit,-devel} \
-    Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{,-32bit} Mesa-libRusticlOpenCL Mesa-vulkan-device-select{,-32bit} \
-    Mesa-vulkan-overlay{,-32bit} piglit shaderc libslang2{,-32bit} slang-devel slang-slsh spirv-{cross,tools} \
+    clinfo glslang-devel glm-devel Mesa-demo-egl{,-32bit} Mesa-demo-es{,-32bit} Mesa-demo-x{,-32bit} \
+    Mesa-dri{,-32bit,-devel} Mesa-libGL-devel{,-32bit} Mesa-libEGL-devel{,-32bit} Mesa-libRusticlOpenCL \
+    Mesa-vulkan-device-select{,-32bit} Mesa-vulkan-overlay{,-32bit} piglit shaderc spirv-{cross,tools} \
     spirv-tools-devel{,-32bit} vulkan-{tools,devel}{,-32bit}
+
+# kDE environment
+#sudo -E zypper in -y libplasma6-devel
+sudo -E zypper in -y \
+    fcitx5{,-rime} filelight{,-lang} freerdp-wayland kdeconnect-kde{,-lang} krdc{,-lang} krfb{,-lang} \
+    kvantum-manager{,-lang} pam_kwallet6 partitionmanager{,-lang}
+#sudo -E zypper in -t pattern devel_qt6 devel_kde_frameworks6
 
 # Virtualization & Containerization & Cross compilation
 sudo -E zypper in -y -t pattern kvm_tools
@@ -95,7 +95,7 @@ sudo -E zypper in -y \
 sudo -E zypper in -y 'texlive-*'
 
 # Emacs
-sudo -E zypper in -y emacs-x11 libvterm-{tools,devel} libtool
+sudo -E zypper in -y emacs emacs-nox emacs-x11 libvterm-{tools,devel} libtool
 
 # Font
 sudo -E zypper in -y \
