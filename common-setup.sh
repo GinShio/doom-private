@@ -222,7 +222,7 @@ pipx install trash-cli
 # Others
 cd $(mktemp -d)
 ### Hugo
-curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.125.4/hugo_0.125.4_linux-amd64.tar.gz
+curl -o hugo.tar.gz -sSL https://github.com/gohugoio/hugo/releases/download/v0.140.2/hugo_0.140.2_linux-amd64.tar.gz
 tar -C $HOME/.local/bin -zxvf hugo.tar.gz hugo
 
 # Update desktop database

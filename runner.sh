@@ -44,8 +44,10 @@ then
 else export WORK_ORGNAIZATION=personal
 fi
 
-
 sudo -Sv <<<"$ROOT_PASSPHRASE"
+if [ $? -ne 0 ]
+then echo "Incorrect Password"; exit 1;
+fi
 case $DISTRO_NAME in
     Debian*)
         sudo bash $BASIC_DIR/debian-setup.sh
