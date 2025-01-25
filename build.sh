@@ -18,7 +18,8 @@ CMAKE_OPTIONS=(
   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
   -DCMAKE_CXX_COMPILER=g++
   -DCMAKE_CXX_FLAGS_INIT=-fdiagnostics-color=always
-  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG=OFF
+  -DCMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE=ON
 )
 
 ### mesa
@@ -93,8 +94,26 @@ cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg -DCMAKE_BUILD
     -DLLVM_PARALLEL_LINK_JOBS:STRING=$llvm_num_link \
     -DLLVM_TARGETS_TO_BUILD='AMDGPU;RISCV;X86' \
     -DLLVM_USE_LINKER=mold \
-    -DCLANG_ENABLE_CIR=ON
+    -DCLANG_ENABLE_CIR=ON \
 
+# if you want to enable HLSL for clang
+# cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg -DCMAKE_BUILD_TYPE=Debug \
+#     -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+#     -DBUILD_SHARED_LIBS=ON \
+#     -DLLVM_ENABLE_ASSERTIONS=ON \
+#     -DLLVM_BUILD_TESTS=ON \
+#     -DLLVM_BUILD_TOOLS=ON \
+#     -DLLVM_CCACHE_BUILD=ON \
+#     -DLLVM_ENABLE_PIC=ON \
+#     -DLLVM_ENABLE_PROJECTS='clang;mlir' \
+#     -DLLVM_INCLUDE_TOOLS=ON \
+#     -DLLVM_OPTIMIZED_TABLEGEN=ON \
+#     -DLLVM_PARALLEL_LINK_JOBS:STRING=$llvm_num_link \
+#     -DLLVM_TARGETS_TO_BUILD='AMDGPU;RISCV;X86' \
+#     -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD='DirectX;SPIRV' \
+#     -DLLVM_USE_LINKER=mold \
+#     -DCLANG_ENABLE_CIR=ON \
+#     -DCLANG_ENABLE_HLSL=ON \
 
 ### UMR
 git clone https://gitlab.freedesktop.org/tomstdenis/umr.git $HOME/Projects/umr
