@@ -66,6 +66,7 @@ printf "\nCompression ratio: "
             set -lx PIGLIT_SRCDIR $PROJECT_DIR/piglit
             set -lx PIGLIT_DSTDIR $RUNNER_DIR/piglit
             rsync -rR $PIGLIT_SRCDIR/_build/./bin $PIGLIT_DSTDIR
+            rsync -l $PIGLIT_SRCDIR/_build/lib/Release/* $PIGLIT_DSTDIR/lib
             rsync -rR $PIGLIT_SRCDIR/./{framework,templates} $PIGLIT_DSTDIR
             rsync -rR $PIGLIT_SRCDIR/_build/./tests/*.xml.gz $PIGLIT_DSTDIR
             rsync -mrR -f'- *.[chao]' -f'- *.[ch]pp' -f'- *[Cc][Mm]ake*' $PIGLIT_SRCDIR/./tests $PIGLIT_DSTDIR
