@@ -80,6 +80,7 @@ git clone https://github.com/llvm/llvm-project.git $HOME/Projects/llvm
 llvm_num_link=$(awk '/MemTotal/{targets = int($2 / (16 * 2^20)); print targets<1?1:targets}' /proc/meminfo)
 cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg -DCMAKE_BUILD_TYPE=Debug \
     -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
     -DBUILD_SHARED_LIBS=ON \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DLLVM_BUILD_TESTS=ON \
@@ -92,6 +93,7 @@ cmake -S$HOME/Projects/llvm/llvm -B$HOME/Projects/llvm/_build/_dbg -DCMAKE_BUILD
     -DLLVM_PARALLEL_LINK_JOBS:STRING=$llvm_num_link \
     -DLLVM_TARGETS_TO_BUILD='AMDGPU;RISCV;X86' \
     -DLLVM_USE_LINKER=mold \
+    -DCLANG_ENABLE_CIR=ON
 
 
 ### UMR
