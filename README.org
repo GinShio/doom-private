@@ -1,3 +1,5 @@
+* DEPRECATED!!!! NEW REPO: https://github.com/GinShio/dotfiles.git
+
 * Doom Private
 
 ** Dependens
@@ -45,4 +47,3 @@ git clone git@github.com:GinShio/doom-private ~/.doom.d
 emacs --batch --eval "(progn (require 'org) (setq org-confirm-babel-evaluate nil) (org-babel-tangle-file \"~/.doom.d/config.org\"))"
 ~/.emacs.d/bin/doom install
 #+end_src
-
